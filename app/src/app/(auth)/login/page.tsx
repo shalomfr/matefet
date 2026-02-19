@@ -59,7 +59,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: "#f8f9fc" }}>
       {/* background decoration */}
-      <div className="absolute top-0 left-0 right-0 h-[45%]" style={{ background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4c1d95 100%)" }}>
+      <div className="absolute top-0 left-0 right-0 h-[45%]" style={{ background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e3a5f 100%)" }}>
         <div className="absolute top-[-60px] left-[-40px] w-[200px] h-[200px] rounded-full bg-white/5" />
         <div className="absolute bottom-[-80px] right-[10%] w-[300px] h-[300px] rounded-full bg-white/[0.03]" />
       </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7c3aed]/30 focus:border-[#7c3aed] transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb] transition-all"
                 placeholder="you@example.com"
                 dir="ltr"
               />
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7c3aed]/30 focus:border-[#7c3aed] transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb] transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -113,8 +113,8 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl text-white font-semibold disabled:opacity-60 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(124,58,237,0.4)] hover:scale-[1.02]"
-              style={{ background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)" }}
+              className="w-full py-3 rounded-xl text-white font-semibold disabled:opacity-60 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(37,99,235,0.4)] hover:scale-[1.02]"
+              style={{ background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" }}
             >
               {loading ? "מתחבר..." : "התחבר"}
             </button>
@@ -122,7 +122,7 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-[#64748b] mt-6">
             אין לך חשבון?{" "}
-            <Link href="/register" className="text-[#7c3aed] font-semibold hover:underline">
+            <Link href="/register" className="text-[#2563eb] font-semibold hover:underline">
               הרשמה
             </Link>
           </p>

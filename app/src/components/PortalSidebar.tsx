@@ -31,7 +31,7 @@ export default function PortalSidebar() {
         <div className="flex items-center gap-3 mb-1">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[15px] font-bold"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
           >
             מ
           </div>
@@ -65,18 +65,18 @@ export default function PortalSidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl mb-1 text-[14px] transition-all ${
                 isActive
-                  ? "bg-[#f3effa] text-[#5c3d9a] border-r-[3px] border-[#7c3aed] font-semibold"
+                  ? "bg-[#eff6ff] text-[#1e40af] border-r-[3px] border-[#2563eb] font-semibold"
                   : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f8f9fc] font-medium"
               }`}
             >
               <item.icon
                 size={18}
                 strokeWidth={isActive ? 2.2 : 1.7}
-                className={isActive ? "text-[#7c3aed]" : ""}
+                className={isActive ? "text-[#2563eb]" : ""}
               />
               <span className="flex-1">{item.label}</span>
               {isActive && (
-                <div className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2563eb]" />
               )}
             </Link>
           );
@@ -88,7 +88,7 @@ export default function PortalSidebar() {
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
           >
             יל
           </div>

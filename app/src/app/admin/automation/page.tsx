@@ -28,13 +28,13 @@ export default function AdminAutomationPage() {
       <Topbar title="אוטומציות" subtitle="ניהול workflows ותזמונים" />
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Zap} label="אוטומציות פעילות" value={String(activeCount)} color="#7c3aed" />
+        <StatCard icon={Zap} label="אוטומציות פעילות" value={String(activeCount)} color="#2563eb" />
         <StatCard icon={Play} label="סה״כ הרצות" value={String(totalRuns)} change="+142" trend="up" color="#2ecc8f" />
-        <StatCard icon={CheckCircle2} label="אחוז הצלחה" value="99.2%" color="#a78bfa" />
+        <StatCard icon={CheckCircle2} label="אחוז הצלחה" value="99.2%" color="#60a5fa" />
         <StatCard icon={Clock} label="הרצה אחרונה" value="12 דק'" color="#f5a623" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 border-r-4 border-r-[#7c3aed] flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+      <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 border-r-4 border-r-[#2563eb] flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div>
           <h3 className="text-lg font-bold text-[#1e293b] mb-1">בנה אוטומציה חדשה</h3>
           <p className="text-sm text-[#64748b]">הגדר טריגר, תנאים ופעולות - והכל רץ לבד</p>
@@ -52,7 +52,7 @@ export default function AdminAutomationPage() {
               <button
                 key={tab}
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  i === 0 ? "bg-[#f3effa] text-[#7c3aed]" : "text-[#64748b] hover:bg-[#f8f9fc]"
+                  i === 0 ? "bg-[#eff6ff] text-[#2563eb]" : "text-[#64748b] hover:bg-[#f8f9fc]"
                 }`}
               >
                 {tab}
@@ -65,14 +65,14 @@ export default function AdminAutomationPage() {
           {workflows.map((wf) => (
             <div
               key={wf.name}
-              className="p-4 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4] hover:border-[#7c3aed]/30 transition-all"
+              className="p-4 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4] hover:border-[#2563eb]/30 transition-all"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                    wf.status === "active" ? "bg-[#f3effa]" : "bg-[#e8ecf4]/30"
+                    wf.status === "active" ? "bg-[#eff6ff]" : "bg-[#e8ecf4]/30"
                   }`}>
-                    <Zap size={17} className={wf.status === "active" ? "text-[#7c3aed]" : "text-[#64748b]"} />
+                    <Zap size={17} className={wf.status === "active" ? "text-[#2563eb]" : "text-[#64748b]"} />
                   </div>
                   <div>
                     <div className="text-sm font-bold text-[#1e293b]">{wf.name}</div>
@@ -82,8 +82,8 @@ export default function AdminAutomationPage() {
                 <div className="flex items-center gap-4">
                   <span className="badge badge-purple">{wf.runs} הרצות</span>
                   <span className="text-xs text-[#64748b]">{wf.lastRun}</span>
-                  <button className="text-[#64748b] hover:text-[#7c3aed]">
-                    {wf.status === "active" ? <ToggleRight size={22} className="text-[#7c3aed]" /> : <ToggleLeft size={22} />}
+                  <button className="text-[#64748b] hover:text-[#2563eb]">
+                    {wf.status === "active" ? <ToggleRight size={22} className="text-[#2563eb]" /> : <ToggleLeft size={22} />}
                   </button>
                   <button className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]">
                     <Settings size={14} />

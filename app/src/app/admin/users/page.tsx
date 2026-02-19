@@ -83,8 +83,8 @@ export default function AdminUsersPage() {
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#7c3aed]/10">
-            <Users size={22} className="text-[#7c3aed]" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#2563eb]/10">
+            <Users size={22} className="text-[#2563eb]" />
           </div>
           <div>
             <div className="text-lg font-bold text-[#1e293b]">משתמשי מערכת</div>
@@ -107,8 +107,8 @@ export default function AdminUsersPage() {
             onClick={() => setTab(key as "pending" | "active" | "all")}
             className={`px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium transition-colors ${
               tab === key
-                ? "bg-[#7c3aed] text-white"
-                : "bg-white border border-[#e8ecf4] text-[#1e293b] hover:border-[#7c3aed]/50"
+                ? "bg-[#2563eb] text-white"
+                : "bg-white border border-[#e8ecf4] text-[#1e293b] hover:border-[#2563eb]/50"
             }`}
           >
             <Icon size={16} />

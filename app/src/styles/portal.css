@@ -14,12 +14,12 @@
   --portal-red: #dc2626;
   --portal-red-bg: #fef2f2;
   --portal-red-border: #fecaca;
-  --portal-purple: #5c3d9a;
-  --portal-purple-bg: #f3effa;
-  --portal-blue: #5c3d9a;
-  --portal-blue-bg: #f3effa;
+  --portal-purple: #2563eb;
+  --portal-purple-bg: #eff6ff;
+  --portal-blue: #2563eb;
+  --portal-blue-bg: #eff6ff;
   --portal-gold: #b45309;
-  --portal-shadow: 0 2px 12px rgba(92, 61, 154, 0.06);
+  --portal-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
   --portal-radius: 16px;
 }
 
@@ -48,8 +48,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 [data-theme="portal"] .btn-primary:hover {
-  background: #4a2d7a !important;
-  box-shadow: 0 4px 20px rgba(92, 61, 154, 0.35) !important;
+  background: #1d4ed8 !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -90,8 +90,8 @@
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(92, 61, 154, 0.4); }
-  50%      { box-shadow: 0 0 0 12px rgba(92, 61, 154, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+  50%      { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
 }
 
 @keyframes float {
@@ -111,8 +111,8 @@
 }
 
 @keyframes borderPulse {
-  0%, 100% { border-color: rgba(92, 61, 154, 0.2); }
-  50%      { border-color: rgba(92, 61, 154, 0.5); }
+  0%, 100% { border-color: rgba(37, 99, 235, 0.2); }
+  50%      { border-color: rgba(37, 99, 235, 0.5); }
 }
 
 @keyframes progressFill {
@@ -183,14 +183,14 @@
 }
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(92, 61, 154, 0.12);
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.12);
 }
 
 .hover-glow {
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .hover-glow:hover {
-  box-shadow: 0 0 0 3px rgba(92, 61, 154, 0.15), 0 8px 30px rgba(92, 61, 154, 0.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15), 0 8px 30px rgba(37, 99, 235, 0.12);
 }
 
 .hover-scale {
@@ -216,5 +216,5 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(92, 61, 154, 0.08);
+  box-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
 }

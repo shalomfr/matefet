@@ -81,7 +81,7 @@ export default function RegisterPage() {
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#5c3d9a]/30 focus:border-[#5c3d9a]"
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb]"
               placeholder="ישראל ישראלי"
             />
           </div>
@@ -93,7 +93,7 @@ export default function RegisterPage() {
               value={form.email}
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#5c3d9a]/30 focus:border-[#5c3d9a]"
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb]"
               placeholder="you@example.com"
               dir="ltr"
             />
@@ -107,7 +107,7 @@ export default function RegisterPage() {
               onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
               required
               minLength={6}
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#5c3d9a]/30 focus:border-[#5c3d9a]"
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb]"
               placeholder="מינימום 6 תווים"
             />
           </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               value={form.organizationName}
               onChange={(e) => setForm((f) => ({ ...f, organizationName: e.target.value }))}
               required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#5c3d9a]/30 focus:border-[#5c3d9a]"
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb]"
               placeholder="עמותת XYZ"
             />
           </div>
@@ -130,7 +130,7 @@ export default function RegisterPage() {
               type="text"
               value={form.organizationNumber}
               onChange={(e) => setForm((f) => ({ ...f, organizationNumber: e.target.value }))}
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#5c3d9a]/30 focus:border-[#5c3d9a]"
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f2] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30 focus:border-[#2563eb]"
               placeholder="580123456"
             />
           </div>
@@ -144,7 +144,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-[#5c3d9a] text-white font-semibold hover:bg-[#4a2d7a] disabled:opacity-60 transition-colors"
+            className="w-full py-3 rounded-xl bg-[#2563eb] text-white font-semibold hover:bg-[#1d4ed8] disabled:opacity-60 transition-colors"
           >
             {loading ? "שולח..." : "שלח בקשה"}
           </button>
@@ -152,7 +152,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-[#64748b] mt-6">
           כבר רשום?{" "}
-          <Link href="/login" className="text-[#5c3d9a] font-semibold hover:underline">
+          <Link href="/login" className="text-[#2563eb] font-semibold hover:underline">
             התחברות
           </Link>
         </p>

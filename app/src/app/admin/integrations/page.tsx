@@ -26,8 +26,8 @@ export default function AdminIntegrationsPage() {
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#f3effa] flex items-center justify-center">
-            <Link2 size={22} className="text-[#7c3aed]" />
+          <div className="w-12 h-12 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+            <Link2 size={22} className="text-[#2563eb]" />
           </div>
           <div>
             <div className="text-lg font-bold text-[#1e293b]">
@@ -38,7 +38,7 @@ export default function AdminIntegrationsPage() {
         </div>
         <div className="h-3 flex-1 max-w-xs mx-8 bg-[#f8f9fc] rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full bg-[#7c3aed]"
+            className="h-full rounded-full bg-[#2563eb]"
             style={{ width: `${(connectedCount / integrations.length) * 100}%` }}
           />
         </div>

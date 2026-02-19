@@ -33,7 +33,7 @@ const timeline = [
   { date: "22.02", org: "קרן חסד", event: "בדיקת אינטגרציה", color: "#d97706" },
   { date: "28.02", org: "אגודת הסטודנטים", event: "תזכורת דוח שנתי", color: "#ef4444" },
   { date: "05.03", org: "אור לציון", event: "חידוש ניהול תקין", color: "#ef4444" },
-  { date: "31.03", org: "הכל", event: "דדליין דוחות שנתיים", color: "#7c3aed" },
+  { date: "31.03", org: "הכל", event: "דדליין דוחות שנתיים", color: "#2563eb" },
 ];
 
 const recentSyncs = [
@@ -54,9 +54,9 @@ export default function AdminDashboardPage() {
       <Topbar title="דשבורד פנימי" subtitle="מעטפת ניהולית · עדכון אחרון: היום 14:30" />
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="anim-fade-scale delay-1"><StatCard icon={Building2} label="ארגונים פעילים" value={String(orgHealth.length)} color="#7c3aed" /></div>
+        <div className="anim-fade-scale delay-1"><StatCard icon={Building2} label="ארגונים פעילים" value={String(orgHealth.length)} color="#2563eb" /></div>
         <div className="anim-fade-scale delay-2"><StatCard icon={Link2} label="אינטגרציות מחוברות" value="8/10" color="#16a34a" /></div>
-        <div className="anim-fade-scale delay-3"><StatCard icon={Zap} label="אוטומציות פעילות" value="10" change="+3" trend="up" color="#7c3aed" /></div>
+        <div className="anim-fade-scale delay-3"><StatCard icon={Zap} label="אוטומציות פעילות" value="10" change="+3" trend="up" color="#2563eb" /></div>
         <div className="anim-fade-scale delay-4"><StatCard icon={AlertTriangle} label="התראות פתוחות" value={String(alerts.length)} color="#d97706" /></div>
       </div>
 
@@ -64,10 +64,10 @@ export default function AdminDashboardPage() {
       <div className="anim-fade-up delay-2 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center"><TrendingUp size={16} className="text-[#7c3aed]" /></div>
+            <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center"><TrendingUp size={16} className="text-[#2563eb]" /></div>
             סקירת ארגונים
           </h3>
-          <Link href="/admin/organizations" className="text-[12px] font-semibold text-[#7c3aed] hover:underline flex items-center gap-1">
+          <Link href="/admin/organizations" className="text-[12px] font-semibold text-[#2563eb] hover:underline flex items-center gap-1">
             לכל הארגונים <ArrowLeft size={12} />
           </Link>
         </div>
@@ -85,7 +85,7 @@ export default function AdminDashboardPage() {
         </div>
         <div className="space-y-2">
           {orgHealth.map((org, i) => (
-            <div key={org.name} className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#7c3aed]/20 transition-all`}>
+            <div key={org.name} className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all`}>
               <div className="flex items-center gap-3">
                 <div className="w-2 h-9 rounded-full" style={{ background: org.status === "ok" ? "#16a34a" : org.status === "warning" ? "#d97706" : "#ef4444" }} />
                 <div>
@@ -123,7 +123,7 @@ export default function AdminDashboardPage() {
                     <div className="text-[11px] text-[#64748b]">{alert.issue}</div>
                   </div>
                 </div>
-                <button className="text-[11px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] px-3 py-1.5 rounded-lg hover:bg-[#f3effa] transition-all">טפל →</button>
+                <button className="text-[11px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] px-3 py-1.5 rounded-lg hover:bg-[#eff6ff] transition-all">טפל →</button>
               </div>
             ))}
           </div>
@@ -132,12 +132,12 @@ export default function AdminDashboardPage() {
         {/* Team Tasks */}
         <div className="anim-fade-up delay-4 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center"><Users size={16} className="text-[#7c3aed]" /></div>
+            <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center"><Users size={16} className="text-[#2563eb]" /></div>
             משימות צוות ({openTasks} פתוחות)
           </h3>
           <div className="space-y-2">
             {teamTasks.map((task, i) => (
-              <div key={i} className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#7c3aed]/20 transition-all`}>
+              <div key={i} className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all`}>
                 <div className="flex items-center gap-3">
                   <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${task.status === "done" ? "bg-[#f0fdf4]" : "bg-[#fffbeb]"}`}>
                     {task.status === "done" ? <CheckCircle2 size={14} className="text-[#16a34a]" /> : <Clock size={14} className="text-[#d97706]" />}
@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
         {/* Timeline */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center"><Clock size={16} className="text-[#7c3aed]" /></div>
+            <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center"><Clock size={16} className="text-[#2563eb]" /></div>
             לוח זמנים – דדליינים
           </h3>
           <div className="space-y-3 relative">
@@ -168,7 +168,7 @@ export default function AdminDashboardPage() {
                 <div className="w-6 h-6 rounded-full flex items-center justify-center z-10 ring-4 ring-white" style={{ background: item.color }}>
                   <div className="w-2 h-2 rounded-full bg-white" />
                 </div>
-                <div className="flex-1 flex items-center justify-between p-3 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#7c3aed]/20 transition-all">
+                <div className="flex-1 flex items-center justify-between p-3 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all">
                   <div>
                     <div className="text-[13px] font-medium text-[#1e293b]">{item.event}</div>
                     <div className="text-[11px] text-[#64748b]">{item.org}</div>
@@ -200,7 +200,7 @@ export default function AdminDashboardPage() {
               </div>
             ))}
           </div>
-          <Link href="/admin/integrations" className="inline-flex items-center gap-1 mt-4 text-[12px] font-semibold text-[#7c3aed] hover:underline">
+          <Link href="/admin/integrations" className="inline-flex items-center gap-1 mt-4 text-[12px] font-semibold text-[#2563eb] hover:underline">
             ניהול אינטגרציות <ArrowLeft size={12} />
           </Link>
         </div>

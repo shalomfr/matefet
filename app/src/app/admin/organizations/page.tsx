@@ -15,8 +15,8 @@ export default function AdminOrganizationsPage() {
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#f3effa] flex items-center justify-center">
-            <Building2 size={22} className="text-[#7c3aed]" />
+          <div className="w-12 h-12 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+            <Building2 size={22} className="text-[#2563eb]" />
           </div>
           <div>
             <div className="text-lg font-bold text-[#1e293b]">{organizations.length} ארגונים</div>
@@ -55,7 +55,7 @@ export default function AdminOrganizationsPage() {
                 <td className="p-4">
                   <a
                     href={`/portal?org=${org.id}`}
-                    className="inline-flex items-center gap-1.5 text-[12px] text-[#7c3aed] font-semibold hover:underline"
+                    className="inline-flex items-center gap-1.5 text-[12px] text-[#2563eb] font-semibold hover:underline"
                   >
                     <ExternalLink size={12} /> פתח בפורטל
                   </a>

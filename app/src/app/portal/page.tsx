@@ -10,12 +10,12 @@ import { useToast } from "@/components/Toast";
 
 /* ── data ── */
 const categoryCards = [
-  { href: "/portal/status",    emoji: "✅", label: "האם אני בסדר?",  desc: "ציות ועמידה בדרישות",  icon: Shield,        gradient: "from-[#7c3aed] to-[#5b21b6]" },
+  { href: "/portal/status",    emoji: "✅", label: "האם אני בסדר?",  desc: "ציות ועמידה בדרישות",  icon: Shield,        gradient: "from-[#2563eb] to-[#1d4ed8]" },
   { href: "/portal/calendar",  emoji: "📅", label: "מה בקרוב?",      desc: "לוח שנה ותזכורות",      icon: Calendar,      gradient: "from-[#2563eb] to-[#1d4ed8]" },
   { href: "/portal/documents", emoji: "📁", label: "המסמכים שלי",    desc: "מסמכים ואישורים",       icon: FileText,      gradient: "from-[#0891b2] to-[#0e7490]" },
-  { href: "/portal/board",     emoji: "👥", label: "הועד שלי",       desc: "חברי ועד וישיבות",      icon: Users,         gradient: "from-[#7c3aed] to-[#6d28d9]" },
+  { href: "/portal/board",     emoji: "👥", label: "הועד שלי",       desc: "חברי ועד וישיבות",      icon: Users,         gradient: "from-[#2563eb] to-[#1e40af]" },
   { href: "/portal/reports",   emoji: "📊", label: "דוחות ותקציב",   desc: "כספים וניתוח",          icon: BarChart2,     gradient: "from-[#059669] to-[#047857]" },
-  { href: "/portal/contact",   emoji: "💬", label: "דבר איתנו",      desc: "פנה למלווה שלך",        icon: MessageCircle, gradient: "from-[#d946ef] to-[#a21caf]" },
+  { href: "/portal/contact",   emoji: "💬", label: "דבר איתנו",      desc: "פנה למלווה שלך",        icon: MessageCircle, gradient: "from-[#0891b2] to-[#0e7490]" },
 ];
 
 const urgentTasks = [
@@ -29,7 +29,7 @@ const approvals = [
 ];
 
 const calendarEvents = [
-  { title: "ישיבת ועד רבעונית", date: "28.02.2026", days: 9, color: "#7c3aed" },
+  { title: "ישיבת ועד רבעונית", date: "28.02.2026", days: 9, color: "#2563eb" },
   { title: "הגשת דוח שנתי לרשם", date: "31.03.2026", days: 40, color: "#d97706" },
   { title: "חידוש ביטוח אחריות", date: "15.04.2026", days: 55, color: "#2563eb" },
 ];
@@ -47,7 +47,7 @@ const completedTasks = [
 ];
 
 const progressBars = [
-  { label: "ממשל תאגידי", pct: 95, color: "#7c3aed" },
+  { label: "ממשל תאגידי", pct: 95, color: "#2563eb" },
   { label: "עמידה בדרישות", pct: 86, color: "#2563eb" },
   { label: "ניהול סיכונים", pct: 78, color: "#d97706" },
   { label: "מול רשות המסים", pct: 90, color: "#059669" },
@@ -88,7 +88,7 @@ export default function PortalHomePage() {
       <div
         className="px-8 pt-8 pb-32 relative overflow-hidden anim-gradient"
         style={{
-          background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 40%, #4c1d95 70%, #3b0764 100%)",
+          background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 40%, #1e3a5f 70%, #172554 100%)",
           backgroundSize: "200% 200%",
         }}
       >
@@ -152,8 +152,8 @@ export default function PortalHomePage() {
               <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`} />
               {/* content */}
               <div className="relative z-10">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-[#f3effa] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
-                  <card.icon size={22} className="text-[#7c3aed] group-hover:text-white transition-colors duration-500" />
+                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-[#eff6ff] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
+                  <card.icon size={22} className="text-[#2563eb] group-hover:text-white transition-colors duration-500" />
                 </div>
                 <div className="text-[14px] font-bold text-[#1e293b] mb-1 group-hover:text-white transition-colors duration-500">
                   {card.label}
@@ -172,7 +172,7 @@ export default function PortalHomePage() {
         {/* ─── STATUS CARD WITH PROGRESS BARS ─── */}
         <div className="anim-fade-up delay-7 bg-white rounded-2xl p-6 mb-6 border border-[#e8ecf4] relative overflow-hidden" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           {/* accent line */}
-          <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-l from-[#7c3aed] via-[#a78bfa] to-[#c4b5fd]" />
+          <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-l from-[#2563eb] via-[#60a5fa] to-[#93c5fd]" />
 
           <div className="flex items-start justify-between gap-6 mb-6">
             <div className="flex-1">
@@ -193,7 +193,7 @@ export default function PortalHomePage() {
               </div>
             </div>
             <div className="text-center flex-shrink-0 anim-count delay-8">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#5b21b6] flex flex-col items-center justify-center text-white" style={{ boxShadow: "0 8px 24px rgba(124, 58, 237, 0.3)" }}>
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] flex flex-col items-center justify-center text-white" style={{ boxShadow: "0 8px 24px rgba(37, 99, 235, 0.3)" }}>
                 <div className="text-[28px] font-bold leading-none">{score}</div>
                 <div className="text-[10px] text-white/70 mt-0.5">מתוך 100</div>
               </div>
@@ -222,7 +222,7 @@ export default function PortalHomePage() {
             ))}
           </div>
 
-          <Link href="/portal/status" className="inline-flex items-center gap-1 mt-5 text-[13px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors">
+          <Link href="/portal/status" className="inline-flex items-center gap-1 mt-5 text-[13px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors">
             פרטים מלאים <ChevronLeft size={14} />
           </Link>
         </div>
@@ -231,21 +231,21 @@ export default function PortalHomePage() {
         {approvals.length > 0 && (
           <div className="anim-fade-up delay-4 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] anim-border-pulse" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
             <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
-                <Clock size={16} className="text-[#7c3aed]" />
+              <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+                <Clock size={16} className="text-[#2563eb]" />
               </div>
               ממתין לאישורך
             </h3>
             <div className="space-y-3">
               {approvals.map((item, i) => (
-                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-4 rounded-xl bg-gradient-to-l from-[#f3effa] to-white border border-[#e8ecf4] hover-glow`}>
+                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-4 rounded-xl bg-gradient-to-l from-[#eff6ff] to-white border border-[#e8ecf4] hover-glow`}>
                   <div>
                     <div className="font-semibold text-[14px] text-[#1e293b]">{item.title}</div>
                     <div className="text-[12px] text-[#64748b]">{item.date}</div>
                   </div>
                   <button
                     onClick={() => showSuccess("אישור נשלח!")}
-                    className="px-5 py-2 rounded-xl text-[13px] font-semibold text-white bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:shadow-[0_4px_16px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-105"
+                    className="px-5 py-2 rounded-xl text-[13px] font-semibold text-white bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] hover:shadow-[0_4px_16px_rgba(37,99,235,0.4)] transition-all duration-300 hover:scale-105"
                   >
                     אשר ✓
                   </button>
@@ -291,7 +291,7 @@ export default function PortalHomePage() {
                 </div>
                 <button
                   onClick={() => showSuccess("כל הכבוד, התחלת לטפל בזה!")}
-                  className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white flex-shrink-0 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:shadow-[0_4px_16px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-105"
+                  className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white flex-shrink-0 bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] hover:shadow-[0_4px_16px_rgba(37,99,235,0.4)] transition-all duration-300 hover:scale-105"
                 >
                   טפל עכשיו →
                 </button>
@@ -306,18 +306,18 @@ export default function PortalHomePage() {
           <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
-                  <Calendar size={16} className="text-[#7c3aed]" />
+                <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+                  <Calendar size={16} className="text-[#2563eb]" />
                 </div>
                 מה בקרוב
               </h3>
-              <Link href="/portal/calendar" className="text-[12px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors flex items-center gap-1">
+              <Link href="/portal/calendar" className="text-[12px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors flex items-center gap-1">
                 הכל <ChevronLeft size={12} />
               </Link>
             </div>
             <div className="space-y-3">
               {calendarEvents.map((ev, i) => (
-                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#7c3aed]/20 transition-all`}>
+                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all`}>
                   <div className="flex items-center gap-3">
                     <div className="w-1.5 h-10 rounded-full" style={{ background: ev.color }} />
                     <div>
@@ -325,7 +325,7 @@ export default function PortalHomePage() {
                       <div className="text-[11px] text-[#64748b]">{ev.date}</div>
                     </div>
                   </div>
-                  <span className="text-[12px] font-bold text-[#7c3aed] bg-[#f3effa] px-3 py-1.5 rounded-xl">
+                  <span className="text-[12px] font-bold text-[#2563eb] bg-[#eff6ff] px-3 py-1.5 rounded-xl">
                     {ev.days} ימים
                   </span>
                 </div>
@@ -337,12 +337,12 @@ export default function PortalHomePage() {
           <div className="anim-fade-up delay-4 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
-                  <FileText size={16} className="text-[#7c3aed]" />
+                <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+                  <FileText size={16} className="text-[#2563eb]" />
                 </div>
                 מסמכים אחרונים
               </h3>
-              <Link href="/portal/documents" className="text-[12px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors flex items-center gap-1">
+              <Link href="/portal/documents" className="text-[12px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors flex items-center gap-1">
                 הכל <ChevronLeft size={12} />
               </Link>
             </div>
@@ -350,7 +350,7 @@ export default function PortalHomePage() {
               {recentDocs.map((doc, i) => (
                 <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f8f9fc] transition-all border border-transparent hover:border-[#e8ecf4]`}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f3effa] to-[#ede9fe] flex items-center justify-center text-[10px] font-bold text-[#7c3aed]">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] flex items-center justify-center text-[10px] font-bold text-[#2563eb]">
                       {doc.type}
                     </div>
                     <div>
@@ -358,7 +358,7 @@ export default function PortalHomePage() {
                       <div className="text-[11px] text-[#64748b]">{doc.date}</div>
                     </div>
                   </div>
-                  <button className="p-2.5 rounded-xl hover:bg-[#f3effa] text-[#7c3aed] transition-all hover:scale-110">
+                  <button className="p-2.5 rounded-xl hover:bg-[#eff6ff] text-[#2563eb] transition-all hover:scale-110">
                     <Download size={14} />
                   </button>
                 </div>
@@ -370,14 +370,14 @@ export default function PortalHomePage() {
         {/* ─── QUICK ACTIONS ─── */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4]" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
-              <Sparkles size={16} className="text-[#7c3aed]" />
+            <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+              <Sparkles size={16} className="text-[#2563eb]" />
             </div>
             מה אני יכול לעשות?
           </h3>
           <div className="grid grid-cols-4 gap-4">
             {[
-              { icon: FileText, label: "צור פרוטוקול", gradient: "from-[#7c3aed] to-[#5b21b6]" },
+              { icon: FileText, label: "צור פרוטוקול", gradient: "from-[#2563eb] to-[#1d4ed8]" },
               { icon: BarChart2, label: "הפק דוח", gradient: "from-[#059669] to-[#047857]" },
               { icon: FileCheck, label: "העלה מסמך", gradient: "from-[#2563eb] to-[#1d4ed8]" },
               { icon: AlertCircle, label: "דווח על בעיה", gradient: "from-[#dc2626] to-[#b91c1c]" },
@@ -388,8 +388,8 @@ export default function PortalHomePage() {
                 className={`anim-fade-scale delay-${i + 2} group relative flex flex-col items-center gap-3 p-6 rounded-2xl border border-[#e8ecf4] bg-white overflow-hidden transition-all duration-300 hover:border-transparent`}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${qa.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`} />
-                <div className="relative z-10 w-12 h-12 rounded-2xl bg-[#f3effa] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
-                  <qa.icon size={22} className="text-[#7c3aed] group-hover:text-white transition-colors duration-500" />
+                <div className="relative z-10 w-12 h-12 rounded-2xl bg-[#eff6ff] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
+                  <qa.icon size={22} className="text-[#2563eb] group-hover:text-white transition-colors duration-500" />
                 </div>
                 <span className="relative z-10 text-[13px] font-semibold text-[#1e293b] group-hover:text-white transition-colors duration-500">
                   {qa.label}
@@ -427,7 +427,7 @@ export default function PortalHomePage() {
         <div
           className="anim-fade-up delay-6 rounded-2xl p-6 flex items-center justify-between relative overflow-hidden anim-gradient"
           style={{
-            background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4c1d95 100%)",
+            background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e3a5f 100%)",
             backgroundSize: "200% 200%",
           }}
         >

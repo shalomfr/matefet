@@ -41,7 +41,7 @@ export default function AdminSidebar() {
         <div className="flex items-center gap-2.5 mb-1">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[13px] font-bold"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
           >
             מ
           </div>
@@ -58,7 +58,7 @@ export default function AdminSidebar() {
       <div className="px-4 py-3">
         <button
           onClick={() => setOrgOpen(!orgOpen)}
-          className="w-full bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-[#f3effa] hover:border-[#d4c8e8] transition-all"
+          className="w-full bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-[#eff6ff] hover:border-[#bfdbfe] transition-all"
         >
           <div className="flex-1 text-right">
             <div className="text-[10px] text-[#94a3b8] mb-0.5">צפייה בארגון</div>
@@ -83,18 +83,18 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl mb-1 transition-all text-[13px] ${
                 isActive
-                  ? "bg-[#f3effa] text-[#5c3d9a] border-r-[3px] border-[#7c3aed] font-semibold"
+                  ? "bg-[#eff6ff] text-[#1e40af] border-r-[3px] border-[#2563eb] font-semibold"
                   : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f8f9fc] font-medium"
               }`}
             >
               <item.icon
                 size={16}
                 strokeWidth={isActive ? 2.2 : 1.7}
-                className={isActive ? "text-[#7c3aed]" : ""}
+                className={isActive ? "text-[#2563eb]" : ""}
               />
               <span className="flex-1">{item.label}</span>
               {isActive && (
-                <div className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2563eb]" />
               )}
             </Link>
           );
@@ -106,7 +106,7 @@ export default function AdminSidebar() {
         <div className="flex items-center gap-2.5">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
           >
             ע
           </div>

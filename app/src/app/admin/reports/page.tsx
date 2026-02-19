@@ -9,9 +9,9 @@ export default function AdminReportsPage() {
       <Topbar title="דוחות פנימיים" subtitle="סטטיסטיקות ושימוש" />
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Building2} label="ארגונים פעילים" value="12" color="#7c3aed" />
+        <StatCard icon={Building2} label="ארגונים פעילים" value="12" color="#2563eb" />
         <StatCard icon={Zap} label="הרצות החודש" value="1,247" change="+18%" trend="up" color="#2ecc8f" />
-        <StatCard icon={TrendingUp} label="שימוש ממוצע" value="94%" color="#a78bfa" />
+        <StatCard icon={TrendingUp} label="שימוש ממוצע" value="94%" color="#60a5fa" />
         <StatCard icon={BarChart3} label="דוחות שנוצרו" value="48" color="#f5a623" />
       </div>
 
@@ -20,7 +20,7 @@ export default function AdminReportsPage() {
         <div className="space-y-3">
           {[
             { org: "עמותת אור לציון", usage: 98, barColor: "#2ecc8f" },
-            { org: "קרן חסד", usage: 85, barColor: "#7c3aed" },
+            { org: "קרן חסד", usage: 85, barColor: "#2563eb" },
             { org: "אגודת הסטודנטים", usage: 62, barColor: "#f5a623" },
           ].map((item, i) => (
             <div key={i}>
