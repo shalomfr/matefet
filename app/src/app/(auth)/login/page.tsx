@@ -10,21 +10,21 @@ function EnvelopeAnimation() {
   return (
     <div className="envelope-scene">
       <div className="env">
-        {/* paper with checkmark – sits behind the body, slides up */}
+        {/* paper with checkmark – z-2: behind front fold, slides up to emerge */}
         <div className="env-paper">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="17" fill="#f0fdf4" stroke="#16a34a" strokeWidth="2" className="env-check-circle" />
-            <path d="M12 20.5L18 26.5L28 14.5" stroke="#16a34a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" className="env-check-mark" />
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="15" cy="15" r="12" fill="#f0fdf4" stroke="#16a34a" strokeWidth="2" className="env-check-circle" />
+            <path d="M9 15.5L13 19.5L21 10.5" stroke="#16a34a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="env-check-mark" />
           </svg>
         </div>
 
-        {/* envelope back */}
+        {/* envelope back wall – z-1: behind everything */}
         <div className="env-back" />
 
-        {/* envelope front V-fold */}
+        {/* envelope front V-fold – z-3: covers paper when inside */}
         <div className="env-front" />
 
-        {/* flap (triangle that opens) */}
+        {/* flap – z-4: top triangle that opens/closes */}
         <div className="env-flap-wrap">
           <div className="env-flap" />
         </div>
@@ -35,65 +35,66 @@ function EnvelopeAnimation() {
           display: flex;
           justify-content: center;
           align-items: flex-end;
-          height: 110px;
+          height: 120px;
           margin-bottom: 8px;
-          perspective: 600px;
         }
 
         .env {
           position: relative;
-          width: 96px;
-          height: 70px;
+          width: 104px;
+          height: 78px;
         }
 
         /* ── back wall ── */
         .env-back {
           position: absolute;
-          inset: 0;
-          top: 14px;
+          left: 0;
+          right: 0;
+          top: 18px;
+          bottom: 0;
           background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
           border-radius: 4px 4px 12px 12px;
           box-shadow: 0 6px 28px rgba(37, 99, 235, 0.18);
           z-index: 1;
         }
 
-        /* ── front V fold ── */
+        /* ── front V fold ── covers paper at rest */
         .env-front {
           position: absolute;
-          top: 14px;
+          top: 18px;
           left: 0;
-          width: 96px;
-          height: 56px;
+          width: 104px;
+          height: 60px;
           z-index: 3;
-          clip-path: polygon(0 20%, 50% 85%, 100% 20%, 100% 100%, 0 100%);
+          clip-path: polygon(0 10%, 50% 78%, 100% 10%, 100% 100%, 0 100%);
           background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
           border-radius: 0 0 12px 12px;
         }
 
-        /* ── paper ── */
+        /* ── paper ── starts fully hidden behind front fold */
         .env-paper {
           position: absolute;
           left: 50%;
-          bottom: 16px;
-          width: 60px;
-          height: 60px;
-          margin-left: -30px;
+          width: 52px;
+          height: 44px;
+          margin-left: -26px;
+          bottom: 6px;
           background: #ffffff;
           border: 1.5px solid #e8ecf4;
-          border-radius: 8px;
+          border-radius: 6px;
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 2;
-          animation: paperLoop 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          animation: paperSlide 5s ease-in-out infinite;
         }
 
-        /* ── flap wrapper (provides perspective anchor) ── */
+        /* ── flap wrapper ── */
         .env-flap-wrap {
           position: absolute;
-          top: 14px;
+          top: 18px;
           left: 0;
-          width: 96px;
+          width: 104px;
           height: 0;
           z-index: 4;
           perspective: 400px;
@@ -102,73 +103,57 @@ function EnvelopeAnimation() {
         .env-flap {
           width: 0;
           height: 0;
-          border-left: 48px solid transparent;
-          border-right: 48px solid transparent;
-          border-top: 34px solid #bfdbfe;
+          border-left: 52px solid transparent;
+          border-right: 52px solid transparent;
+          border-top: 30px solid #bfdbfe;
           transform-origin: top center;
-          animation: flapLoop 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          animation: flapOpen 5s ease-in-out infinite;
         }
 
         /* ── checkmark parts ── */
         .env-check-circle {
           opacity: 0;
-          animation: checkCircleLoop 5s ease infinite;
+          animation: checkFade 5s ease infinite;
         }
 
         .env-check-mark {
-          stroke-dasharray: 34;
-          stroke-dashoffset: 34;
-          animation: checkDrawLoop 5s ease infinite;
+          stroke-dasharray: 26;
+          stroke-dashoffset: 26;
+          animation: checkDraw 5s ease infinite;
         }
 
         /* ═══════ KEYFRAMES ═══════ */
 
-        /* Flap: closed → open → closed
-           0-10%   closed (waiting)
-           10-25%  opens
-           25-65%  stays open
-           65-80%  closes
-           80-100% stays closed */
-        @keyframes flapLoop {
-          0%, 10%   { transform: rotateX(0deg); }
-          25%       { transform: rotateX(170deg); }
-          65%       { transform: rotateX(170deg); }
-          80%, 100% { transform: rotateX(0deg); }
+        /* Flap: closed → open → stay → close
+           Opens FIRST so paper can emerge */
+        @keyframes flapOpen {
+          0%, 5%    { transform: rotateX(0deg); }
+          20%       { transform: rotateX(170deg); }
+          72%       { transform: rotateX(170deg); }
+          87%, 100% { transform: rotateX(0deg); }
         }
 
         /* Paper: inside → slides up → slides back
-           0-15%   inside
-           15-35%  slides up
-           35-60%  stays up
-           60-78%  slides down
-           78-100% stays inside */
-        @keyframes paperLoop {
-          0%, 15%   { transform: translateY(0); }
-          35%       { transform: translateY(-44px); }
-          60%       { transform: translateY(-44px); }
-          78%, 100% { transform: translateY(0); }
+           Starts AFTER flap opens, returns BEFORE flap closes */
+        @keyframes paperSlide {
+          0%, 20%   { transform: translateY(0); }
+          38%       { transform: translateY(-50px); }
+          62%       { transform: translateY(-50px); }
+          80%, 100% { transform: translateY(0); }
         }
 
-        /* Check circle: invisible → appears → disappears
-           0-30%   invisible
-           35-40%  appears
-           55-60%  disappears
-           60-100% invisible */
-        @keyframes checkCircleLoop {
-          0%, 30%   { opacity: 0; }
-          38%, 55%  { opacity: 1; }
-          63%, 100% { opacity: 0; }
+        /* Check circle: appears when paper is up */
+        @keyframes checkFade {
+          0%, 34%   { opacity: 0; }
+          42%, 58%  { opacity: 1; }
+          66%, 100% { opacity: 0; }
         }
 
-        /* Check mark: hidden → draws → hides
-           0-35%   hidden
-           35-48%  draws in
-           55-60%  un-draws
-           60-100% hidden */
-        @keyframes checkDrawLoop {
-          0%, 35%   { stroke-dashoffset: 34; }
-          48%, 55%  { stroke-dashoffset: 0; }
-          65%, 100% { stroke-dashoffset: 34; }
+        /* Check mark: draws in when paper is up */
+        @keyframes checkDraw {
+          0%, 36%   { stroke-dashoffset: 26; }
+          48%, 56%  { stroke-dashoffset: 0; }
+          68%, 100% { stroke-dashoffset: 26; }
         }
       `}</style>
     </div>
