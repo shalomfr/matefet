@@ -36,7 +36,7 @@ export default function PortalSidebar() {
             מ
           </div>
           <div>
-            <h1 className="text-[18px] font-bold text-[#1e293b] leading-tight font-[Frank_Ruhl_Libre,serif]">
+            <h1 className="text-[18px] font-bold text-[#1e293b] leading-tight">
               מעטפת
             </h1>
             <p className="text-[10px] text-[#94a3b8] font-medium">בסיעתא דשמיא</p>

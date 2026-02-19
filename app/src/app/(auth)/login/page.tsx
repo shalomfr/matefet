@@ -67,7 +67,7 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md">
         {/* logo */}
         <div className="text-center mb-8">
-          <h1 className="text-[28px] font-bold text-white font-[Frank_Ruhl_Libre,serif]">מעטפת</h1>
+          <h1 className="text-[28px] font-bold text-white">מעטפת</h1>
           <p className="text-white/60 text-[13px] mt-1">מעטפת ניהולית בע״מ</p>
         </div>
 

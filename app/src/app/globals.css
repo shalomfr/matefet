@@ -2,17 +2,17 @@
 
 @theme inline {
   --font-sans: 'Heebo', sans-serif;
-  --color-bg: #0f1117;
-  --color-surface: #171b26;
-  --color-surface2: #1e2335;
-  --color-border: #2a3050;
-  --color-text: #e8eaf2;
-  --color-muted: #7a85a3;
-  --color-accent: #4a7cff;
-  --color-green: #2ecc8f;
-  --color-orange: #f5a623;
-  --color-red: #e8445a;
-  --color-gold: #c8a96e;
+  --color-bg: #f8f9fc;
+  --color-surface: #ffffff;
+  --color-surface2: #f8f9fc;
+  --color-border: #e8ecf4;
+  --color-text: #1e293b;
+  --color-muted: #64748b;
+  --color-accent: #2563eb;
+  --color-green: #16a34a;
+  --color-orange: #d97706;
+  --color-red: #ef4444;
+  --color-gold: #b45309;
 }
 
 @layer base {
@@ -24,22 +24,11 @@
 
   body {
     font-family: 'Heebo', sans-serif;
-    background: var(--color-bg) !important;
+    background: #f8f9fc;
     color: var(--color-text);
     min-height: 100vh;
     direction: rtl;
     overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(74,124,255,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(46,204,143,0.04) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   ::-webkit-scrollbar {
@@ -51,56 +40,16 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(74, 124, 255, 0.2);
+    background: rgba(37, 99, 235, 0.15);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(74, 124, 255, 0.4);
+    background: rgba(37, 99, 235, 0.3);
   }
 }
 
 @layer components {
-  /* ēcoursie – Admin: רקע בהיר + כרטיסים רכים */
-  .admin-ecoursie {
-    background: #f8f9fc;
-    --color-text: #1e293b;
-    --color-muted: #64748b;
-    --color-surface: #ffffff;
-    --color-surface2: #f1f3f8;
-    --color-border: #e8ecf4;
-    --color-accent: #2563eb;
-  }
-
-  .admin-ecoursie .card-dark {
-    background: var(--color-surface) !important;
-    border: 1px solid var(--color-border) !important;
-    border-radius: 14px !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
-  }
-
-  .admin-ecoursie .card-dark:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-  }
-
-  /* Dark sidebar (legacy) */
-  .sidebar-dark {
-    background: var(--color-surface) !important;
-    border-left: 1px solid var(--color-border) !important;
-  }
-
-  /* Dark card */
-  .card-dark {
-    background: var(--color-surface) !important;
-    border: 1px solid var(--color-border) !important;
-    border-radius: 12px !important;
-    transition: all 0.2s ease;
-    animation: fadeUp 0.5s ease both;
-  }
-
-  .card-dark:nth-child(2) { animation-delay: 0.05s; }
-  .card-dark:nth-child(3) { animation-delay: 0.1s; }
-
   /* Status dots */
   .status-dot {
     width: 8px;
@@ -125,28 +74,28 @@
   }
 
   .badge-success {
-    background: rgba(46, 204, 143, 0.12) !important;
+    background: rgba(22, 163, 74, 0.1) !important;
     color: var(--color-green) !important;
   }
 
   .badge-warning {
-    background: rgba(245, 166, 35, 0.12) !important;
+    background: rgba(217, 119, 6, 0.1) !important;
     color: var(--color-orange) !important;
   }
 
   .badge-danger {
-    background: rgba(232, 68, 90, 0.12) !important;
+    background: rgba(239, 68, 68, 0.1) !important;
     color: var(--color-red) !important;
   }
 
   .badge-info {
-    background: rgba(74, 124, 255, 0.1) !important;
+    background: rgba(37, 99, 235, 0.08) !important;
     color: var(--color-accent) !important;
   }
 
-  .badge-purple {
-    background: rgba(96, 165, 250, 0.12) !important;
-    color: #60a5fa !important;
+  .badge-blue {
+    background: rgba(37, 99, 235, 0.08) !important;
+    color: #2563eb !important;
   }
 
   /* Button styles */
@@ -164,7 +113,7 @@
   }
 
   .btn-primary:hover {
-    box-shadow: 0 4px 16px rgba(74, 124, 255, 0.35);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
     transform: translateY(-1px);
   }
 
@@ -183,12 +132,12 @@
 
   .btn-secondary:hover {
     border-color: var(--color-accent) !important;
-    background: rgba(74, 124, 255, 0.1) !important;
+    background: rgba(37, 99, 235, 0.06) !important;
   }
 
   /* Input */
   .dark-input {
-    background: var(--color-surface2) !important;
+    background: var(--color-surface) !important;
     border: 1px solid var(--color-border) !important;
     border-radius: 10px !important;
     padding: 10px 14px;
@@ -203,11 +152,28 @@
   .dark-input:focus {
     outline: none;
     border-color: var(--color-accent) !important;
-    box-shadow: 0 0 0 3px rgba(74, 124, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
   }
 
   .dark-input::placeholder {
     color: var(--color-muted);
+  }
+
+  /* Card */
+  .card-dark {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card-dark:nth-child(2) { animation-delay: 0.05s; }
+  .card-dark:nth-child(3) { animation-delay: 0.1s; }
+
+  .card-dark:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
   }
 
   /* Status Hero */
@@ -228,7 +194,7 @@
     right: 0;
     width: 200px;
     height: 200px;
-    background: rgba(46, 204, 143, 0.08);
+    background: rgba(22, 163, 74, 0.06);
     border-radius: 50%;
     transform: translate(60px, -80px);
     filter: blur(40px);
@@ -244,23 +210,23 @@
     justify-content: center;
     font-size: 26px;
     flex-shrink: 0;
-    background: rgba(46, 204, 143, 0.12);
+    background: rgba(22, 163, 74, 0.1);
     border: 2px solid var(--color-green);
-    box-shadow: 0 0 20px rgba(46, 204, 143, 0.2);
+    box-shadow: 0 0 20px rgba(22, 163, 74, 0.15);
     animation: pulseGreen 3s ease-in-out infinite;
   }
 
   .status-orb.warning {
-    background: rgba(245, 166, 35, 0.12) !important;
+    background: rgba(217, 119, 6, 0.1) !important;
     border-color: var(--color-orange) !important;
-    box-shadow: 0 0 20px rgba(245, 166, 35, 0.2) !important;
+    box-shadow: 0 0 20px rgba(217, 119, 6, 0.15) !important;
     animation: pulseOrange 3s ease-in-out infinite;
   }
 
   .status-orb.danger {
-    background: rgba(232, 68, 90, 0.12) !important;
+    background: rgba(239, 68, 68, 0.1) !important;
     border-color: var(--color-red) !important;
-    box-shadow: 0 0 20px rgba(232, 68, 90, 0.2) !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.15) !important;
     animation: pulseRed 3s ease-in-out infinite;
   }
 
@@ -281,18 +247,18 @@
   }
 
   .alert-item.red {
-    background: rgba(232, 68, 90, 0.08) !important;
-    border-color: rgba(232, 68, 90, 0.2) !important;
+    background: rgba(239, 68, 68, 0.06) !important;
+    border-color: rgba(239, 68, 68, 0.15) !important;
   }
 
   .alert-item.orange {
-    background: rgba(245, 166, 35, 0.08) !important;
-    border-color: rgba(245, 166, 35, 0.2) !important;
+    background: rgba(217, 119, 6, 0.06) !important;
+    border-color: rgba(217, 119, 6, 0.15) !important;
   }
 
   .alert-item.green {
-    background: rgba(46, 204, 143, 0.08) !important;
-    border-color: rgba(46, 204, 143, 0.2) !important;
+    background: rgba(22, 163, 74, 0.06) !important;
+    border-color: rgba(22, 163, 74, 0.15) !important;
   }
 
   .alert-dot {
@@ -324,7 +290,7 @@
   /* Progress bars */
   .progress-bar-bg {
     height: 5px;
-    background: var(--color-surface2);
+    background: #e2e8f0;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -337,7 +303,7 @@
 
   /* Quick action buttons */
   .action-btn {
-    background: var(--color-surface2) !important;
+    background: var(--color-surface) !important;
     border: 1px solid var(--color-border) !important;
     border-radius: 10px !important;
     padding: 14px;
@@ -348,7 +314,7 @@
 
   .action-btn:hover {
     border-color: var(--color-accent) !important;
-    background: rgba(74, 124, 255, 0.1) !important;
+    background: rgba(37, 99, 235, 0.04) !important;
     transform: translateY(-1px);
   }
 
@@ -388,10 +354,10 @@
     font-weight: 500;
   }
 
-  .tag-green { background: rgba(46, 204, 143, 0.12); color: var(--color-green); }
-  .tag-orange { background: rgba(245, 166, 35, 0.12); color: var(--color-orange); }
-  .tag-red { background: rgba(232, 68, 90, 0.12); color: var(--color-red); }
-  .tag-blue { background: rgba(74, 124, 255, 0.1); color: var(--color-accent); }
+  .tag-green { background: rgba(22, 163, 74, 0.1); color: var(--color-green); }
+  .tag-orange { background: rgba(217, 119, 6, 0.1); color: var(--color-orange); }
+  .tag-red { background: rgba(239, 68, 68, 0.1); color: var(--color-red); }
+  .tag-blue { background: rgba(37, 99, 235, 0.08); color: var(--color-accent); }
 }
 
 /* Animations */
@@ -401,18 +367,18 @@
 }
 
 @keyframes pulseGreen {
-  0%, 100% { box-shadow: 0 0 20px rgba(46, 204, 143, 0.2); }
-  50% { box-shadow: 0 0 35px rgba(46, 204, 143, 0.4); }
+  0%, 100% { box-shadow: 0 0 20px rgba(22, 163, 74, 0.15); }
+  50% { box-shadow: 0 0 35px rgba(22, 163, 74, 0.3); }
 }
 
 @keyframes pulseOrange {
-  0%, 100% { box-shadow: 0 0 20px rgba(245, 166, 35, 0.2); }
-  50% { box-shadow: 0 0 35px rgba(245, 166, 35, 0.4); }
+  0%, 100% { box-shadow: 0 0 20px rgba(217, 119, 6, 0.15); }
+  50% { box-shadow: 0 0 35px rgba(217, 119, 6, 0.3); }
 }
 
 @keyframes pulseRed {
-  0%, 100% { box-shadow: 0 0 20px rgba(232, 68, 90, 0.2); }
-  50% { box-shadow: 0 0 35px rgba(232, 68, 90, 0.4); }
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.15); }
+  50% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.3); }
 }
 
 @keyframes fadeIn {
@@ -427,7 +393,7 @@
 .animate-fadeUp-3 { animation: fadeUp 0.5s ease 0.15s both; }
 .animate-fadeUp-4 { animation: fadeUp 0.5s ease 0.2s both; }
 
-/* ─── Admin Enhanced Animations ─── */
+/* Admin Enhanced Animations */
 @keyframes adminSlideIn {
   from { opacity: 0; transform: translateX(20px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -439,17 +405,12 @@
 }
 
 @keyframes adminGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 124, 255, 0.3); }
-  50%      { box-shadow: 0 0 0 8px rgba(74, 124, 255, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
+  50%      { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
 }
 
 @keyframes adminPulseBar {
   from { width: 0%; }
-}
-
-@keyframes shimmerDark {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 }
 
 .admin-anim-up {
@@ -484,12 +445,12 @@
 }
 .admin-hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .admin-hover-glow {
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .admin-hover-glow:hover {
-  box-shadow: 0 0 0 2px rgba(74, 124, 255, 0.2), 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
 }

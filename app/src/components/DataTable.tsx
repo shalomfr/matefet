@@ -40,17 +40,17 @@ export default function DataTable({ columns, data, title, action }: DataTablePro
           </thead>
           <tbody>
             {data.map((row, i) => (
-              <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+              <tr key={i} className="hover:bg-[#f8f9fc] transition-colors">
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className="p-3 text-[13px] text-[--color-text] border-b border-white/[0.04]"
+                    className="p-3 text-[13px] text-[--color-text] border-b border-[#e8ecf4]"
                   >
                     {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? "")}
                   </td>
                 ))}
-                <td className="p-3 border-b border-white/[0.04]">
-                  <button className="p-1 rounded-lg hover:bg-white/5 text-[--color-muted]">
+                <td className="p-3 border-b border-[#e8ecf4]">
+                  <button className="p-1 rounded-lg hover:bg-[#f8f9fc] text-[--color-muted]">
                     <MoreHorizontal size={16} />
                   </button>
                 </td>

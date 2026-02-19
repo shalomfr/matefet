@@ -14,8 +14,8 @@
   --portal-red: #dc2626;
   --portal-red-bg: #fef2f2;
   --portal-red-border: #fecaca;
-  --portal-purple: #2563eb;
-  --portal-purple-bg: #eff6ff;
+  --portal-blue: #2563eb;
+  --portal-blue-bg: #eff6ff;
   --portal-blue: #2563eb;
   --portal-blue-bg: #eff6ff;
   --portal-gold: #b45309;
@@ -42,7 +42,7 @@
 [data-theme="portal"] .portal-red { color: var(--portal-red); }
 
 [data-theme="portal"] .btn-primary {
-  background: var(--portal-purple) !important;
+  background: var(--portal-blue) !important;
   color: white !important;
   border: none !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -54,7 +54,7 @@
 }
 
 [data-theme="portal"] main {
-  font-family: "Rubik", "Heebo", sans-serif;
+  font-family: "Heebo", sans-serif;
 }
 
 /* ─── ANIMATIONS ─── */
