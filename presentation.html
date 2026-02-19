@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מעטפת - מערכת ניהול תקין לעמותות</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .slide.exit {
+            opacity: 0;
+            transform: translateX(60px);
+        }
+
+        /* Slide 1 - Hero */
+        .slide-hero {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a1a4e 100%);
+            text-align: center;
+        }
+
+        .slide-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+            animation: rotateBg 30s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-logo {
+            font-size: 5.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 40px;
+        }
+
+        .hero-tagline {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50px;
+            padding: 12px 36px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #c4b5fd;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Slide 2 - Problem */
+        .slide-problem {
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d1320 50%, #1a0a2e 100%);
+        }
+
+        .slide-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .slide-title.gradient-red {
+            background: linear-gradient(135deg, #f87171, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-title.gradient-blue {
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-title.gradient-green {
+            background: linear-gradient(135deg, #34d399, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-title.gradient-purple {
+            background: linear-gradient(135deg, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-title.gradient-orange {
+            background: linear-gradient(135deg, #fb923c, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-title.gradient-cyan {
+            background: linear-gradient(135deg, #22d3ee, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .problem-card {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: transform 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .problem-icon {
+            font-size: 2.4rem;
+            flex-shrink: 0;
+        }
+
+        .problem-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Solution slide */
+        .slide-solution {
+            background: linear-gradient(135deg, #0a1a0a 0%, #0d2818 50%, #0a1a2e 100%);
+        }
+
+        .solution-flow {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 1000px;
+            margin-top: 10px;
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            border-radius: 20px;
+            padding: 30px 20px;
+            transition: transform 0.3s;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-6px);
+        }
+
+        .flow-icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+        }
+
+        .flow-label {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #6ee7b7;
+            margin-bottom: 8px;
+        }
+
+        .flow-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: rgba(52, 211, 153, 0.4);
+            flex-shrink: 0;
+        }
+
+        /* Modules slide */
+        .slide-modules {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 50%, #2d1b69 100%);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1050px;
+            width: 100%;
+        }
+
+        .module-card {
+            background: rgba(99, 102, 241, 0.06);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .module-card:hover {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .module-emoji {
+            font-size: 2.6rem;
+            margin-bottom: 12px;
+        }
+
+        .module-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #c4b5fd;
+            margin-bottom: 6px;
+        }
+
+        .module-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.4;
+        }
+
+        /* Automation slide */
+        .slide-automation {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b69 50%, #1a1a4e 100%);
+        }
+
+        .automation-showcase {
+            display: flex;
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .auto-flow-visual {
+            flex: 1;
+            background: rgba(168, 85, 247, 0.06);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .auto-flow-title {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .auto-step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .auto-step.trigger {
+            background: rgba(251, 146, 60, 0.15);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            color: #fdba74;
+        }
+
+        .auto-step.condition {
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
+        }
+
+        .auto-step.action {
+            background: rgba(52, 211, 153, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: #6ee7b7;
+        }
+
+        .auto-connector {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.4rem;
+            margin: 4px 0;
+        }
+
+        .auto-templates {
+            flex: 1;
+        }
+
+        .auto-templates h3 {
+            font-size: 1.2rem;
+            color: #c4b5fd;
+            margin-bottom: 16px;
+        }
+
+        .template-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.75);
+            transition: background 0.2s;
+        }
+
+        .template-item:hover {
+            background: rgba(139, 92, 246, 0.12);
+        }
+
+        /* Integrations slide */
+        .slide-integrations {
+            background: linear-gradient(135deg, #0a1a1a 0%, #0d2830 50%, #0a1a2e 100%);
+        }
+
+        .integrations-map {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            max-width: 1000px;
+        }
+
+        .int-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .int-center {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(52, 211, 153, 0.15));
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .int-center-icon {
+            font-size: 2.8rem;
+        }
+
+        .int-center-label {
+            font-size: 0.85rem;
+            color: #67e8f9;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .int-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(34, 211, 238, 0.06);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            border-radius: 12px;
+            padding: 14px 20px;
+            transition: all 0.3s;
+        }
+
+        .int-item:hover {
+            background: rgba(34, 211, 238, 0.12);
+            transform: translateX(-4px);
+        }
+
+        .int-side:first-child .int-item:hover {
+            transform: translateX(4px);
+        }
+
+        .int-emoji {
+            font-size: 1.6rem;
+        }
+
+        .int-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #a5f3fc;
+        }
+
+        .int-desc {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        /* Benefits slide */
+        .slide-benefits {
+            background: linear-gradient(135deg, #1a1a0a 0%, #2d2a0d 50%, #1a1a2e 100%);
+        }
+
+        .benefits-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 36px 24px;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-6px);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .benefit-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fbbf24, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .benefit-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fde68a;
+            margin-bottom: 10px;
+        }
+
+        .benefit-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+
+        /* CTA slide */
+        .slide-cta {
+            background: linear-gradient(135deg, #0a0a2e 0%, #2d1b69 50%, #1a1a4e 100%);
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        .cta-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .cta-features {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .cta-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .cta-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(52, 211, 153, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #34d399;
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 18px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Heebo', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(129, 140, 248, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(129, 140, 248, 0.4);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 100;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: rgba(129, 140, 248, 0.2);
+            border-color: rgba(129, 140, 248, 0.4);
+        }
+
+        .nav-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #818cf8;
+            width: 28px;
+            border-radius: 5px;
+        }
+
+        .slide-counter {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.25);
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-family: 'Heebo', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="keyboard-hint">
+        <kbd>&rarr;</kbd> / <kbd>&larr;</kbd> לניווט בין שקופיות
+    </div>
+
+    <div class="presentation">
+
+        <!-- Slide 1: Hero -->
+        <div class="slide slide-hero active" data-index="0">
+            <div class="hero-logo">מעטפת</div>
+            <div class="hero-subtitle">מערכת ניהול תקין אוטומטית לעמותות</div>
+            <div class="hero-tagline">100% אוטומציה &bull; אפס מאמץ &bull; ניהול תקין מושלם</div>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide slide-problem" data-index="1">
+            <div class="slide-title gradient-red">הבעיה: ניהול עמותה זה כאב ראש</div>
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">📋</div>
+                    <div class="problem-text">טפסים ודוחות אינסופיים לרשם העמותות ולמס הכנסה</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🧾</div>
+                    <div class="problem-text">חשבוניות, קבלות וקבלות סעיף 46 - מספור, חוקיות, שליחה</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">⏰</div>
+                    <div class="problem-text">דדליינים שמפספסים - אישור ניהול תקין, דוחות שנתיים</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">💸</div>
+                    <div class="problem-text">מעקב תורמים, העברות, תקציב - הכל ידני ומבולגן</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📝</div>
+                    <div class="problem-text">פרוטוקולים, ישיבות ועד, החלטות - מי זוכר מה היה?</div>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">😫</div>
+                    <div class="problem-text">הכל דורש עבודה ידנית, זמן, ידע מקצועי ועלויות גבוהות</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Solution -->
+        <div class="slide slide-solution" data-index="2">
+            <div class="slide-title gradient-green">הפתרון: הכל אוטומטי, בלי מאמץ</div>
+            <div class="solution-flow">
+                <div class="flow-step">
+                    <div class="flow-icon">🏢</div>
+                    <div class="flow-label">נרשמים למערכת</div>
+                    <div class="flow-desc">מזינים פרטי עמותה פעם אחת</div>
+                </div>
+                <div class="flow-arrow">&larr;</div>
+                <div class="flow-step">
+                    <div class="flow-icon">⚡</div>
+                    <div class="flow-label">המערכת עובדת</div>
+                    <div class="flow-desc">אוטומציות רצות ברקע 24/7</div>
+                </div>
+                <div class="flow-arrow">&larr;</div>
+                <div class="flow-step">
+                    <div class="flow-icon">✅</div>
+                    <div class="flow-label">ניהול תקין מושלם</div>
+                    <div class="flow-desc">דוחות, קבלות, טפסים - הכל מוכן</div>
+                </div>
+                <div class="flow-arrow">&larr;</div>
+                <div class="flow-step">
+                    <div class="flow-icon">😊</div>
+                    <div class="flow-label">אתם רגועים</div>
+                    <div class="flow-desc">מתמקדים במטרות העמותה</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Modules -->
+        <div class="slide slide-modules" data-index="3">
+            <div class="slide-title gradient-blue">מה כלול במערכת?</div>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-emoji">💰</div>
+                    <div class="module-name">ניהול כספי</div>
+                    <div class="module-desc">חשבוניות, קבלות, העברות, תקציב - הכל אוטומטי</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">❤️</div>
+                    <div class="module-name">ניהול תורמים</div>
+                    <div class="module-desc">CRM, תרומות, הוראות קבע, קבלות סעיף 46</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">✅</div>
+                    <div class="module-name">ניהול תקין</div>
+                    <div class="module-desc">צ'קליסט, אישורים, דוחות שנתיים, תזכורות</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">👥</div>
+                    <div class="module-name">ועד מנהל</div>
+                    <div class="module-desc">ישיבות, פרוטוקולים, החלטות, הצבעות</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">🤝</div>
+                    <div class="module-name">מתנדבים</div>
+                    <div class="module-desc">רישום, שיבוץ, מעקב שעות, אישורים</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">🤖</div>
+                    <div class="module-name">מנוע אוטומציות</div>
+                    <div class="module-desc">בונים תהליכים בגרירה - הכל רץ לבד</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">📊</div>
+                    <div class="module-name">דוחות ואנליטיקס</div>
+                    <div class="module-desc">דשבורד חי, דוחות מותאמים, תובנות</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">🔗</div>
+                    <div class="module-name">אינטגרציות</div>
+                    <div class="module-desc">חשבונית ירוקה, בנקים, WhatsApp ועוד</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-emoji">📋</div>
+                    <div class="module-name">רגולציה אוטומטית</div>
+                    <div class="module-desc">דיווח לרשם העמותות ולמס הכנסה</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Automation -->
+        <div class="slide slide-automation" data-index="4">
+            <div class="slide-title gradient-purple">הלב של המערכת: אוטומציה מלאה</div>
+            <div class="automation-showcase">
+                <div class="auto-flow-visual">
+                    <div class="auto-flow-title">דוגמה: תרומה חדשה נכנסת</div>
+                    <div class="auto-step trigger">⚡ טריגר: התקבלה תרומה</div>
+                    <div class="auto-connector">&#8595;</div>
+                    <div class="auto-step condition">🔍 בדיקה: האם סכום מעל 50 ש"ח?</div>
+                    <div class="auto-connector">&#8595;</div>
+                    <div class="auto-step action">🧾 פעולה: הפקת קבלה סעיף 46</div>
+                    <div class="auto-connector">&#8595;</div>
+                    <div class="auto-step action">📧 פעולה: שליחת קבלה במייל לתורם</div>
+                    <div class="auto-connector">&#8595;</div>
+                    <div class="auto-step action">💾 פעולה: עדכון דוח כספי</div>
+                </div>
+                <div class="auto-templates">
+                    <h3>10 תבניות מוכנות מהקופסה:</h3>
+                    <div class="template-item">🧾 קבלה אוטומטית לתרומה</div>
+                    <div class="template-item">⏰ תזכורת אישור ניהול תקין</div>
+                    <div class="template-item">📝 סיכום ישיבת ועד אוטומטי</div>
+                    <div class="template-item">📊 דוח חודשי אוטומטי</div>
+                    <div class="template-item">📅 תזכורת דוח שנתי</div>
+                    <div class="template-item">🎉 ברכות חגים לתורמים</div>
+                    <div class="template-item">⏱️ אישור שעות מתנדבים</div>
+                    <div class="template-item">🚨 התראת חריגה מתקציב</div>
+                    <div class="template-item">💾 גיבוי מסמכים אוטומטי</div>
+                    <div class="template-item">🔄 עדכון סטטוס מרשם העמותות</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Integrations -->
+        <div class="slide slide-integrations" data-index="5">
+            <div class="slide-title gradient-cyan">מתחבר לכל מה שאתם צריכים</div>
+            <div class="integrations-map">
+                <div class="int-side">
+                    <div class="int-item">
+                        <div class="int-emoji">🧾</div>
+                        <div>
+                            <div class="int-name">חשבונית ירוקה / iCount</div>
+                            <div class="int-desc">חשבוניות וקבלות אוטומטיות</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">💳</div>
+                        <div>
+                            <div class="int-name">Tranzila / CardCom</div>
+                            <div class="int-desc">סליקת אשראי ותשלומים</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">🏦</div>
+                        <div>
+                            <div class="int-name">בנקים</div>
+                            <div class="int-desc">ייבוא תנועות והעברות</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">🏛️</div>
+                        <div>
+                            <div class="int-name">מס הכנסה</div>
+                            <div class="int-desc">דיווחים ואישורי מס</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="int-center">
+                    <div class="int-center-icon">⚙️</div>
+                    <div class="int-center-label">מעטפת</div>
+                </div>
+                <div class="int-side">
+                    <div class="int-item">
+                        <div class="int-emoji">📱</div>
+                        <div>
+                            <div class="int-name">WhatsApp Business</div>
+                            <div class="int-desc">הודעות אוטומטיות לתורמים</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">📧</div>
+                        <div>
+                            <div class="int-name">Google Workspace</div>
+                            <div class="int-desc">מיילים, יומן, דרייב</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">📋</div>
+                        <div>
+                            <div class="int-name">רשם העמותות</div>
+                            <div class="int-desc">הגשת דוחות אוטומטית</div>
+                        </div>
+                    </div>
+                    <div class="int-item">
+                        <div class="int-emoji">📲</div>
+                        <div>
+                            <div class="int-name">SMS</div>
+                            <div class="int-desc">הודעות טקסט ותזכורות</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Benefits -->
+        <div class="slide slide-benefits" data-index="6">
+            <div class="slide-title gradient-orange">למה מעטפת?</div>
+            <div class="benefits-row">
+                <div class="benefit-card">
+                    <div class="benefit-number">100%</div>
+                    <div class="benefit-label">אוטומציה</div>
+                    <div class="benefit-desc">שום דבר לא נופל בין הכיסאות. כל טופס, כל דוח, כל קבלה - אוטומטית.</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-number">0</div>
+                    <div class="benefit-label">מאמץ</div>
+                    <div class="benefit-desc">מגדירים פעם אחת - המערכת עושה את השאר. 24 שעות, 7 ימים בשבוע.</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-number">∞</div>
+                    <div class="benefit-label">שקט נפשי</div>
+                    <div class="benefit-desc">ניהול תקין מובטח. תזכורות, התראות, ודוחות - תמיד בזמן.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: CTA -->
+        <div class="slide slide-cta" data-index="7">
+            <div class="cta-title">מוכנים להתחיל?</div>
+            <div class="cta-subtitle">מעטפת - ניהול תקין בלי לגעת</div>
+            <div class="cta-features">
+                <div class="cta-feature">
+                    <div class="cta-check">✓</div>
+                    <span>אוטומציה מלאה</span>
+                </div>
+                <div class="cta-feature">
+                    <div class="cta-check">✓</div>
+                    <span>ממשק בעברית</span>
+                </div>
+                <div class="cta-feature">
+                    <div class="cta-check">✓</div>
+                    <span>כל האינטגרציות</span>
+                </div>
+                <div class="cta-feature">
+                    <div class="cta-check">✓</div>
+                    <span>ניהול תקין מובטח</span>
+                </div>
+            </div>
+            <button class="cta-button">בואו נבנה את זה ביחד 🚀</button>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-btn" id="nextBtn">&rarr;</button>
+        <div class="nav-dots" id="navDots"></div>
+        <button class="nav-btn" id="prevBtn">&larr;</button>
+        <div class="slide-counter" id="slideCounter">1 / 8</div>
+    </nav>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.getElementById('navDots');
+        const slideCounter = document.getElementById('slideCounter');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        // Create dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            dot.addEventListener('click', () => goToSlide(i));
+            navDots.appendChild(dot);
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides || index === currentSlide) return;
+
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('exit');
+
+            setTimeout(() => {
+                slides[currentSlide].classList.remove('exit');
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+
+                // Update dots
+                document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentSlide);
+                });
+
+                // Update counter
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            }, 300);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => goToSlide(currentSlide - 1));
+        document.getElementById('prevBtn').addEventListener('click', () => goToSlide(currentSlide + 1));
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') goToSlide(currentSlide - 1);
+            if (e.key === 'ArrowLeft') goToSlide(currentSlide + 1);
+            if (e.key === 'Home') goToSlide(0);
+            if (e.key === 'End') goToSlide(totalSlides - 1);
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) goToSlide(currentSlide + 1);
+                else goToSlide(currentSlide - 1);
+            }
+        });
+    </script>
+</body>
+</html>
