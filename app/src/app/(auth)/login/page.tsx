@@ -5,150 +5,170 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-/* ─── Envelope Animation Component ─── */
+/* ─── Envelope Animation Component (infinite loop) ─── */
 function EnvelopeAnimation() {
   return (
-    <div className="envelope-wrapper">
-      <div className="envelope-container">
-        {/* envelope body */}
-        <div className="envelope-body">
-          {/* inner paper with checkmark */}
-          <div className="envelope-paper">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="checkmark-svg">
-              <circle cx="18" cy="18" r="16" fill="#f0fdf4" stroke="#16a34a" strokeWidth="2" className="check-circle" />
-              <path d="M11 18.5L16 23.5L25 13.5" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="check-path" />
-            </svg>
-          </div>
-          {/* envelope front */}
-          <div className="envelope-front" />
+    <div className="envelope-scene">
+      <div className="env">
+        {/* paper with checkmark – sits behind the body, slides up */}
+        <div className="env-paper">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="17" fill="#f0fdf4" stroke="#16a34a" strokeWidth="2" className="env-check-circle" />
+            <path d="M12 20.5L18 26.5L28 14.5" stroke="#16a34a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" className="env-check-mark" />
+          </svg>
         </div>
-        {/* flap */}
-        <div className="envelope-flap" />
+
+        {/* envelope back */}
+        <div className="env-back" />
+
+        {/* envelope front V-fold */}
+        <div className="env-front" />
+
+        {/* flap (triangle that opens) */}
+        <div className="env-flap-wrap">
+          <div className="env-flap" />
+        </div>
       </div>
 
       <style>{`
-        .envelope-wrapper {
+        .envelope-scene {
           display: flex;
           justify-content: center;
-          align-items: center;
-          margin-bottom: 12px;
+          align-items: flex-end;
+          height: 110px;
+          margin-bottom: 8px;
+          perspective: 600px;
         }
 
-        .envelope-container {
+        .env {
           position: relative;
-          width: 80px;
-          height: 60px;
+          width: 96px;
+          height: 70px;
         }
 
-        /* envelope body (back + sides) */
-        .envelope-body {
+        /* ── back wall ── */
+        .env-back {
           position: absolute;
-          bottom: 0;
-          width: 80px;
-          height: 52px;
-          background: white;
-          border-radius: 4px 4px 10px 10px;
-          box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
-          overflow: hidden;
-          z-index: 2;
+          inset: 0;
+          top: 14px;
+          background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+          border-radius: 4px 4px 12px 12px;
+          box-shadow: 0 6px 28px rgba(37, 99, 235, 0.18);
+          z-index: 1;
         }
 
-        /* envelope front (V shape at bottom) */
-        .envelope-front {
+        /* ── front V fold ── */
+        .env-front {
           position: absolute;
-          bottom: 0;
+          top: 14px;
           left: 0;
-          right: 0;
-          height: 100%;
-          background: linear-gradient(135deg, transparent 33%, #eff6ff 33%, #eff6ff 34%, transparent 34%),
-                      linear-gradient(225deg, transparent 33%, #eff6ff 33%, #eff6ff 34%, transparent 34%),
-                      linear-gradient(to bottom, transparent 50%, #eff6ff 50%);
+          width: 96px;
+          height: 56px;
           z-index: 3;
+          clip-path: polygon(0 20%, 50% 85%, 100% 20%, 100% 100%, 0 100%);
+          background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+          border-radius: 0 0 12px 12px;
         }
 
-        /* paper that slides up */
-        .envelope-paper {
+        /* ── paper ── */
+        .env-paper {
           position: absolute;
-          top: 10px;
           left: 50%;
-          transform: translateX(-50%) translateY(0);
-          width: 50px;
-          height: 50px;
-          background: white;
-          border-radius: 6px;
+          bottom: 16px;
+          width: 60px;
+          height: 60px;
+          margin-left: -30px;
+          background: #ffffff;
           border: 1.5px solid #e8ecf4;
+          border-radius: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 1;
-          animation: paperSlideUp 2s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
+          z-index: 2;
+          animation: paperLoop 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        /* flap (top triangle) */
-        .envelope-flap {
+        /* ── flap wrapper (provides perspective anchor) ── */
+        .env-flap-wrap {
           position: absolute;
-          top: 8px;
+          top: 14px;
           left: 0;
+          width: 96px;
+          height: 0;
+          z-index: 4;
+          perspective: 400px;
+        }
+
+        .env-flap {
           width: 0;
           height: 0;
-          border-left: 40px solid transparent;
-          border-right: 40px solid transparent;
-          border-top: 30px solid #dbeafe;
-          z-index: 4;
+          border-left: 48px solid transparent;
+          border-right: 48px solid transparent;
+          border-top: 34px solid #bfdbfe;
           transform-origin: top center;
-          animation: flapOpen 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+          animation: flapLoop 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        /* checkmark circle */
-        .check-circle {
+        /* ── checkmark parts ── */
+        .env-check-circle {
           opacity: 0;
-          animation: circleAppear 0.5s ease 2s both;
+          animation: checkCircleLoop 5s ease infinite;
         }
 
-        /* checkmark path */
-        .check-path {
-          stroke-dasharray: 30;
-          stroke-dashoffset: 30;
-          animation: drawCheck 0.6s cubic-bezier(0.22, 1, 0.36, 1) 2.2s both;
+        .env-check-mark {
+          stroke-dasharray: 34;
+          stroke-dashoffset: 34;
+          animation: checkDrawLoop 5s ease infinite;
         }
 
-        @keyframes flapOpen {
-          0% {
-            transform: rotateX(0deg);
-          }
-          100% {
-            transform: rotateX(180deg);
-            border-top-color: #bfdbfe;
-          }
+        /* ═══════ KEYFRAMES ═══════ */
+
+        /* Flap: closed → open → closed
+           0-10%   closed (waiting)
+           10-25%  opens
+           25-65%  stays open
+           65-80%  closes
+           80-100% stays closed */
+        @keyframes flapLoop {
+          0%, 10%   { transform: rotateX(0deg); }
+          25%       { transform: rotateX(170deg); }
+          65%       { transform: rotateX(170deg); }
+          80%, 100% { transform: rotateX(0deg); }
         }
 
-        @keyframes paperSlideUp {
-          0% {
-            transform: translateX(-50%) translateY(0);
-          }
-          100% {
-            transform: translateX(-50%) translateY(-30px);
-          }
+        /* Paper: inside → slides up → slides back
+           0-15%   inside
+           15-35%  slides up
+           35-60%  stays up
+           60-78%  slides down
+           78-100% stays inside */
+        @keyframes paperLoop {
+          0%, 15%   { transform: translateY(0); }
+          35%       { transform: translateY(-44px); }
+          60%       { transform: translateY(-44px); }
+          78%, 100% { transform: translateY(0); }
         }
 
-        @keyframes circleAppear {
-          0% {
-            opacity: 0;
-            transform: scale(0.5);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
+        /* Check circle: invisible → appears → disappears
+           0-30%   invisible
+           35-40%  appears
+           55-60%  disappears
+           60-100% invisible */
+        @keyframes checkCircleLoop {
+          0%, 30%   { opacity: 0; }
+          38%, 55%  { opacity: 1; }
+          63%, 100% { opacity: 0; }
         }
 
-        @keyframes drawCheck {
-          0% {
-            stroke-dashoffset: 30;
-          }
-          100% {
-            stroke-dashoffset: 0;
-          }
+        /* Check mark: hidden → draws → hides
+           0-35%   hidden
+           35-48%  draws in
+           55-60%  un-draws
+           60-100% hidden */
+        @keyframes checkDrawLoop {
+          0%, 35%   { stroke-dashoffset: 34; }
+          48%, 55%  { stroke-dashoffset: 0; }
+          65%, 100% { stroke-dashoffset: 34; }
         }
       `}</style>
     </div>
@@ -213,18 +233,14 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        {/* logo with envelope animation */}
-        <div className="text-center mb-8">
-          <EnvelopeAnimation />
-          <h1 className="text-[28px] font-bold text-white">מעטפת</h1>
-          <p className="text-white/60 text-[13px] mt-1">מעטפת ניהולית בע״מ</p>
-        </div>
-
         {/* card */}
         <div className="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.1)] border border-[#e8ecf4] p-8">
+          {/* envelope animation as logo */}
+          <EnvelopeAnimation />
+
           <div className="text-center mb-6">
-            <h2 className="text-xl font-bold text-[#1e293b]">התחברות</h2>
-            <p className="text-[13px] text-[#64748b] mt-1">הזן את פרטי הכניסה שלך</p>
+            <h1 className="text-[24px] font-extrabold text-[#1e293b]">מעטפת</h1>
+            <p className="text-[13px] text-[#64748b] mt-1">מעטפת ניהולית בע״מ</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
