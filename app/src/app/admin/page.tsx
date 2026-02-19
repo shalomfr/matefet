@@ -12,7 +12,7 @@ export default function AdminDashboardPage() {
       />
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Building2} label="ארגונים פעילים" value="12" color="#4a7cff" />
+        <StatCard icon={Building2} label="ארגונים פעילים" value="12" color="#5c3d9a" />
         <StatCard icon={Link2} label="אינטגרציות מחוברות" value="8/10" color="#2ecc8f" />
         <StatCard icon={Zap} label="אוטומציות פעילות" value="10" color="#a78bfa" />
         <StatCard icon={AlertTriangle} label="התראות" value="3" color="#f5a623" />
@@ -38,7 +38,7 @@ export default function AdminDashboardPage() {
                   <div className="text-[13px] font-medium text-[--color-text]">{item.org}</div>
                   <div className="text-[11px] text-[--color-muted]">{item.issue}</div>
                 </div>
-                <button className="text-[11px] text-[#4a7cff] font-semibold">טפל</button>
+                <button className="text-[11px] text-[#5c3d9a] font-semibold hover:underline">טפל</button>
               </div>
             ))}
           </div>

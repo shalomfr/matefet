@@ -1,8 +1,8 @@
-/* Portal – תמה בהירה למנהלי עמותות */
+/* Portal – תמה בהירה למנהלי עמותות (ēcoursie) */
 [data-theme="portal"] {
-  --portal-bg: #f4f6fb;
+  --portal-bg: #f8f9fc;
   --portal-card: #ffffff;
-  --portal-border: #e2e8f2;
+  --portal-border: #e8ecf4;
   --portal-text: #1e293b;
   --portal-muted: #64748b;
   --portal-green: #16a34a;
@@ -14,11 +14,13 @@
   --portal-red: #dc2626;
   --portal-red-bg: #fef2f2;
   --portal-red-border: #fecaca;
-  --portal-blue: #2563eb;
-  --portal-blue-bg: #eff6ff;
+  --portal-purple: #5c3d9a;
+  --portal-purple-bg: #f3effa;
+  --portal-blue: #5c3d9a;
+  --portal-blue-bg: #f3effa;
   --portal-gold: #b45309;
-  --portal-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  --portal-radius: 16px;
+  --portal-shadow: 0 2px 12px rgba(92, 61, 154, 0.06);
+  --portal-radius: 14px;
 }
 
 [data-theme="portal"] .portal-root {
@@ -40,12 +42,13 @@
 [data-theme="portal"] .portal-red { color: var(--portal-red); }
 
 [data-theme="portal"] .btn-primary {
-  background: var(--portal-blue) !important;
+  background: var(--portal-purple) !important;
   color: white !important;
   border: none !important;
 }
 [data-theme="portal"] .btn-primary:hover {
-  background: #1d4ed8 !important;
+  background: #4a2d7a !important;
+  box-shadow: 0 4px 16px rgba(92, 61, 154, 0.3) !important;
 }
 
 [data-theme="portal"] main {

@@ -22,49 +22,56 @@ const navItems = [
   { href: "/admin/reports", icon: BarChart3, label: "דוחות" },
 ];
 
+const SIDEBAR_PURPLE = "#5c3d9a";
+
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [orgOpen, setOrgOpen] = useState(false);
 
   return (
-    <aside className="sidebar-dark w-60 h-screen fixed right-0 top-0 flex flex-col z-40">
-      <div className="px-6 pt-7 pb-5 border-b border-[#2a3050]">
-        <div className="text-[10px] text-[#c8a96e] tracking-wider mb-2 font-normal">
+    <aside
+      className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40 sidebar-ecoursie"
+      style={{ background: SIDEBAR_PURPLE }}
+    >
+      <div className="px-6 pt-7 pb-5 border-b border-white/10">
+        <div className="text-[10px] text-[#d4c8e8] tracking-wider mb-2 font-normal">
           מעטפת ניהולית
         </div>
-        <h1 className="text-lg font-bold text-[#e8eaf2] leading-tight">
+        <h1 className="text-lg font-bold text-white leading-tight">
           פאנל ניהול
         </h1>
-        <p className="text-[11px] text-[#7a85a3] mt-1 font-light">עובדי החברה</p>
+        <p className="text-[11px] text-[#b8a8d0] mt-1 font-light">עובדי החברה</p>
       </div>
 
       <div className="px-4 py-3">
         <button
           onClick={() => setOrgOpen(!orgOpen)}
-          className="w-full bg-[#1e2335] border border-[#2a3050] rounded-[10px] p-3 flex items-center gap-3 cursor-pointer hover:border-[#4a7cff] transition-colors"
+          className="w-full bg-white/10 border border-white/15 rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-white/15 transition-colors"
         >
           <div className="flex-1 text-right">
-            <div className="text-[10px] text-[#7a85a3] mb-1">צפייה בארגון</div>
-            <div className="text-[13px] font-medium text-[#e8eaf2]">כל הארגונים</div>
+            <div className="text-[10px] text-[#b8a8d0] mb-1">צפייה בארגון</div>
+            <div className="text-[13px] font-medium text-white">כל הארגונים</div>
           </div>
           <ChevronDown
             size={14}
-            className={`text-[#7a85a3] transition-transform ${orgOpen ? "rotate-180" : ""}`}
+            className={`text-[#b8a8d0] transition-transform ${orgOpen ? "rotate-180" : ""}`}
           />
         </button>
       </div>
 
       <nav className="flex-1 px-2 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/admin" && pathname.startsWith(item.href));
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg mb-px transition-all text-[13px] ${
+              className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl mb-1 transition-all text-[13px] ${
                 isActive
-                  ? "bg-[#4a7cff]/10 text-[#e8eaf2] border-r-[3px] border-[#4a7cff]"
-                  : "text-[#7a85a3] hover:text-[#e8eaf2] hover:bg-white/[0.03]"
+                  ? "bg-white/20 text-white border-r-[3px] border-white"
+                  : `text-[#b8a8d0] hover:text-white hover:bg-white/10`
               }`}
             >
               <item.icon size={16} strokeWidth={isActive ? 2 : 1.7} />
@@ -74,16 +81,19 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-[#2a3050]">
+      <div className="p-4 border-t border-white/10">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#4a7cff]/10 border border-[#4a7cff]/30 flex items-center justify-center text-[11px] font-semibold text-[#4a7cff]">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold text-white"
+            style={{ background: "rgba(255,255,255,0.2)" }}
+          >
             ע
           </div>
           <div className="flex-1">
-            <div className="text-[12px] font-medium text-[#e8eaf2]">עובד מערכת</div>
-            <div className="text-[10px] text-[#7a85a3]">Admin</div>
+            <div className="text-[12px] font-medium text-white">עובד מערכת</div>
+            <div className="text-[10px] text-[#b8a8d0]">Admin</div>
           </div>
-          <button className="p-1.5 rounded-lg hover:bg-white/5 transition-colors text-[#7a85a3] hover:text-[#e8445a]">
+          <button className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-[#b8a8d0] hover:text-[#fca5a5]">
             <LogOut size={15} />
           </button>
         </div>

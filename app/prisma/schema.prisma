@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+}
+
+enum ManagerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  passwordHash     String          @map("password_hash")
+  name            String
+  role            UserRole
+  organizationId  String?         @map("organization_id")
+  status         ManagerStatus?   // רק ל-Managers
+  createdAt       DateTime        @default(now()) @map("created_at")
+  organization   Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@map("users")
+}
+
+model Organization {
+  id      String   @id @default(cuid())
+  name    String
+  number  String?  // מספר עמותה
+  users   User[]
+
+  @@map("organizations")
+}

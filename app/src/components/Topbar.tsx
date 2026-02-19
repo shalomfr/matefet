@@ -1,5 +1,5 @@
 "use client";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, User } from "lucide-react";
 
 function getHebrewDate() {
   const now = new Date();
@@ -27,7 +27,7 @@ export default function Topbar({ title, subtitle }: { title: string; subtitle?: 
         </div>
 
         {/* Search */}
-        <div className="bg-[--color-surface] border border-[--color-border] rounded-[10px] flex items-center gap-2 px-3 py-2 w-48">
+        <div className="bg-[--color-surface] border border-[--color-border] rounded-xl flex items-center gap-2 px-3 py-2 w-48 shadow-sm">
           <Search size={14} className="text-[--color-muted]" />
           <input
             type="text"
@@ -37,12 +37,17 @@ export default function Topbar({ title, subtitle }: { title: string; subtitle?: 
         </div>
 
         {/* Notifications */}
-        <button className="w-9 h-9 rounded-[10px] bg-[--color-surface] border border-[--color-border] flex items-center justify-center relative hover:border-[--color-accent] transition-colors">
+        <button className="w-9 h-9 rounded-xl bg-[--color-surface] border border-[--color-border] flex items-center justify-center relative hover:border-[--color-accent] transition-colors shadow-sm">
           <Bell size={16} className="text-[--color-muted]" />
           <span className="absolute -top-1 -left-1 w-4 h-4 bg-[--color-red] rounded-full text-[9px] text-white flex items-center justify-center font-bold">
             2
           </span>
         </button>
+
+        {/* Profile */}
+        <div className="w-9 h-9 rounded-xl bg-[--color-surface] border border-[--color-border] flex items-center justify-center shadow-sm overflow-hidden">
+          <User size={16} className="text-[--color-muted]" />
+        </div>
       </div>
     </header>
   );

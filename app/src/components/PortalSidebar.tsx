@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, LogOut } from "lucide-react";
 
+const SIDEBAR_PURPLE = "#5c3d9a";
+
 const navItems = [
   { href: "/portal", icon: Home, label: "המצב שלי" },
   { href: "/portal/status", icon: CheckCircle, label: "האם אני בסדר?" },
@@ -16,22 +18,25 @@ export default function PortalSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40 bg-white border-l border-[#e2e8f2] portal-sidebar">
-      <div className="px-6 pt-7 pb-5 border-b border-[#e2e8f2]">
-        <div className="text-[10px] text-[#b45309] tracking-wider mb-2 font-normal">
+    <aside
+      className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40 sidebar-ecoursie"
+      style={{ background: SIDEBAR_PURPLE }}
+    >
+      <div className="px-6 pt-7 pb-5 border-b border-white/10">
+        <div className="text-[10px] text-[#d4c8e8] tracking-wider mb-2 font-normal">
           בסיעתא דשמיא
         </div>
-        <h1 className="text-[22px] font-bold text-[#1e293b] leading-tight font-[Frank_Ruhl_Libre,serif]">
+        <h1 className="text-[22px] font-bold text-white leading-tight font-[Frank_Ruhl_Libre,serif]">
           מעטפת
         </h1>
-        <p className="text-[12px] text-[#64748b] mt-1">מעטפת ניהולית בע״מ</p>
+        <p className="text-[12px] text-[#b8a8d0] mt-1">מעטפת ניהולית בע״מ</p>
       </div>
 
       <div className="px-4 py-3">
-        <div className="bg-[#eff6ff] border border-[#bfdbfe] rounded-xl p-3">
-          <div className="text-[11px] text-[#64748b] mb-1">הארגון שלי</div>
-          <div className="text-[14px] font-semibold text-[#1e293b]">עמותת אור לציון</div>
-          <div className="text-[11px] text-[#64748b] mt-1">מס׳ עמותה: 580123456</div>
+        <div className="bg-white/10 border border-white/15 rounded-xl p-3">
+          <div className="text-[11px] text-[#b8a8d0] mb-1">הארגון שלי</div>
+          <div className="text-[14px] font-semibold text-white">עמותת אור לציון</div>
+          <div className="text-[11px] text-[#b8a8d0] mt-1">מס׳ עמותה: 580123456</div>
         </div>
       </div>
 
@@ -44,10 +49,10 @@ export default function PortalSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-[15px] font-medium transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 text-[15px] font-medium transition-all ${
                 isActive
-                  ? "bg-[#eff6ff] text-[#2563eb] border-r-[3px] border-[#2563eb]"
-                  : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f4f6fb]"
+                  ? "bg-white/20 text-white border-r-[3px] border-white"
+                  : "text-[#b8a8d0] hover:text-white hover:bg-white/10"
               }`}
             >
               <item.icon size={18} strokeWidth={isActive ? 2 : 1.7} />
@@ -57,16 +62,16 @@ export default function PortalSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-[#e2e8f2]">
+      <div className="p-4 border-t border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#eff6ff] border-2 border-[#bfdbfe] flex items-center justify-center text-[14px] font-bold text-[#2563eb]">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-[14px] font-bold text-white">
             יל
           </div>
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-[#1e293b]">יוסי לוי</div>
-            <div className="text-[11px] text-[#64748b]">מנהל עמותה</div>
+            <div className="text-[14px] font-semibold text-white">יוסי לוי</div>
+            <div className="text-[11px] text-[#b8a8d0]">מנהל עמותה</div>
           </div>
-          <button className="p-2 rounded-lg hover:bg-[#f4f6fb] text-[#64748b] hover:text-[#dc2626] transition-colors">
+          <button className="p-2 rounded-lg hover:bg-white/10 text-[#b8a8d0] hover:text-[#fca5a5] transition-colors">
             <LogOut size={16} />
           </button>
         </div>
