@@ -2,7 +2,7 @@
 
 @theme inline {
   --font-sans: 'Heebo', sans-serif;
-  --font-serif: 'Frank Ruhl Libre', serif;
+  --font-serif: 'Heebo', sans-serif;
 }
 
 @layer base {
@@ -345,7 +345,7 @@
 
   /* Timeline */
   .tl-day {
-    font-family: 'Frank Ruhl Libre', serif;
+    font-family: 'Heebo', sans-serif;
     font-size: 22px;
     font-weight: 700;
     color: #1e1b3a;
@@ -410,7 +410,7 @@
 
   /* KPI value with serif font */
   .kpi-value {
-    font-family: 'Frank Ruhl Libre', serif;
+    font-family: 'Heebo', sans-serif;
     font-size: 36px;
     font-weight: 700;
     color: #1e1b3a;
@@ -419,7 +419,7 @@
 
   /* Score number */
   .score-num {
-    font-family: 'Frank Ruhl Libre', serif;
+    font-family: 'Heebo', sans-serif;
     font-size: 42px;
     font-weight: 700;
     line-height: 1;

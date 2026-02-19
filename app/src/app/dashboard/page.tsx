@@ -80,10 +80,7 @@ export default function DashboardPage() {
             <CheckCircle2 size={28} className="text-emerald-500" />
           </div>
           <div className="flex-1">
-            <h2
-              className="text-[22px] font-semibold text-emerald-600 mb-1"
-              style={{ fontFamily: "'Frank Ruhl Libre', serif" }}
-            >
+            <h2 className="text-[22px] font-bold text-emerald-600 mb-1">
               הארגון שלך עומד בדרישות
             </h2>
             <p className="text-[13px] text-[#6b6894] leading-relaxed">

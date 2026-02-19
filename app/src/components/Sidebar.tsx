@@ -16,10 +16,10 @@ import {
   ChevronDown,
   LogOut,
   CalendarDays,
-  FileText,
-  AlertTriangle,
-  MessageCircle,
   FolderOpen,
+  Scale,
+  MessageCircle,
+  Pin,
 } from "lucide-react";
 
 const navSections = [
@@ -28,16 +28,19 @@ const navSections = [
     items: [
       { href: "/dashboard", icon: LayoutDashboard, label: "לוח בקרה", badge: null },
       { href: "/dashboard/compliance", icon: ShieldCheck, label: "ציות רגולטורי", badge: 2 },
-      { href: "/dashboard/finance", icon: Wallet, label: "ניהול כספי", badge: 3 },
-      { href: "/dashboard/donors", icon: Heart, label: "תורמים", badge: 12 },
+      { href: "/dashboard/calendar", icon: CalendarDays, label: "לוח שנה רגולטורי", badge: 3 },
+      { href: "/dashboard/documents", icon: FolderOpen, label: "ספריית מסמכים", badge: null },
+      { href: "/dashboard/risks", icon: Scale, label: "ניהול סיכונים", badge: null },
     ],
   },
   {
     label: "ארגון",
     items: [
       { href: "/dashboard/board", icon: Users, label: "ועד ונושאי משרה", badge: null },
-      { href: "/dashboard/volunteers", icon: HandHelping, label: "מתנדבים", badge: null },
+      { href: "/dashboard/finance", icon: Wallet, label: "ניהול כספי", badge: 3 },
+      { href: "/dashboard/donors", icon: Heart, label: "תורמים", badge: 12 },
       { href: "/dashboard/reports", icon: BarChart3, label: "דוחות ותקציב", badge: null },
+      { href: "/dashboard/volunteers", icon: HandHelping, label: "מתנדבים", badge: null },
       { href: "/dashboard/automation", icon: Zap, label: "אוטומציות", badge: 5 },
     ],
   },
@@ -45,6 +48,8 @@ const navSections = [
     label: "ליווי",
     items: [
       { href: "/dashboard/integrations", icon: Link2, label: "ממשקי רשויות", badge: null },
+      { href: "/dashboard/contact", icon: MessageCircle, label: "פניה למלווה", badge: null },
+      { href: "/dashboard/projects", icon: Pin, label: "פרויקטים פעילים", badge: null },
       { href: "/dashboard/settings", icon: Settings, label: "הגדרות", badge: null },
     ],
   },
@@ -61,10 +66,7 @@ export default function Sidebar() {
         <div className="text-[10px] text-[#c8a96e] tracking-wider mb-1.5 font-normal">
           בסיעתא דשמיא
         </div>
-        <h1
-          className="text-xl font-bold text-[#1e1b3a] leading-tight"
-          style={{ fontFamily: "'Frank Ruhl Libre', serif" }}
-        >
+        <h1 className="text-xl font-extrabold bg-gradient-to-l from-[#7c5cfc] to-[#a78bfa] bg-clip-text text-transparent leading-tight">
           מעטפת
         </h1>
         <p className="text-[11px] text-[#9b98b8] mt-0.5 font-light">ניהול תקין אוטומטי לעמותות</p>
