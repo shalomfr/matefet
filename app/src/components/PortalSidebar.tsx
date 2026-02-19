@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut } from "lucide-react";
 
 const SIDEBAR_PURPLE = "#5c3d9a";
 
@@ -10,6 +11,7 @@ const navItems = [
   { href: "/portal/status", icon: CheckCircle, label: "האם אני בסדר?" },
   { href: "/portal/calendar", icon: Calendar, label: "מה מתקרב?" },
   { href: "/portal/documents", icon: FileText, label: "המסמכים שלי" },
+  { href: "/portal/board", icon: Users, label: "הועד שלי" },
   { href: "/portal/reports", icon: BarChart2, label: "דוחות ותקציב" },
   { href: "/portal/contact", icon: MessageCircle, label: "פנה למלווה" },
 ];
@@ -71,7 +73,10 @@ export default function PortalSidebar() {
             <div className="text-[14px] font-semibold text-white">יוסי לוי</div>
             <div className="text-[11px] text-[#b8a8d0]">מנהל עמותה</div>
           </div>
-          <button className="p-2 rounded-lg hover:bg-white/10 text-[#b8a8d0] hover:text-[#fca5a5] transition-colors">
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="p-2 rounded-lg hover:bg-white/10 text-[#b8a8d0] hover:text-[#fca5a5] transition-colors"
+          >
             <LogOut size={16} />
           </button>
         </div>

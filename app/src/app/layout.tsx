@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
+import SessionProvider from "@/components/SessionProvider";
 
 export const metadata: Metadata = {
   title: "מעטפת - ניהול תקין לעמותות",
@@ -21,7 +22,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased" style={{ fontFamily: "'Heebo', sans-serif" }}>
-        <ToastProvider>{children}</ToastProvider>
+        <SessionProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </SessionProvider>
       </body>
     </html>
   );

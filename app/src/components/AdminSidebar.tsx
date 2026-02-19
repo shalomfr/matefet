@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Building2,
@@ -93,7 +94,10 @@ export default function AdminSidebar() {
             <div className="text-[12px] font-medium text-white">עובד מערכת</div>
             <div className="text-[10px] text-[#b8a8d0]">Admin</div>
           </div>
-          <button className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-[#b8a8d0] hover:text-[#fca5a5]">
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-[#b8a8d0] hover:text-[#fca5a5]"
+          >
             <LogOut size={15} />
           </button>
         </div>
