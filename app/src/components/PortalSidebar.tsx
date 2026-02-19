@@ -4,8 +4,6 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut } from "lucide-react";
 
-const SIDEBAR_PURPLE = "#5c3d9a";
-
 const navItems = [
   { href: "/portal", icon: Home, label: "המצב שלי" },
   { href: "/portal/status", icon: CheckCircle, label: "האם אני בסדר?" },
@@ -21,28 +19,42 @@ export default function PortalSidebar() {
 
   return (
     <aside
-      className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40 sidebar-ecoursie"
-      style={{ background: SIDEBAR_PURPLE }}
+      className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40"
+      style={{
+        background: "#ffffff",
+        borderLeft: "1px solid #e8ecf4",
+        boxShadow: "-4px 0 24px rgba(0,0,0,0.03)",
+      }}
     >
-      <div className="px-6 pt-7 pb-5 border-b border-white/10">
-        <div className="text-[10px] text-[#d4c8e8] tracking-wider mb-2 font-normal">
-          בסיעתא דשמיא
+      {/* Logo / Brand */}
+      <div className="px-6 pt-7 pb-5 border-b border-[#e8ecf4]">
+        <div className="flex items-center gap-3 mb-1">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[15px] font-bold"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+          >
+            מ
+          </div>
+          <div>
+            <h1 className="text-[18px] font-bold text-[#1e293b] leading-tight font-[Frank_Ruhl_Libre,serif]">
+              מעטפת
+            </h1>
+            <p className="text-[10px] text-[#94a3b8] font-medium">בסיעתא דשמיא</p>
+          </div>
         </div>
-        <h1 className="text-[22px] font-bold text-white leading-tight font-[Frank_Ruhl_Libre,serif]">
-          מעטפת
-        </h1>
-        <p className="text-[12px] text-[#b8a8d0] mt-1">מעטפת ניהולית בע״מ</p>
       </div>
 
+      {/* Organization Info */}
       <div className="px-4 py-3">
-        <div className="bg-white/10 border border-white/15 rounded-xl p-3">
-          <div className="text-[11px] text-[#b8a8d0] mb-1">הארגון שלי</div>
-          <div className="text-[14px] font-semibold text-white">עמותת אור לציון</div>
-          <div className="text-[11px] text-[#b8a8d0] mt-1">מס׳ עמותה: 580123456</div>
+        <div className="bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3">
+          <div className="text-[10px] text-[#94a3b8] mb-0.5">הארגון שלי</div>
+          <div className="text-[13px] font-semibold text-[#1e293b]">עמותת אור לציון</div>
+          <div className="text-[10px] text-[#94a3b8] mt-0.5">מס׳ עמותה: 580123456</div>
         </div>
       </div>
 
-      <nav className="flex-1 px-2 overflow-y-auto py-2">
+      {/* Navigation */}
+      <nav className="flex-1 px-3 overflow-y-auto py-1">
         {navItems.map((item) => {
           const isActive =
             pathname === item.href ||
@@ -51,31 +63,42 @@ export default function PortalSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 text-[15px] font-medium transition-all ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl mb-1 text-[14px] transition-all ${
                 isActive
-                  ? "bg-white/20 text-white border-r-[3px] border-white"
-                  : "text-[#b8a8d0] hover:text-white hover:bg-white/10"
+                  ? "bg-[#f3effa] text-[#5c3d9a] border-r-[3px] border-[#7c3aed] font-semibold"
+                  : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f8f9fc] font-medium"
               }`}
             >
-              <item.icon size={18} strokeWidth={isActive ? 2 : 1.7} />
+              <item.icon
+                size={18}
+                strokeWidth={isActive ? 2.2 : 1.7}
+                className={isActive ? "text-[#7c3aed]" : ""}
+              />
               <span className="flex-1">{item.label}</span>
+              {isActive && (
+                <div className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/10">
+      {/* User Footer */}
+      <div className="p-4 border-t border-[#e8ecf4]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-[14px] font-bold text-white">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #5c3d9a)" }}
+          >
             יל
           </div>
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-white">יוסי לוי</div>
-            <div className="text-[11px] text-[#b8a8d0]">מנהל עמותה</div>
+            <div className="text-[13px] font-semibold text-[#1e293b]">יוסי לוי</div>
+            <div className="text-[10px] text-[#94a3b8]">מנהל עמותה</div>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="p-2 rounded-lg hover:bg-white/10 text-[#b8a8d0] hover:text-[#fca5a5] transition-colors"
+            className="p-2 rounded-lg hover:bg-[#fef2f2] text-[#94a3b8] hover:text-[#ef4444] transition-colors"
           >
             <LogOut size={16} />
           </button>
