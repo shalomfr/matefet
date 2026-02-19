@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: "מעטפת - ניהול תקין לעמותות",
@@ -15,12 +16,12 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="antialiased" style={{ fontFamily: "'Heebo', sans-serif" }}>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

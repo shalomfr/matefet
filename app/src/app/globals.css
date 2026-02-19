@@ -122,6 +122,11 @@
     color: var(--color-accent) !important;
   }
 
+  .badge-purple {
+    background: rgba(167, 139, 250, 0.12) !important;
+    color: #a78bfa !important;
+  }
+
   /* Button styles */
   .btn-primary {
     background: var(--color-accent) !important;
@@ -387,6 +392,12 @@
   0%, 100% { box-shadow: 0 0 20px rgba(232, 68, 90, 0.2); }
   50% { box-shadow: 0 0 35px rgba(232, 68, 90, 0.4); }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.animate-fade-in { animation: fadeIn 0.3s ease both; }
 
 .animate-fadeUp { animation: fadeUp 0.5s ease both; }
 .animate-fadeUp-1 { animation: fadeUp 0.5s ease 0.05s both; }

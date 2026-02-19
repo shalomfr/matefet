@@ -7,7 +7,6 @@ import {
   AlertTriangle,
   Clock,
   CheckCircle2,
-  XCircle,
   Upload,
   Download,
   Eye,
@@ -51,64 +50,57 @@ export default function CompliancePage() {
       <Topbar title="ניהול תקין" />
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatCard icon={ShieldCheck} label="ציון ניהול תקין" value="96%" change="+3%" trend="up" color="#34d399" />
-        <StatCard icon={FileCheck} label="מסמכים תקינים" value={`${validCount}/${complianceItems.length}`} color="#7c5cfc" />
-        <StatCard icon={AlertTriangle} label="דורשים טיפול" value={String(warningCount + pendingCount)} color="#fbbf24" />
-        <StatCard icon={Clock} label="דדליין קרוב" value="28 יום" color="#f87171" />
+        <StatCard icon={ShieldCheck} label="ציון ניהול תקין" value="96%" change="+3%" trend="up" color="#2ecc8f" />
+        <StatCard icon={FileCheck} label="מסמחים תקינים" value={`${validCount}/${complianceItems.length}`} color="#4a7cff" />
+        <StatCard icon={AlertTriangle} label="דורשים טיפול" value={String(warningCount + pendingCount)} color="#f5a623" />
+        <StatCard icon={Clock} label="דדליין קרוב" value="28 יום" color="#e8445a" />
       </div>
 
-      {/* Compliance Score Banner */}
-      <div className="glass-card p-6 mb-6">
+      <div className="card-dark p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-bold text-[#1e1b3a]">סטטוס ניהול תקין מלא</h3>
-            <p className="text-sm text-[#9b98b8]">עדכון אחרון: היום</p>
+            <h3 className="text-lg font-bold text-[--color-text]">סטטוס ניהול תקין מלא</h3>
+            <p className="text-sm text-[--color-muted]">עדכון אחרון: היום</p>
           </div>
           <div className="flex gap-4 items-center">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-400"></span>
-              <span className="text-xs text-[#6b6894]">תקין ({validCount})</span>
+              <span className="w-3 h-3 rounded-full bg-[#2ecc8f]"></span>
+              <span className="text-xs text-[--color-muted]">תקין ({validCount})</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-amber-400"></span>
-              <span className="text-xs text-[#6b6894]">דורש טיפול ({warningCount})</span>
+              <span className="w-3 h-3 rounded-full bg-[#f5a623]"></span>
+              <span className="text-xs text-[--color-muted]">דורש טיפול ({warningCount})</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-blue-400"></span>
-              <span className="text-xs text-[#6b6894]">ממתין ({pendingCount})</span>
+              <span className="w-3 h-3 rounded-full bg-[#4a7cff]"></span>
+              <span className="text-xs text-[--color-muted]">ממתין ({pendingCount})</span>
             </div>
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {complianceItems.map((item) => (
             <div
               key={item.name}
-              className="flex items-center justify-between p-3 rounded-xl hover:bg-white/40 transition-colors"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/[0.03] transition-colors"
             >
               <div className="flex items-center gap-3">
                 {item.status === "valid" ? (
-                  <CheckCircle2 size={18} className="text-emerald-500" />
+                  <CheckCircle2 size={18} className="text-[#2ecc8f]" />
                 ) : item.status === "warning" ? (
-                  <AlertTriangle size={18} className="text-amber-400" />
+                  <AlertTriangle size={18} className="text-[#f5a623]" />
                 ) : (
-                  <Clock size={18} className="text-blue-400" />
+                  <Clock size={18} className="text-[#4a7cff]" />
                 )}
-                <span className="text-sm font-medium text-[#1e1b3a]">{item.name}</span>
+                <span className="text-[13px] font-medium text-[--color-text]">{item.name}</span>
               </div>
               <div className="flex items-center gap-6">
-                <span className="text-xs text-[#9b98b8]">תפוגה: {item.expiry}</span>
-                <span className="text-xs text-[#9b98b8]">עדכון: {item.lastUpdate}</span>
+                <span className="text-xs text-[--color-muted]">תפוגה: {item.expiry}</span>
+                <span className="text-xs text-[--color-muted]">עדכון: {item.lastUpdate}</span>
                 <div className="flex gap-1">
-                  <button className="p-1.5 rounded-lg hover:bg-white/60 text-[#9b98b8]">
-                    <Eye size={14} />
-                  </button>
-                  <button className="p-1.5 rounded-lg hover:bg-white/60 text-[#9b98b8]">
-                    <Download size={14} />
-                  </button>
-                  <button className="p-1.5 rounded-lg hover:bg-white/60 text-[#9b98b8]">
-                    <Upload size={14} />
-                  </button>
+                  <button className="p-1.5 rounded-lg hover:bg-white/5 text-[--color-muted]"><Eye size={14} /></button>
+                  <button className="p-1.5 rounded-lg hover:bg-white/5 text-[--color-muted]"><Download size={14} /></button>
+                  <button className="p-1.5 rounded-lg hover:bg-white/5 text-[--color-muted]"><Upload size={14} /></button>
                 </div>
               </div>
             </div>
@@ -116,59 +108,53 @@ export default function CompliancePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        {/* Upcoming Deadlines */}
-        <div className="glass-card p-5">
-          <h3 className="text-base font-bold text-[#1e1b3a] mb-4 flex items-center gap-2">
-            <Calendar size={18} className="text-[#7c5cfc]" />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="card-dark p-5">
+          <h3 className="text-base font-bold text-[--color-text] mb-4 flex items-center gap-2">
+            <Calendar size={18} className="text-[#4a7cff]" />
             דדליינים קרובים
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {upcomingDeadlines.map((item) => (
-              <div key={item.task} className="p-3 rounded-xl bg-white/30 border border-white/50">
+              <div key={item.task} className="p-3 rounded-lg bg-[--color-surface2] border border-[--color-border]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-[#1e1b3a]">{item.task}</span>
-                  <span
-                    className={`badge ${
-                      item.priority === "high" ? "badge-danger" : item.priority === "medium" ? "badge-warning" : "badge-info"
-                    }`}
-                  >
+                  <span className="text-[13px] font-medium text-[--color-text]">{item.task}</span>
+                  <span className={`badge ${item.priority === "high" ? "badge-danger" : item.priority === "medium" ? "badge-warning" : "badge-info"}`}>
                     {item.daysLeft} ימים
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#9b98b8]">{item.date}</span>
-                  <button className="text-xs text-[#7c5cfc] font-semibold">טפל עכשיו</button>
+                  <span className="text-xs text-[--color-muted]">{item.date}</span>
+                  <button className="text-xs text-[#4a7cff] font-semibold">טפל עכשיו</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Annual Reports */}
-        <div className="glass-card p-5">
-          <h3 className="text-base font-bold text-[#1e1b3a] mb-4 flex items-center gap-2">
-            <FileText size={18} className="text-[#7c5cfc]" />
+        <div className="card-dark p-5">
+          <h3 className="text-base font-bold text-[--color-text] mb-4 flex items-center gap-2">
+            <FileText size={18} className="text-[#4a7cff]" />
             דוחות שנתיים
           </h3>
-          <table className="glass-table">
+          <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th>שנה</th>
-                <th>דוח כספי</th>
-                <th>דוח מילולי</th>
-                <th>רשם העמותות</th>
-                <th>מס הכנסה</th>
+                <th className="text-right p-3 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider border-b border-[--color-border]">שנה</th>
+                <th className="text-right p-3 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider border-b border-[--color-border]">דוח כספי</th>
+                <th className="text-right p-3 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider border-b border-[--color-border]">דוח מילולי</th>
+                <th className="text-right p-3 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider border-b border-[--color-border]">רשם העמותות</th>
+                <th className="text-right p-3 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider border-b border-[--color-border]">מס הכנסה</th>
               </tr>
             </thead>
             <tbody>
               {annualReports.map((r) => (
-                <tr key={r.year}>
-                  <td className="font-bold">{r.year}</td>
-                  <td><span className="badge badge-success">{r.financial}</span></td>
-                  <td><span className="badge badge-success">{r.verbal}</span></td>
-                  <td><span className="badge badge-success">{r.registrar}</span></td>
-                  <td><span className="badge badge-success">{r.tax}</span></td>
+                <tr key={r.year} className="hover:bg-white/[0.02]">
+                  <td className="p-3 text-[13px] font-bold text-[--color-text] border-b border-white/[0.04]">{r.year}</td>
+                  <td className="p-3 border-b border-white/[0.04]"><span className="badge badge-success">{r.financial}</span></td>
+                  <td className="p-3 border-b border-white/[0.04]"><span className="badge badge-success">{r.verbal}</span></td>
+                  <td className="p-3 border-b border-white/[0.04]"><span className="badge badge-success">{r.registrar}</span></td>
+                  <td className="p-3 border-b border-white/[0.04]"><span className="badge badge-success">{r.tax}</span></td>
                 </tr>
               ))}
             </tbody>
