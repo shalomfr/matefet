@@ -31,7 +31,7 @@ const receiptData = [
 
 const transferData = [
   { ref: "TRF-890", from: "חשבון ראשי", to: "ספק - הדפסות", amount: "₪2,400", date: "19.02.2026", status: "בוצע" },
-  { ref: "TRF-889", from: "חשבון ראשי", to: "שכ\"ד משרד", amount: "₪6,500", date: "18.02.2026", status: "בוצע" },
+  { ref: "TRF-889", from: "חשבון ראשי", to: 'שכ"ד משרד', amount: "₪6,500", date: "18.02.2026", status: "בוצע" },
   { ref: "TRF-888", from: "חשבון מענקים", to: "חשבון ראשי", amount: "₪45,000", date: "15.02.2026", status: "ממתין" },
   { ref: "TRF-887", from: "חשבון ראשי", to: "משכורות", amount: "₪32,000", date: "01.02.2026", status: "בוצע" },
 ];
@@ -56,7 +56,7 @@ const receiptCols = [
   { key: "number", label: "מספר" },
   { key: "donor", label: "תורם" },
   { key: "amount", label: "סכום" },
-  { key: "type", label: "סוג", render: (val: unknown) => <span className="badge badge-purple">{val as string}</span> },
+  { key: "type", label: "סוג", render: (val: unknown) => <span className="badge badge-info">{val as string}</span> },
   { key: "date", label: "תאריך" },
 ];
 
@@ -83,22 +83,22 @@ export default function FinancePage() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Wallet} label="יתרה בבנק" value="₪284,750" change="+₪42K" trend="up" color="#7c5cfc" />
-        <StatCard icon={Receipt} label="קבלות החודש" value="47" change="+12" trend="up" color="#e879f9" />
-        <StatCard icon={ArrowLeftRight} label="העברות ממתינות" value="3" color="#fbbf24" />
-        <StatCard icon={PiggyBank} label="ניצול תקציב" value="72%" change="מתוך ₪500K" trend="up" color="#34d399" />
+        <StatCard icon={Wallet} label="יתרה בבנק" value="₪284,750" change="+₪42K" trend="up" color="#4a7cff" />
+        <StatCard icon={Receipt} label="קבלות החודש" value="47" change="+12" trend="up" color="#2ecc8f" />
+        <StatCard icon={ArrowLeftRight} label="העברות ממתינות" value="3" color="#f5a623" />
+        <StatCard icon={PiggyBank} label="ניצול תקציב" value="72%" change="מתוך ₪500K" trend="up" color="#2ecc8f" />
       </div>
 
-      {/* Tabs simulation */}
-      <div className="glass-card mb-6">
+      {/* Tabs */}
+      <div className="card-dark mb-6">
         <div className="flex gap-1 p-2">
           {["חשבוניות", "קבלות", "העברות", "תקציב"].map((tab, i) => (
             <button
               key={tab}
               className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                 i === 0
-                  ? "bg-gradient-to-l from-[#7c5cfc]/15 to-[#a78bfa]/10 text-[#7c5cfc] shadow-sm"
-                  : "text-[#6b6894] hover:bg-white/40"
+                  ? "bg-[#4a7cff]/15 text-[#4a7cff]"
+                  : "text-[--color-muted] hover:bg-white/[0.04]"
               }`}
             >
               {tab}
@@ -161,11 +161,11 @@ export default function FinancePage() {
       />
 
       {/* Budget Overview */}
-      <div className="glass-card p-5 mt-6">
-        <h3 className="text-base font-bold text-[#1e1b3a] mb-4">תקציב שנתי 2026</h3>
+      <div className="card-dark p-5 mt-6">
+        <h3 className="text-base font-bold text-[--color-text] mb-4">תקציב שנתי 2026</h3>
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-[#6b6894]">הכנסות</h4>
+            <h4 className="text-sm font-semibold text-[--color-muted]">הכנסות</h4>
             {[
               { label: "תרומות", planned: "₪350,000", actual: "₪127,450", pct: 36 },
               { label: "מענקים", planned: "₪120,000", actual: "₪75,000", pct: 63 },
@@ -173,17 +173,17 @@ export default function FinancePage() {
             ].map((item) => (
               <div key={item.label}>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-[#6b6894]">{item.label}</span>
-                  <span className="text-[#1e1b3a] font-semibold">{item.actual} / {item.planned}</span>
+                  <span className="text-[--color-muted]">{item.label}</span>
+                  <span className="text-[--color-text] font-semibold">{item.actual} / {item.planned}</span>
                 </div>
-                <div className="h-2.5 bg-white/50 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-[#7c5cfc]" style={{ width: `${item.pct}%` }} />
+                <div className="progress-bar-bg">
+                  <div className="progress-bar-fill bg-[#4a7cff]" style={{ width: `${item.pct}%` }} />
                 </div>
               </div>
             ))}
           </div>
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-[#6b6894]">הוצאות</h4>
+            <h4 className="text-sm font-semibold text-[--color-muted]">הוצאות</h4>
             {[
               { label: "שכר עובדים", planned: "₪200,000", actual: "₪64,000", pct: 32 },
               { label: "שכירות ומשרד", planned: "₪78,000", actual: "₪19,500", pct: 25 },
@@ -191,11 +191,11 @@ export default function FinancePage() {
             ].map((item) => (
               <div key={item.label}>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-[#6b6894]">{item.label}</span>
-                  <span className="text-[#1e1b3a] font-semibold">{item.actual} / {item.planned}</span>
+                  <span className="text-[--color-muted]">{item.label}</span>
+                  <span className="text-[--color-text] font-semibold">{item.actual} / {item.planned}</span>
                 </div>
-                <div className="h-2.5 bg-white/50 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-[#e879f9]" style={{ width: `${item.pct}%` }} />
+                <div className="progress-bar-bg">
+                  <div className="progress-bar-fill bg-[#a78bfa]" style={{ width: `${item.pct}%` }} />
                 </div>
               </div>
             ))}
