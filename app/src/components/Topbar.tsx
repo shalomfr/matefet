@@ -1,5 +1,5 @@
 "use client";
-import { Search, Bell, MessageSquare, Plus } from "lucide-react";
+import { Search, Bell } from "lucide-react";
 
 function getHebrewDate() {
   const now = new Date();
@@ -9,49 +9,39 @@ function getHebrewDate() {
   return { dayOfWeek, formatted };
 }
 
-export default function Topbar({ title }: { title: string }) {
+export default function Topbar({ title, subtitle }: { title: string; subtitle?: string }) {
   const { dayOfWeek, formatted } = getHebrewDate();
 
   return (
-    <header className="h-16 flex items-center justify-between px-6 mb-6">
-      <div className="flex items-center gap-4">
-        <h2 className="text-xl font-bold text-[#1e1b3a]">{title}</h2>
+    <header className="flex items-start justify-between mb-8">
+      <div>
+        <h2 className="text-[28px] font-medium text-[--color-text] leading-tight">{title}</h2>
+        {subtitle && <p className="text-[13px] text-[--color-muted] mt-1">{subtitle}</p>}
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Hebrew date */}
-        <div className="text-left text-[12px] text-[#9b98b8] leading-relaxed ml-4">
-          <div className="text-[13px] text-[#6b6894] font-medium">יום {dayOfWeek}</div>
+        {/* Date */}
+        <div className="text-left text-[12px] text-[--color-muted] leading-relaxed ml-3">
+          <div className="text-[13px] text-[--color-text]">יום {dayOfWeek}</div>
           <div>{formatted}</div>
         </div>
 
         {/* Search */}
-        <div className="glass flex items-center gap-2 px-4 py-2 w-64">
-          <Search size={16} className="text-[#9b98b8]" />
+        <div className="bg-[--color-surface] border border-[--color-border] rounded-[10px] flex items-center gap-2 px-3 py-2 w-48">
+          <Search size={14} className="text-[--color-muted]" />
           <input
             type="text"
             placeholder="חיפוש..."
-            className="bg-transparent border-none outline-none text-sm text-[#1e1b3a] placeholder-[#9b98b8] w-full"
+            className="bg-transparent border-none outline-none text-[13px] text-[--color-text] placeholder-[--color-muted] w-full"
           />
         </div>
 
         {/* Notifications */}
-        <button className="glass w-10 h-10 flex items-center justify-center relative hover:bg-white/70 transition-colors">
-          <Bell size={18} className="text-[#6b6894]" />
-          <span className="absolute -top-1 -left-1 w-5 h-5 bg-[#7c5cfc] rounded-full text-[10px] text-white flex items-center justify-center font-bold">
-            4
+        <button className="w-9 h-9 rounded-[10px] bg-[--color-surface] border border-[--color-border] flex items-center justify-center relative hover:border-[--color-accent] transition-colors">
+          <Bell size={16} className="text-[--color-muted]" />
+          <span className="absolute -top-1 -left-1 w-4 h-4 bg-[--color-red] rounded-full text-[9px] text-white flex items-center justify-center font-bold">
+            2
           </span>
-        </button>
-
-        {/* Messages */}
-        <button className="glass w-10 h-10 flex items-center justify-center relative hover:bg-white/70 transition-colors">
-          <MessageSquare size={18} className="text-[#6b6894]" />
-        </button>
-
-        {/* Quick Action */}
-        <button className="btn-primary flex items-center gap-2 !rounded-xl !px-4">
-          <Plus size={16} />
-          <span>חדש</span>
         </button>
       </div>
     </header>

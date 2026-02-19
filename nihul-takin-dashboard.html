@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול תקין – מעטפת ניהולית</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #171b26;
+    --surface2: #1e2335;
+    --border: #2a3050;
+    --green: #2ecc8f;
+    --green-dim: rgba(46,204,143,0.12);
+    --orange: #f5a623;
+    --orange-dim: rgba(245,166,35,0.12);
+    --red: #e8445a;
+    --red-dim: rgba(232,68,90,0.12);
+    --text: #e8eaf2;
+    --text-muted: #7a85a3;
+    --accent: #4a7cff;
+    --accent-dim: rgba(74,124,255,0.1);
+    --gold: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Heebo', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(74,124,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(46,204,143,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .logo-area {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-blessing {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .logo-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-weight: 300;
+  }
+
+  .org-selector {
+    margin: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .org-selector:hover { border-color: var(--accent); }
+
+  .org-label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  .org-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .org-type { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  nav { padding: 8px 0; flex: 1; }
+
+  .nav-section {
+    padding: 8px 16px 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-right: 3px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+
+  .nav-item.active {
+    color: var(--text);
+    background: var(--accent-dim);
+    border-right-color: var(--accent);
+  }
+
+  .nav-icon { width: 16px; text-align: center; font-size: 14px; }
+
+  .nav-badge {
+    margin-right: auto;
+    background: var(--red);
+    color: white;
+    border-radius: 10px;
+    font-size: 10px;
+    padding: 1px 6px;
+    font-weight: 600;
+  }
+
+  .nav-badge.orange { background: var(--orange); }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 32px; height: 32px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+  }
+
+  .user-name { font-size: 12px; font-weight: 500; }
+  .user-role { font-size: 10px; color: var(--text-muted); }
+
+  /* MAIN */
+  .main {
+    padding: 32px 36px;
+    overflow-y: auto;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .page-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .header-date {
+    text-align: left;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* STATUS CARD – the hero element */
+  .status-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .status-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: var(--green-dim);
+    border-radius: 50%;
+    transform: translate(60px, -80px);
+    filter: blur(40px);
+  }
+
+  .status-hero.warning::before { background: var(--orange-dim); }
+  .status-hero.critical::before { background: var(--red-dim); }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+  }
+
+  .status-orb {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    background: var(--green-dim);
+    border: 2px solid var(--green);
+    box-shadow: 0 0 20px rgba(46,204,143,0.2);
+    animation: pulse-green 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 20px rgba(46,204,143,0.2); }
+    50% { box-shadow: 0 0 35px rgba(46,204,143,0.4); }
+  }
+
+  .status-text h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+
+  .status-text p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .status-score {
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .score-num {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .score-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* GRID */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card:nth-child(2) { animation-delay: 0.05s; }
+  .card:nth-child(3) { animation-delay: 0.1s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card-icon { font-size: 16px; }
+
+  /* KPI cards */
+  .kpi-value {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-label { font-size: 12px; color: var(--text-muted); }
+
+  .kpi-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+
+  /* Alerts */
+  .alerts-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .alert-item:hover { transform: translateX(-2px); }
+
+  .alert-item.red { background: var(--red-dim); border-color: rgba(232,68,90,0.2); }
+  .alert-item.orange { background: var(--orange-dim); border-color: rgba(245,166,35,0.2); }
+  .alert-item.green { background: var(--green-dim); border-color: rgba(46,204,143,0.2); }
+
+  .alert-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .dot-red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .dot-orange { background: var(--orange); }
+  .dot-green { background: var(--green); }
+
+  .alert-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .alert-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .alert-due { font-size: 10px; margin-top: 4px; font-weight: 600; }
+  .due-red { color: var(--red); }
+  .due-orange { color: var(--orange); }
+  .due-green { color: var(--green); }
+
+  /* Timeline / upcoming */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+
+  .timeline-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+  }
+
+  .timeline-item:last-child { border-bottom: none; }
+
+  .tl-date {
+    width: 52px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .tl-day {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .tl-month { font-size: 10px; color: var(--text-muted); }
+
+  .tl-line {
+    width: 1px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 2px 0;
+  }
+
+  .tl-content { flex: 1; }
+  .tl-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .tl-sub { font-size: 11px; color: var(--text-muted); }
+
+  .tl-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    align-self: flex-start;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  /* Quick actions */
+  .actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .action-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: right;
+  }
+
+  .action-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+  }
+
+  .action-icon { font-size: 18px; margin-bottom: 6px; }
+  .action-label { font-size: 12px; font-weight: 500; }
+  .action-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Progress bars */
+  .progress-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .progress-item {}
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-label { font-size: 12px; font-weight: 500; }
+  .progress-pct { font-size: 11px; color: var(--text-muted); }
+
+  .progress-bar {
+    height: 5px;
+    background: var(--surface2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease;
+  }
+
+  .fill-green { background: var(--green); }
+  .fill-orange { background: var(--orange); }
+  .fill-blue { background: var(--accent); }
+
+  /* Divider label */
+  .section-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="logo-blessing">בסיעתא דשמיא</div>
+      <div class="logo-title">ניהול תקין</div>
+      <div class="logo-sub">מעטפת ניהולית בע״מ</div>
+    </div>
+
+    <div class="org-selector">
+      <div class="org-label">ארגון פעיל</div>
+      <div class="org-name">עמותת אור לציון</div>
+      <div class="org-type">עמותה רשומה · מס׳ 580123456</div>
+    </div>
+
+    <nav>
+      <div class="nav-section">ניהול</div>
+      <div class="nav-item active">
+        <span class="nav-icon">🏠</span> לוח בקרה
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📋</span> ציות רגולטורי
+        <span class="nav-badge">2</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📅</span> לוח שנה רגולטורי
+        <span class="nav-badge orange">3</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📁</span> ספריית מסמכים
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚖️</span> ניהול סיכונים
+      </div>
+
+      <div class="nav-section">ארגון</div>
+      <div class="nav-item">
+        <span class="nav-icon">👥</span> ועד ונושאי משרה
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📊</span> דוחות ותקציב
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🔗</span> ממשקי רשויות
+      </div>
+
+      <div class="nav-section">ליווי</div>
+      <div class="nav-item">
+        <span class="nav-icon">💬</span> פניה למלווה
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📌</span> פרויקטים פעילים
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">יל</div>
+        <div>
+          <div class="user-name">יוסי לוי</div>
+          <div class="user-role">מנהל עמותה</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">שלום יוסי, הנה תמונת המצב שלך</div>
+        <div class="page-subtitle">עמותת אור לציון · עדכון אחרון: היום, 09:14</div>
+      </div>
+      <div class="header-date">
+        <div style="font-size:13px; color: var(--text);">יום חמישי</div>
+        <div>י״ט שבט תשפ״ו</div>
+        <div>19.02.2026</div>
+      </div>
+    </div>
+
+    <!-- STATUS HERO -->
+    <div class="status-hero">
+      <div class="status-row">
+        <div class="status-orb">✓</div>
+        <div class="status-text">
+          <h2>הארגון שלך עומד בדרישות</h2>
+          <p>לא זוהו ליקויים קריטיים. יש 2 פריטים שדורשים תשומת לב בחודש הקרוב.</p>
+        </div>
+        <div class="status-score">
+          <div class="score-num">94</div>
+          <div class="score-label">ציון ניהול תקין</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">ציות רגולטורי</div>
+          <div class="card-icon">📋</div>
+        </div>
+        <div class="kpi-value">12/14</div>
+        <div class="kpi-label">דרישות מולאו</div>
+        <div class="kpi-tag tag-orange">2 פריטים פתוחים</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">פגישת ועד הבאה</div>
+          <div class="card-icon">📅</div>
+        </div>
+        <div class="kpi-value">18 יום</div>
+        <div class="kpi-label">15 במרץ 2026</div>
+        <div class="kpi-tag tag-green">פרוטוקול מוכן</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">דוח שנתי לרשם</div>
+          <div class="card-icon">📄</div>
+        </div>
+        <div class="kpi-value">62 יום</div>
+        <div class="kpi-label">מועד הגשה: 30 אפריל</div>
+        <div class="kpi-tag tag-green">בזמן</div>
+      </div>
+    </div>
+
+    <!-- ALERTS + TIMELINE -->
+    <div class="grid-2">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">התראות פעילות</div>
+          <div class="card-icon">🔔</div>
+        </div>
+        <div class="alerts-list">
+          <div class="alert-item red">
+            <div class="alert-dot dot-red"></div>
+            <div>
+              <div class="alert-title">חידוש אישור ניהול תקין</div>
+              <div class="alert-desc">האישור פג בעוד 14 יום – נדרשת הגשת מסמכים לרשם</div>
+              <div class="alert-due due-red">⚠ דחוף · עד 5 במרץ 2026</div>
+            </div>
+          </div>
+          <div class="alert-item orange">
+            <div class="alert-dot dot-orange"></div>
+            <div>
+              <div class="alert-title">עדכון תקנון – סעיף 12</div>
+              <div class="alert-desc">נדרש עדכון בעקבות שינוי חקיקה בינואר 2026</div>
+              <div class="alert-due due-orange">· עד 31 במרץ 2026</div>
+            </div>
+          </div>
+          <div class="alert-item green">
+            <div class="alert-dot dot-green"></div>
+            <div>
+              <div class="alert-title">דוח כספי רבעוני – הוגש ✓</div>
+              <div class="alert-desc">הדוח לרבעון ד׳ 2025 הוגש ואושר בהצלחה</div>
+              <div class="alert-due due-green">הושלם · 12.02.2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">יומן רגולטורי קרוב</div>
+          <div class="card-icon">🗓</div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="tl-date">
+              <div class="tl-day">05</div>
+              <div class="tl-month">מרץ</div>
+            </div>
+            <div class="tl-line"></div>
+            <div class="tl-content">
+              <div class="tl-title">חידוש ניהול תקין</div>
+              <div class="tl-sub">הגשה לרשם העמותות</div>
+            </div>
+            <span class="tl-badge tag-red">דחוף</span>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-date">
+              <div class="tl-day">15</div>
+              <div class="tl-month">מרץ</div>
+            </div>
+            <div class="tl-line"></div>
+            <div class="tl-content">
+              <div class="tl-title">ישיבת ועד רבעונית</div>
+              <div class="tl-sub">פרוטוקול · אישור תקציב</div>
+            </div>
+            <span class="tl-badge tag-orange">בהכנה</span>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-date">
+              <div class="tl-day">31</div>
+              <div class="tl-month">מרץ</div>
+            </div>
+            <div class="tl-line"></div>
+            <div class="tl-content">
+              <div class="tl-title">עדכון תקנון</div>
+              <div class="tl-sub">הגשה לאישור הועד</div>
+            </div>
+            <span class="tl-badge tag-orange">ממתין</span>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-date">
+              <div class="tl-day">30</div>
+              <div class="tl-month">אפריל</div>
+            </div>
+            <div class="tl-line"></div>
+            <div class="tl-content">
+              <div class="tl-title">דוח שנתי לרשם</div>
+              <div class="tl-sub">כולל דוח כספי מבוקר</div>
+            </div>
+            <span class="tl-badge tag-green">בזמן</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PROGRESS + QUICK ACTIONS -->
+    <div class="grid-2">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">מצב תחומי ניהול</div>
+          <div class="card-icon">📊</div>
+        </div>
+        <div class="progress-list">
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">ממשל תאגידי</span>
+              <span class="progress-pct">95%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-green" style="width:95%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">ציות רגולטורי</span>
+              <span class="progress-pct">86%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-orange" style="width:86%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">ניהול סיכונים</span>
+              <span class="progress-pct">78%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-blue" style="width:78%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">תשתית נהלים</span>
+              <span class="progress-pct">100%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-green" style="width:100%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">ממשק רשות המסים</span>
+              <span class="progress-pct">90%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill fill-green" style="width:90%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">פעולות מהירות</div>
+          <div class="card-icon">⚡</div>
+        </div>
+        <div class="actions-grid">
+          <div class="action-btn">
+            <div class="action-icon">📝</div>
+            <div class="action-label">פרוטוקול חדש</div>
+            <div class="action-desc">תבנית לישיבת ועד</div>
+          </div>
+          <div class="action-btn">
+            <div class="action-icon">📤</div>
+            <div class="action-label">הגש דוח</div>
+            <div class="action-desc">לרשם / רשות המסים</div>
+          </div>
+          <div class="action-btn">
+            <div class="action-icon">⚠️</div>
+            <div class="action-label">דווח אירוע</div>
+            <div class="action-desc">ניהול משברים</div>
+          </div>
+          <div class="action-btn">
+            <div class="action-icon">💬</div>
+            <div class="action-label">פנה למלווה</div>
+            <div class="action-desc">ניהול תקין בע״מ</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
