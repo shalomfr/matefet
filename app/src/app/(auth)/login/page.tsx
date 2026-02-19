@@ -133,13 +133,16 @@ function EnvelopeAnimation() {
           87%, 100% { transform: rotateX(0deg); }
         }
 
-        /* Paper: inside → slides up → slides back
-           Starts AFTER flap opens, returns BEFORE flap closes */
+        /* Paper: inside → slides up (above front fold) → slides back
+           Starts AFTER flap opens, returns BEFORE flap closes
+           z-index jumps to 5 so paper appears IN FRONT of the V-fold when emerging */
         @keyframes paperSlide {
-          0%, 20%   { transform: translateY(0); }
-          38%       { transform: translateY(-50px); }
-          62%       { transform: translateY(-50px); }
-          80%, 100% { transform: translateY(0); }
+          0%, 19%   { transform: translateY(0); z-index: 2; }
+          20%       { transform: translateY(0); z-index: 5; }
+          38%       { transform: translateY(-50px); z-index: 5; }
+          62%       { transform: translateY(-50px); z-index: 5; }
+          80%       { transform: translateY(0); z-index: 5; }
+          81%, 100% { transform: translateY(0); z-index: 2; }
         }
 
         /* Check circle: appears when paper is up */
