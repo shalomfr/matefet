@@ -86,7 +86,7 @@ function EnvelopeAnimation() {
           align-items: center;
           justify-content: center;
           z-index: 2;
-          animation: paperSlide 5s ease-in-out infinite;
+          animation: paperSlide 5s ease-in-out infinite, paperZ 5s step-end infinite;
         }
 
         /* ── flap wrapper ── */
@@ -133,16 +133,20 @@ function EnvelopeAnimation() {
           87%, 100% { transform: rotateX(0deg); }
         }
 
-        /* Paper: inside → slides up (above front fold) → slides back
-           Starts AFTER flap opens, returns BEFORE flap closes
-           z-index jumps to 5 so paper appears IN FRONT of the V-fold when emerging */
+        /* Paper slide: smooth transform only */
         @keyframes paperSlide {
-          0%, 19%   { transform: translateY(0); z-index: 2; }
-          20%       { transform: translateY(0); z-index: 5; }
-          38%       { transform: translateY(-50px); z-index: 5; }
-          62%       { transform: translateY(-50px); z-index: 5; }
-          80%       { transform: translateY(0); z-index: 5; }
-          81%, 100% { transform: translateY(0); z-index: 2; }
+          0%, 20%   { transform: translateY(0); }
+          38%       { transform: translateY(-50px); }
+          62%       { transform: translateY(-50px); }
+          80%, 100% { transform: translateY(0); }
+        }
+
+        /* Paper z-index: stays behind V-fold while inside,
+           jumps in front only after emerging above the envelope */
+        @keyframes paperZ {
+          0%        { z-index: 2; }
+          28%       { z-index: 5; }
+          74%       { z-index: 2; }
         }
 
         /* Check circle: appears when paper is up */
