@@ -1,7 +1,17 @@
 "use client";
 import { Search, Bell, MessageSquare, Plus } from "lucide-react";
 
+function getHebrewDate() {
+  const now = new Date();
+  const dayNames = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+  const dayOfWeek = dayNames[now.getDay()];
+  const formatted = now.toLocaleDateString("he-IL", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return { dayOfWeek, formatted };
+}
+
 export default function Topbar({ title }: { title: string }) {
+  const { dayOfWeek, formatted } = getHebrewDate();
+
   return (
     <header className="h-16 flex items-center justify-between px-6 mb-6">
       <div className="flex items-center gap-4">
@@ -9,6 +19,12 @@ export default function Topbar({ title }: { title: string }) {
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Hebrew date */}
+        <div className="text-left text-[12px] text-[#9b98b8] leading-relaxed ml-4">
+          <div className="text-[13px] text-[#6b6894] font-medium">יום {dayOfWeek}</div>
+          <div>{formatted}</div>
+        </div>
+
         {/* Search */}
         <div className="glass flex items-center gap-2 px-4 py-2 w-64">
           <Search size={16} className="text-[#9b98b8]" />
