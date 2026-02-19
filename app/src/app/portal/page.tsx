@@ -3,24 +3,24 @@ import Link from "next/link";
 import {
   CheckCircle2, AlertTriangle, AlertCircle, ChevronLeft, FileCheck,
   Search, Bell, Calendar, FileText, Users, BarChart2, MessageCircle,
-  X, Clock, Download, ArrowLeft,
+  X, Clock, Download, Shield, Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/components/Toast";
 
 /* ── data ── */
 const categoryCards = [
-  { href: "/portal/status",    emoji: "✅", label: "האם אני בסדר?",  desc: "בדוק ציות ועמידה בדרישות" },
-  { href: "/portal/calendar",  emoji: "📅", label: "מה בקרוב?",      desc: "לוח שנה ותזכורות" },
-  { href: "/portal/documents", emoji: "📁", label: "המסמכים שלי",    desc: "מסמכים, אישורים והורדות" },
-  { href: "/portal/board",     emoji: "👥", label: "הועד שלי",       desc: "חברי ועד וישיבות" },
-  { href: "/portal/reports",   emoji: "📊", label: "דוחות ותקציב",   desc: "כספים, דוחות וניתוח" },
-  { href: "/portal/contact",   emoji: "💬", label: "דבר איתנו",      desc: "פנה למלווה שלך" },
+  { href: "/portal/status",    emoji: "✅", label: "האם אני בסדר?",  desc: "ציות ועמידה בדרישות",  icon: Shield,        gradient: "from-[#7c3aed] to-[#5b21b6]" },
+  { href: "/portal/calendar",  emoji: "📅", label: "מה בקרוב?",      desc: "לוח שנה ותזכורות",      icon: Calendar,      gradient: "from-[#2563eb] to-[#1d4ed8]" },
+  { href: "/portal/documents", emoji: "📁", label: "המסמכים שלי",    desc: "מסמכים ואישורים",       icon: FileText,      gradient: "from-[#0891b2] to-[#0e7490]" },
+  { href: "/portal/board",     emoji: "👥", label: "הועד שלי",       desc: "חברי ועד וישיבות",      icon: Users,         gradient: "from-[#7c3aed] to-[#6d28d9]" },
+  { href: "/portal/reports",   emoji: "📊", label: "דוחות ותקציב",   desc: "כספים וניתוח",          icon: BarChart2,     gradient: "from-[#059669] to-[#047857]" },
+  { href: "/portal/contact",   emoji: "💬", label: "דבר איתנו",      desc: "פנה למלווה שלך",        icon: MessageCircle, gradient: "from-[#d946ef] to-[#a21caf]" },
 ];
 
 const urgentTasks = [
-  { title: "לחדש את אישור ניהול תקין", desc: "האישור פג בעוד 14 יום. בלי זה לא ניתן לקבל מענקים.", days: 14, date: "05.03.2026", level: "urgent", action: "טפל עכשיו" },
-  { title: "לעדכן את התקנון – סעיף 12", desc: "נדרש עדכון קטן בגלל שינוי בחוק מינואר 2026.", days: 39, date: "31.03.2026", level: "soon", action: "התחל" },
+  { title: "לחדש את אישור ניהול תקין", desc: "האישור פג בעוד 14 יום. בלי זה לא ניתן לקבל מענקים.", days: 14, date: "05.03.2026", level: "urgent" },
+  { title: "לעדכן את התקנון – סעיף 12", desc: "נדרש עדכון קטן בגלל שינוי בחוק מינואר 2026.", days: 39, date: "31.03.2026", level: "soon" },
 ];
 
 const approvals = [
@@ -29,7 +29,7 @@ const approvals = [
 ];
 
 const calendarEvents = [
-  { title: "ישיבת ועד רבעונית", date: "28.02.2026", days: 9, color: "#5c3d9a" },
+  { title: "ישיבת ועד רבעונית", date: "28.02.2026", days: 9, color: "#7c3aed" },
   { title: "הגשת דוח שנתי לרשם", date: "31.03.2026", days: 40, color: "#d97706" },
   { title: "חידוש ביטוח אחריות", date: "15.04.2026", days: 55, color: "#2563eb" },
 ];
@@ -47,10 +47,10 @@ const completedTasks = [
 ];
 
 const progressBars = [
-  { label: "ממשל תאגידי", pct: 95, color: "#16a34a" },
+  { label: "ממשל תאגידי", pct: 95, color: "#7c3aed" },
   { label: "עמידה בדרישות", pct: 86, color: "#2563eb" },
   { label: "ניהול סיכונים", pct: 78, color: "#d97706" },
-  { label: "מול רשות המסים", pct: 90, color: "#5c3d9a" },
+  { label: "מול רשות המסים", pct: 90, color: "#059669" },
 ];
 
 type Status = "green" | "orange" | "red";
@@ -66,24 +66,19 @@ export default function PortalHomePage() {
     : status === "orange" ? "יש 2 פריטים שדורשים תשומת לב"
     : "נדרש טיפול דחוף";
 
-  const statusBg =
-    status === "green" ? "bg-[#f0fdf4] border-[#bbf7d0]"
-    : status === "orange" ? "bg-[#fffbeb] border-[#fde68a]"
-    : "bg-[#fef2f2] border-[#fecaca]";
-
   return (
-    <div className="min-h-screen" style={{ background: "#f4f6fb" }}>
+    <div className="min-h-screen" style={{ background: "#f8f9fc" }}>
 
       {/* ─── NOTIFICATION BAR ─── */}
       {notifVisible && (
-        <div className="bg-[#fffbeb] border-b border-[#fde68a] px-8 py-3 flex items-center justify-between">
+        <div className="anim-fade-down bg-gradient-to-l from-[#fef3c7] to-[#fffbeb] border-b border-[#fde68a] px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Bell size={16} className="text-[#d97706]" />
+            <div className="anim-pulse-glow w-2 h-2 rounded-full bg-[#d97706]" />
             <span className="text-[13px] text-[#92400e] font-medium">
               שלחנו לך הודעה על חידוש אישור ניהול תקין – יש לטפל עד 05.03.2026
             </span>
           </div>
-          <button onClick={() => setNotifVisible(false)} className="text-[#92400e]/60 hover:text-[#92400e]">
+          <button onClick={() => setNotifVisible(false)} className="text-[#92400e]/60 hover:text-[#92400e] transition-colors hover:rotate-90 duration-300">
             <X size={16} />
           </button>
         </div>
@@ -91,49 +86,82 @@ export default function PortalHomePage() {
 
       {/* ─── GRADIENT HEADER ─── */}
       <div
-        className="px-8 pt-8 pb-28 relative"
+        className="px-8 pt-8 pb-32 relative overflow-hidden anim-gradient"
         style={{
-          background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4c1d95 100%)",
+          background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 40%, #4c1d95 70%, #3b0764 100%)",
+          backgroundSize: "200% 200%",
         }}
       >
+        {/* decorative circles */}
+        <div className="absolute top-[-60px] left-[-40px] w-[200px] h-[200px] rounded-full bg-white/5 anim-float" />
+        <div className="absolute bottom-[-80px] right-[10%] w-[300px] h-[300px] rounded-full bg-white/[0.03] anim-float" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-[20%] right-[30%] w-[100px] h-[100px] rounded-full bg-white/[0.04] anim-float" style={{ animationDelay: "2s" }} />
+
         {/* top row */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/20">
+        <div className="relative z-10 flex items-center justify-between mb-10 anim-fade-down">
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 hover-glow">
             <Search size={16} className="text-white/60" />
             <input
               type="text"
               placeholder="חפש מסמך, משימה, דוח..."
-              className="bg-transparent text-white placeholder:text-white/50 text-[13px] outline-none w-56"
+              className="bg-transparent text-white placeholder:text-white/40 text-[13px] outline-none w-64"
             />
           </div>
-          <div className="text-[13px] text-white/70 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/20">
-            יום חמישי, 19.02.2026 · י״ט בשבט תשפ״ו
+          <div className="flex items-center gap-4">
+            <button className="relative p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all">
+              <Bell size={18} />
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#ef4444] text-[9px] text-white font-bold flex items-center justify-center anim-pulse-glow">
+                2
+              </div>
+            </button>
+            <div className="text-[13px] text-white/60 bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20">
+              יום חמישי, 19.02.2026 · י״ט בשבט תשפ״ו
+            </div>
           </div>
         </div>
 
         {/* greeting */}
-        <h1 className="text-[32px] font-bold text-white mb-2 font-[Frank_Ruhl_Libre,serif]">
-          שלום יוסי 👋
-        </h1>
-        <p className="text-[15px] text-white/80">
-          ברוך הבא לפורטל הניהול שלך · הנה מה שחשוב לדעת היום
-        </p>
+        <div className="relative z-10 anim-fade-up">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-[22px] font-bold text-white border border-white/30 anim-fade-scale delay-2">
+              יל
+            </div>
+            <div>
+              <h1 className="text-[30px] font-bold text-white font-[Frank_Ruhl_Libre,serif]">
+                שלום יוסי 👋
+              </h1>
+              <p className="text-[14px] text-white/70">
+                ברוך הבא לפורטל הניהול שלך · הנה מה שחשוב לדעת היום
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ─── CATEGORY CARDS (overlapping header) ─── */}
-      <div className="px-8 -mt-16 relative z-10 mb-8">
+      <div className="px-8 -mt-20 relative z-10 mb-8">
         <div className="grid grid-cols-6 gap-4">
-          {categoryCards.map((card) => (
+          {categoryCards.map((card, i) => (
             <Link
               key={card.href}
               href={card.href}
-              className="bg-white rounded-2xl p-5 text-center shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-[#e8ecf4] hover:shadow-[0_8px_30px_rgba(92,61,154,0.15)] hover:border-[#5c3d9a]/30 transition-all group"
+              className={`anim-fade-up delay-${i + 1} hover-lift group relative bg-white rounded-2xl p-5 text-center border border-[#e8ecf4] overflow-hidden`}
+              style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}
             >
-              <div className="text-3xl mb-3">{card.emoji}</div>
-              <div className="text-[14px] font-bold text-[#1e293b] mb-1 group-hover:text-[#5c3d9a] transition-colors">
-                {card.label}
+              {/* hover gradient overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`} />
+              {/* content */}
+              <div className="relative z-10">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-[#f3effa] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
+                  <card.icon size={22} className="text-[#7c3aed] group-hover:text-white transition-colors duration-500" />
+                </div>
+                <div className="text-[14px] font-bold text-[#1e293b] mb-1 group-hover:text-white transition-colors duration-500">
+                  {card.label}
+                </div>
+                <div className="text-[11px] text-[#64748b] leading-relaxed group-hover:text-white/80 transition-colors duration-500">
+                  {card.desc}
+                </div>
               </div>
-              <div className="text-[11px] text-[#64748b] leading-relaxed">{card.desc}</div>
             </Link>
           ))}
         </div>
@@ -142,63 +170,82 @@ export default function PortalHomePage() {
       <div className="px-8 pb-10 max-w-[1200px]">
 
         {/* ─── STATUS CARD WITH PROGRESS BARS ─── */}
-        <div className={`rounded-2xl p-6 mb-6 border-2 ${statusBg} shadow-sm`}>
-          <div className="flex items-start justify-between gap-6 mb-5">
+        <div className="anim-fade-up delay-7 bg-white rounded-2xl p-6 mb-6 border border-[#e8ecf4] relative overflow-hidden" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+          {/* accent line */}
+          <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-l from-[#7c3aed] via-[#a78bfa] to-[#c4b5fd]" />
+
+          <div className="flex items-start justify-between gap-6 mb-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">{status === "green" ? "😌" : status === "orange" ? "🤔" : "⚠️"}</span>
-                <h2 className="text-xl font-bold text-[#1e293b]">{statusText}</h2>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                  status === "green" ? "bg-[#f0fdf4]" : status === "orange" ? "bg-[#fffbeb]" : "bg-[#fef2f2]"
+                }`}>
+                  {status === "green" ? <CheckCircle2 size={22} className="text-[#16a34a]" /> :
+                   status === "orange" ? <AlertTriangle size={22} className="text-[#d97706]" /> :
+                   <AlertCircle size={22} className="text-[#dc2626]" />}
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-[#1e293b]">{statusText}</h2>
+                  <p className="text-[13px] text-[#64748b]">
+                    {status === "orange" ? "2 דברים לטפל בחודש הקרוב" : "אין בעיות דחופות"}
+                  </p>
+                </div>
               </div>
-              <p className="text-[14px] text-[#64748b]">
-                {status === "orange"
-                  ? "יש 2 דברים שצריך לטפל בהם בחודש הקרוב – תראה למטה."
-                  : "אין בעיות דחופות כרגע."}
-              </p>
             </div>
-            <div className="text-center flex-shrink-0">
-              <div className="text-[42px] font-bold text-[#1e293b]">{score}</div>
-              <div className="text-[11px] text-[#64748b]">מתוך 100</div>
+            <div className="text-center flex-shrink-0 anim-count delay-8">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#5b21b6] flex flex-col items-center justify-center text-white" style={{ boxShadow: "0 8px 24px rgba(124, 58, 237, 0.3)" }}>
+                <div className="text-[28px] font-bold leading-none">{score}</div>
+                <div className="text-[10px] text-white/70 mt-0.5">מתוך 100</div>
+              </div>
             </div>
           </div>
+
           {/* progress bars */}
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-            {progressBars.map((bar) => (
-              <div key={bar.label}>
-                <div className="flex items-center justify-between mb-1">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            {progressBars.map((bar, i) => (
+              <div key={bar.label} className={`anim-fade-up delay-${i + 3}`}>
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[12px] font-medium text-[#1e293b]">{bar.label}</span>
                   <span className="text-[12px] font-bold" style={{ color: bar.color }}>{bar.pct}%</span>
                 </div>
-                <div className="h-2 bg-[#e2e8f0] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${bar.pct}%`, background: bar.color }} />
+                <div className="h-2.5 bg-[#f1f5f9] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full anim-progress"
+                    style={{
+                      width: `${bar.pct}%`,
+                      background: `linear-gradient(90deg, ${bar.color}, ${bar.color}cc)`,
+                      animationDelay: `${0.3 + i * 0.15}s`,
+                    }}
+                  />
                 </div>
               </div>
             ))}
           </div>
-          <Link
-            href="/portal/status"
-            className="inline-flex items-center gap-1 mt-4 text-[13px] font-semibold text-[#5c3d9a] hover:underline"
-          >
+
+          <Link href="/portal/status" className="inline-flex items-center gap-1 mt-5 text-[13px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors">
             פרטים מלאים <ChevronLeft size={14} />
           </Link>
         </div>
 
         {/* ─── APPROVALS WAITING ─── */}
         {approvals.length > 0 && (
-          <div className="bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] shadow-sm">
-            <h3 className="text-base font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-              <Clock size={18} className="text-[#5c3d9a]" /> ממתין לאישורך
+          <div className="anim-fade-up delay-4 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] anim-border-pulse" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+            <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
+                <Clock size={16} className="text-[#7c3aed]" />
+              </div>
+              ממתין לאישורך
             </h3>
             <div className="space-y-3">
               {approvals.map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-[#f3effa] border border-[#5c3d9a]/10">
+                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-4 rounded-xl bg-gradient-to-l from-[#f3effa] to-white border border-[#e8ecf4] hover-glow`}>
                   <div>
                     <div className="font-semibold text-[14px] text-[#1e293b]">{item.title}</div>
                     <div className="text-[12px] text-[#64748b]">{item.date}</div>
                   </div>
                   <button
                     onClick={() => showSuccess("אישור נשלח!")}
-                    className="px-4 py-2 rounded-xl text-[13px] font-semibold text-white transition-colors"
-                    style={{ background: "#5c3d9a" }}
+                    className="px-5 py-2 rounded-xl text-[13px] font-semibold text-white bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:shadow-[0_4px_16px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-105"
                   >
                     אשר ✓
                   </button>
@@ -210,19 +257,23 @@ export default function PortalHomePage() {
 
         {/* ─── URGENT TASKS ─── */}
         <div className="mb-6">
-          <h3 className="text-base font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <AlertTriangle size={18} className="text-[#d97706]" /> מה צריך לטפל עכשיו
+          <h3 className="anim-fade-up text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#fffbeb] flex items-center justify-center">
+              <AlertTriangle size={16} className="text-[#d97706]" />
+            </div>
+            מה צריך לטפל עכשיו
           </h3>
           <div className="space-y-4">
             {urgentTasks.map((task, i) => (
               <div
                 key={i}
-                className={`bg-white rounded-2xl p-5 border border-[#e8ecf4] shadow-sm flex items-center justify-between gap-6 ${
-                  task.level === "urgent" ? "border-r-4 border-r-[#dc2626]" : "border-r-4 border-r-[#d97706]"
+                className={`anim-fade-up delay-${i + 2} bg-white rounded-2xl p-5 border border-[#e8ecf4] flex items-center justify-between gap-6 hover-lift relative overflow-hidden ${
+                  task.level === "urgent" ? "border-r-4 border-r-[#ef4444]" : "border-r-4 border-r-[#f59e0b]"
                 }`}
+                style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}
               >
                 <div className="flex items-center gap-4 flex-1">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${
                     task.level === "urgent" ? "bg-[#fef2f2]" : "bg-[#fffbeb]"
                   }`}>
                     {task.level === "urgent" ? "🛡️" : "📜"}
@@ -232,18 +283,17 @@ export default function PortalHomePage() {
                     <div className="text-[13px] text-[#64748b]">{task.desc}</div>
                   </div>
                 </div>
-                <div className="text-center flex-shrink-0">
-                  <div className={`text-2xl font-bold ${task.level === "urgent" ? "text-[#dc2626]" : "text-[#d97706]"}`}>
+                <div className="text-center flex-shrink-0 anim-count" style={{ animationDelay: `${0.5 + i * 0.2}s` }}>
+                  <div className={`text-2xl font-bold ${task.level === "urgent" ? "text-[#ef4444]" : "text-[#f59e0b]"}`}>
                     {task.days}
                   </div>
                   <div className="text-[10px] text-[#64748b]">ימים</div>
                 </div>
                 <button
                   onClick={() => showSuccess("כל הכבוד, התחלת לטפל בזה!")}
-                  className="px-4 py-2 rounded-xl text-[13px] font-semibold text-white flex-shrink-0 transition-colors"
-                  style={{ background: "#5c3d9a" }}
+                  className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white flex-shrink-0 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:shadow-[0_4px_16px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-105"
                 >
-                  {task.action} →
+                  טפל עכשיו →
                 </button>
               </div>
             ))}
@@ -253,18 +303,21 @@ export default function PortalHomePage() {
         {/* ─── TWO-COLUMN: CALENDAR + DOCS ─── */}
         <div className="grid grid-cols-2 gap-6 mb-6">
           {/* Calendar */}
-          <div className="bg-white rounded-2xl p-5 border border-[#e8ecf4] shadow-sm">
+          <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-[#1e293b] flex items-center gap-2">
-                <Calendar size={18} className="text-[#5c3d9a]" /> מה בקרוב
+              <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
+                  <Calendar size={16} className="text-[#7c3aed]" />
+                </div>
+                מה בקרוב
               </h3>
-              <Link href="/portal/calendar" className="text-[12px] font-semibold text-[#5c3d9a] hover:underline flex items-center gap-1">
+              <Link href="/portal/calendar" className="text-[12px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors flex items-center gap-1">
                 הכל <ChevronLeft size={12} />
               </Link>
             </div>
             <div className="space-y-3">
               {calendarEvents.map((ev, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-[#f8f9fc]">
+                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#7c3aed]/20 transition-all`}>
                   <div className="flex items-center gap-3">
                     <div className="w-1.5 h-10 rounded-full" style={{ background: ev.color }} />
                     <div>
@@ -272,7 +325,7 @@ export default function PortalHomePage() {
                       <div className="text-[11px] text-[#64748b]">{ev.date}</div>
                     </div>
                   </div>
-                  <span className="text-[12px] font-bold text-[#5c3d9a] bg-[#f3effa] px-3 py-1 rounded-lg">
+                  <span className="text-[12px] font-bold text-[#7c3aed] bg-[#f3effa] px-3 py-1.5 rounded-xl">
                     {ev.days} ימים
                   </span>
                 </div>
@@ -281,20 +334,23 @@ export default function PortalHomePage() {
           </div>
 
           {/* Recent Documents */}
-          <div className="bg-white rounded-2xl p-5 border border-[#e8ecf4] shadow-sm">
+          <div className="anim-fade-up delay-4 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-[#1e293b] flex items-center gap-2">
-                <FileText size={18} className="text-[#5c3d9a]" /> מסמכים אחרונים
+              <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
+                  <FileText size={16} className="text-[#7c3aed]" />
+                </div>
+                מסמכים אחרונים
               </h3>
-              <Link href="/portal/documents" className="text-[12px] font-semibold text-[#5c3d9a] hover:underline flex items-center gap-1">
+              <Link href="/portal/documents" className="text-[12px] font-semibold text-[#7c3aed] hover:text-[#5b21b6] transition-colors flex items-center gap-1">
                 הכל <ChevronLeft size={12} />
               </Link>
             </div>
             <div className="space-y-2">
               {recentDocs.map((doc, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-[#f8f9fc] transition-colors">
+                <div key={i} className={`anim-fade-right delay-${i + 2} flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f8f9fc] transition-all border border-transparent hover:border-[#e8ecf4]`}>
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-[#f3effa] flex items-center justify-center text-[11px] font-bold text-[#5c3d9a]">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f3effa] to-[#ede9fe] flex items-center justify-center text-[10px] font-bold text-[#7c3aed]">
                       {doc.type}
                     </div>
                     <div>
@@ -302,7 +358,7 @@ export default function PortalHomePage() {
                       <div className="text-[11px] text-[#64748b]">{doc.date}</div>
                     </div>
                   </div>
-                  <button className="p-2 rounded-lg hover:bg-[#f3effa] text-[#5c3d9a]">
+                  <button className="p-2.5 rounded-xl hover:bg-[#f3effa] text-[#7c3aed] transition-all hover:scale-110">
                     <Download size={14} />
                   </button>
                 </div>
@@ -312,23 +368,32 @@ export default function PortalHomePage() {
         </div>
 
         {/* ─── QUICK ACTIONS ─── */}
-        <div className="bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] shadow-sm">
-          <h3 className="text-base font-bold text-[#1e293b] mb-4">מה אני יכול לעשות?</h3>
-          <div className="grid grid-cols-4 gap-3">
+        <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4]" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+          <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#f3effa] flex items-center justify-center">
+              <Sparkles size={16} className="text-[#7c3aed]" />
+            </div>
+            מה אני יכול לעשות?
+          </h3>
+          <div className="grid grid-cols-4 gap-4">
             {[
-              { icon: FileText, label: "צור פרוטוקול", bg: "#f3effa", color: "#5c3d9a" },
-              { icon: BarChart2, label: "הפק דוח", bg: "#f0fdf4", color: "#16a34a" },
-              { icon: FileCheck, label: "העלה מסמך", bg: "#eff6ff", color: "#2563eb" },
-              { icon: AlertCircle, label: "דווח על בעיה", bg: "#fef2f2", color: "#dc2626" },
-            ].map((qa) => (
+              { icon: FileText, label: "צור פרוטוקול", gradient: "from-[#7c3aed] to-[#5b21b6]" },
+              { icon: BarChart2, label: "הפק דוח", gradient: "from-[#059669] to-[#047857]" },
+              { icon: FileCheck, label: "העלה מסמך", gradient: "from-[#2563eb] to-[#1d4ed8]" },
+              { icon: AlertCircle, label: "דווח על בעיה", gradient: "from-[#dc2626] to-[#b91c1c]" },
+            ].map((qa, i) => (
               <button
                 key={qa.label}
                 onClick={() => showSuccess(`${qa.label} – בקרוב!`)}
-                className="flex flex-col items-center gap-3 p-5 rounded-xl border border-[#e8ecf4] hover:shadow-md transition-all"
-                style={{ background: qa.bg }}
+                className={`anim-fade-scale delay-${i + 2} group relative flex flex-col items-center gap-3 p-6 rounded-2xl border border-[#e8ecf4] bg-white overflow-hidden transition-all duration-300 hover:border-transparent`}
               >
-                <qa.icon size={24} style={{ color: qa.color }} />
-                <span className="text-[13px] font-semibold text-[#1e293b]">{qa.label}</span>
+                <div className={`absolute inset-0 bg-gradient-to-br ${qa.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl`} />
+                <div className="relative z-10 w-12 h-12 rounded-2xl bg-[#f3effa] flex items-center justify-center group-hover:bg-white/20 transition-all duration-500">
+                  <qa.icon size={22} className="text-[#7c3aed] group-hover:text-white transition-colors duration-500" />
+                </div>
+                <span className="relative z-10 text-[13px] font-semibold text-[#1e293b] group-hover:text-white transition-colors duration-500">
+                  {qa.label}
+                </span>
               </button>
             ))}
           </div>
@@ -336,18 +401,23 @@ export default function PortalHomePage() {
 
         {/* ─── COMPLETED ─── */}
         <div className="mb-6">
-          <h3 className="text-base font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <FileCheck size={18} className="text-[#16a34a]" /> מה הושלם לאחרונה
+          <h3 className="anim-fade-up text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#f0fdf4] flex items-center justify-center">
+              <CheckCircle2 size={16} className="text-[#16a34a]" />
+            </div>
+            מה הושלם לאחרונה
           </h3>
           <div className="grid grid-cols-2 gap-4">
             {completedTasks.map((item, i) => (
-              <div key={i} className="bg-white rounded-2xl p-5 border border-[#bbf7d0] shadow-sm">
-                <div className="flex items-center gap-2 mb-1">
+              <div key={i} className={`anim-fade-up delay-${i + 2} bg-white rounded-2xl p-5 border border-[#bbf7d0] hover-lift`} style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+                <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 size={18} className="text-[#16a34a]" />
-                  <span className="font-semibold text-[#1e293b]">{item.title}</span>
+                  <span className="font-bold text-[14px] text-[#1e293b]">{item.title}</span>
                 </div>
                 <div className="text-[13px] text-[#64748b] mb-2">{item.subtitle}</div>
-                <div className="text-[12px] font-medium text-[#16a34a]">{item.feedback}</div>
+                <div className="text-[12px] font-semibold text-[#16a34a] bg-[#f0fdf4] inline-block px-3 py-1 rounded-lg">
+                  {item.feedback}
+                </div>
               </div>
             ))}
           </div>
@@ -355,25 +425,34 @@ export default function PortalHomePage() {
 
         {/* ─── HELP BANNER ─── */}
         <div
-          className="rounded-2xl p-6 flex items-center justify-between"
-          style={{ background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)" }}
+          className="anim-fade-up delay-6 rounded-2xl p-6 flex items-center justify-between relative overflow-hidden anim-gradient"
+          style={{
+            background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4c1d95 100%)",
+            backgroundSize: "200% 200%",
+          }}
         >
-          <div>
-            <h3 className="text-lg font-bold text-white mb-1">צריך עזרה? דבר איתנו</h3>
-            <p className="text-[13px] text-white/80">המלווה שלך כאן בשבילך – WhatsApp, אימייל או טופס</p>
+          {/* decorative */}
+          <div className="absolute top-[-30px] left-[10%] w-[120px] h-[120px] rounded-full bg-white/5 anim-float" />
+          <div className="absolute bottom-[-40px] right-[20%] w-[80px] h-[80px] rounded-full bg-white/[0.07] anim-float" style={{ animationDelay: "1.5s" }} />
+
+          <div className="relative z-10">
+            <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+              <MessageCircle size={20} /> צריך עזרה? דבר איתנו
+            </h3>
+            <p className="text-[13px] text-white/70">המלווה שלך כאן בשבילך – WhatsApp, אימייל או טופס</p>
           </div>
-          <div className="flex gap-3">
+          <div className="relative z-10 flex gap-3">
             <a
               href="https://wa.me/972501234567"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#25D366] text-white hover:bg-[#1fb855] transition-colors"
+              className="px-6 py-3 rounded-xl text-[13px] font-semibold bg-[#25D366] text-white hover:bg-[#1fb855] hover:scale-105 transition-all duration-300 shadow-lg"
             >
               WhatsApp 💬
             </a>
             <Link
               href="/portal/contact"
-              className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-white/20 text-white border border-white/30 hover:bg-white/30 transition-colors"
+              className="px-6 py-3 rounded-xl text-[13px] font-semibold bg-white/15 text-white border border-white/25 hover:bg-white/25 hover:scale-105 transition-all duration-300 backdrop-blur-sm"
             >
               פנה למלווה
             </Link>

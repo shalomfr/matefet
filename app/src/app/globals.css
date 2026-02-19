@@ -426,3 +426,70 @@
 .animate-fadeUp-2 { animation: fadeUp 0.5s ease 0.1s both; }
 .animate-fadeUp-3 { animation: fadeUp 0.5s ease 0.15s both; }
 .animate-fadeUp-4 { animation: fadeUp 0.5s ease 0.2s both; }
+
+/* ─── Admin Enhanced Animations ─── */
+@keyframes adminSlideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes adminScaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes adminGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 124, 255, 0.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(74, 124, 255, 0); }
+}
+
+@keyframes adminPulseBar {
+  from { width: 0%; }
+}
+
+@keyframes shimmerDark {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.admin-anim-up {
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-anim-slide {
+  animation: adminSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-anim-scale {
+  animation: adminScaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-anim-glow {
+  animation: adminGlow 2s ease-in-out infinite;
+}
+
+.admin-anim-bar {
+  animation: adminPulseBar 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.admin-delay-1 { animation-delay: 0.05s; }
+.admin-delay-2 { animation-delay: 0.1s; }
+.admin-delay-3 { animation-delay: 0.15s; }
+.admin-delay-4 { animation-delay: 0.2s; }
+.admin-delay-5 { animation-delay: 0.25s; }
+.admin-delay-6 { animation-delay: 0.3s; }
+
+.admin-hover-lift {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.admin-hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.admin-hover-glow {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.admin-hover-glow:hover {
+  box-shadow: 0 0 0 2px rgba(74, 124, 255, 0.2), 0 8px 20px rgba(0, 0, 0, 0.15);
+}
