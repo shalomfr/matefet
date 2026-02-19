@@ -10,17 +10,17 @@ const organizations = [
 
 export default function AdminOrganizationsPage() {
   return (
-    <>
+    <div className="px-8 pb-8">
       <Topbar title="ניהול ארגונים" subtitle="כל העמותות שמעטפת משרתת" />
 
-      <div className="card-dark p-5 mb-6 flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#4a7cff]/10 flex items-center justify-center">
-            <Building2 size={22} className="text-[#4a7cff]" />
+          <div className="w-12 h-12 rounded-xl bg-[#f3effa] flex items-center justify-center">
+            <Building2 size={22} className="text-[#7c3aed]" />
           </div>
           <div>
-            <div className="text-lg font-bold text-[--color-text]">{organizations.length} ארגונים</div>
-            <div className="text-sm text-[--color-muted]">ניהול עמותות ומנויים</div>
+            <div className="text-lg font-bold text-[#1e293b]">{organizations.length} ארגונים</div>
+            <div className="text-sm text-[#64748b]">ניהול עמותות ומנויים</div>
           </div>
         </div>
         <button className="btn-primary flex items-center gap-2">
@@ -28,25 +28,25 @@ export default function AdminOrganizationsPage() {
         </button>
       </div>
 
-      <div className="card-dark overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#e8ecf4] overflow-hidden" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[--color-border]">
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">ארגון</th>
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">מס׳ רישום</th>
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">תוכנית</th>
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">תוקף מנוי</th>
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">סטטוס</th>
-              <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">פעולות</th>
+            <tr className="border-b border-[#e8ecf4]">
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">ארגון</th>
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">מס׳ רישום</th>
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">תוכנית</th>
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">תוקף מנוי</th>
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">סטטוס</th>
+              <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">פעולות</th>
             </tr>
           </thead>
           <tbody>
             {organizations.map((org, i) => (
-              <tr key={org.id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
-                <td className="p-4 text-[13px] font-medium text-[--color-text]">{org.name}</td>
-                <td className="p-4 text-[13px] text-[--color-muted]">{org.id}</td>
-                <td className="p-4 text-[13px] text-[--color-text]">{org.plan}</td>
-                <td className="p-4 text-[13px] text-[--color-muted]">{org.expiry}</td>
+              <tr key={org.id} className="border-b border-[#e8ecf4]/50 hover:bg-[#f8f9fc]">
+                <td className="p-4 text-[13px] font-medium text-[#1e293b]">{org.name}</td>
+                <td className="p-4 text-[13px] text-[#64748b]">{org.id}</td>
+                <td className="p-4 text-[13px] text-[#1e293b]">{org.plan}</td>
+                <td className="p-4 text-[13px] text-[#64748b]">{org.expiry}</td>
                 <td className="p-4">
                   <span className={`badge ${org.status === "פעיל" ? "badge-success" : "badge-warning"}`}>
                     {org.status}
@@ -55,7 +55,7 @@ export default function AdminOrganizationsPage() {
                 <td className="p-4">
                   <a
                     href={`/portal?org=${org.id}`}
-                    className="inline-flex items-center gap-1.5 text-[12px] text-[#4a7cff] font-semibold hover:underline"
+                    className="inline-flex items-center gap-1.5 text-[12px] text-[#7c3aed] font-semibold hover:underline"
                   >
                     <ExternalLink size={12} /> פתח בפורטל
                   </a>
@@ -65,6 +65,6 @@ export default function AdminOrganizationsPage() {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }

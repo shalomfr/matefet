@@ -78,17 +78,17 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <>
+    <div className="px-8 pb-8">
       <Topbar title="משתמשים והרשאות" subtitle="עובדי החברה + מנהלי עמותות" />
 
-      <div className="card-dark p-5 mb-6 flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#5c3d9a]/10">
-            <Users size={22} className="text-[#5c3d9a]" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#7c3aed]/10">
+            <Users size={22} className="text-[#7c3aed]" />
           </div>
           <div>
-            <div className="text-lg font-bold text-[--color-text]">משתמשי מערכת</div>
-            <div className="text-sm text-[--color-muted]">Admin · מנהלי עמותות</div>
+            <div className="text-lg font-bold text-[#1e293b]">משתמשי מערכת</div>
+            <div className="text-sm text-[#64748b]">Admin · מנהלי עמותות</div>
           </div>
         </div>
         <a href="/register" className="btn-primary flex items-center gap-2">
@@ -107,8 +107,8 @@ export default function AdminUsersPage() {
             onClick={() => setTab(key as "pending" | "active" | "all")}
             className={`px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium transition-colors ${
               tab === key
-                ? "bg-[#5c3d9a] text-white"
-                : "bg-[--color-surface] border border-[--color-border] text-[--color-text] hover:border-[#5c3d9a]/50"
+                ? "bg-[#7c3aed] text-white"
+                : "bg-white border border-[#e8ecf4] text-[#1e293b] hover:border-[#7c3aed]/50"
             }`}
           >
             <Icon size={16} />
@@ -117,32 +117,32 @@ export default function AdminUsersPage() {
         ))}
       </div>
 
-      <div className="card-dark overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#e8ecf4] overflow-hidden" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         {loading ? (
-          <div className="p-8 text-center text-[--color-muted]">טוען...</div>
+          <div className="p-8 text-center text-[#64748b]">טוען...</div>
         ) : users.length === 0 ? (
-          <div className="p-8 text-center text-[--color-muted]">אין משתמשים</div>
+          <div className="p-8 text-center text-[#64748b]">אין משתמשים</div>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[--color-border]">
-                <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+              <tr className="border-b border-[#e8ecf4]">
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   שם
                 </th>
-                <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   תפקיד
                 </th>
-                <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   אימייל
                 </th>
-                <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   ארגון
                 </th>
-                <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   סטטוס
                 </th>
                 {tab === "pending" && (
-                  <th className="text-right p-4 text-[11px] font-semibold text-[--color-muted] uppercase tracking-wider">
+                  <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                     פעולות
                   </th>
                 )}
@@ -152,9 +152,9 @@ export default function AdminUsersPage() {
               {users.map((user) => (
                 <tr
                   key={user.id}
-                  className="border-b border-[--color-border]/50 hover:bg-[--color-surface]/50"
+                  className="border-b border-[#e8ecf4]/50 hover:bg-[#f8f9fc]"
                 >
-                  <td className="p-4 text-[13px] font-medium text-[--color-text]">{user.name}</td>
+                  <td className="p-4 text-[13px] font-medium text-[#1e293b]">{user.name}</td>
                   <td className="p-4">
                     <span
                       className={`badge ${
@@ -164,8 +164,8 @@ export default function AdminUsersPage() {
                       {roleLabel(user.role)}
                     </span>
                   </td>
-                  <td className="p-4 text-[13px] text-[--color-muted]">{user.email}</td>
-                  <td className="p-4 text-[13px] text-[--color-text]">
+                  <td className="p-4 text-[13px] text-[#64748b]">{user.email}</td>
+                  <td className="p-4 text-[13px] text-[#1e293b]">
                     {user.organizationName}
                     {user.organizationNumber !== "–" && ` (${user.organizationNumber})`}
                   </td>
@@ -206,6 +206,6 @@ export default function AdminUsersPage() {
           </table>
         )}
       </div>
-    </>
+    </div>
   );
 }
