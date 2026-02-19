@@ -9,9 +9,6 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const path = req.nextUrl.pathname;
 
-        // bypass auth in dev / demo mode
-        if (process.env.BYPASS_AUTH === "true") return true;
-
         if (path.startsWith("/admin")) {
           return token?.role === "ADMIN";
         }
