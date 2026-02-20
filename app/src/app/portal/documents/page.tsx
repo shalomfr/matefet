@@ -11,7 +11,7 @@ const documents = [
 
 export default function PortalDocumentsPage() {
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="המסמכים שלי" subtitle="ספריית מסמכים – תקנון, אישורים, פרוטוקולים" />
 
       <div className="max-w-[800px]">

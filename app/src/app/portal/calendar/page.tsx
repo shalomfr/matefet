@@ -11,7 +11,7 @@ const upcomingEvents = [
 
 export default function PortalCalendarPage() {
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="מה מתקרב?" subtitle="לוח שנה רגולטורי – דדליינים ואירועים" />
 
       <div className="max-w-[800px]">

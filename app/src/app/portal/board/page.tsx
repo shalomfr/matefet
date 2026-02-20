@@ -37,7 +37,7 @@ function getRoleIcon(role: string) {
 
 export default function PortalBoardPage() {
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="הועד שלי" subtitle="חברי ועד, ישיבות ופרוטוקולים" />
 
       {/* Encouragement */}
@@ -50,7 +50,7 @@ export default function PortalBoardPage() {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Board Members */}
         <div className="anim-fade-up delay-1 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">

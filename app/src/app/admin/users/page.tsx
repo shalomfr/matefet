@@ -78,7 +78,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="משתמשים והרשאות" subtitle="עובדי החברה + מנהלי עמותות" />
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>

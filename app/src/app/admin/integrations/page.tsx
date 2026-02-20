@@ -21,7 +21,7 @@ export default function AdminIntegrationsPage() {
   const connectedCount = integrations.filter((i) => i.status === "connected").length;
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="אינטגרציות" subtitle="ניהול חיבורי שירותים חיצוניים" />
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
@@ -47,7 +47,7 @@ export default function AdminIntegrationsPage() {
       {categories.map((cat) => (
         <div key={cat} className="mb-6">
           <h3 className="text-sm font-bold text-[#64748b] mb-3 mr-1">{cat}</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {integrations
               .filter((i) => i.category === cat)
               .map((integration) => (

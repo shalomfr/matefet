@@ -1,8 +1,9 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut } from "lucide-react";
+import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut, Menu, X } from "lucide-react";
 
 const navItems = [
   { href: "/portal", icon: Home, label: "המצב שלי" },
@@ -16,94 +17,123 @@ const navItems = [
 
 export default function PortalSidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside
-      className="w-60 h-screen fixed right-0 top-0 flex flex-col z-40"
-      style={{
-        background: "#ffffff",
-        borderLeft: "1px solid #e8ecf4",
-        boxShadow: "-4px 0 24px rgba(0,0,0,0.03)",
-      }}
-    >
-      {/* Logo / Brand */}
-      <div className="px-6 pt-7 pb-5 border-b border-[#e8ecf4]">
-        <div className="flex items-center gap-3 mb-1">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[15px] font-bold"
-            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
-          >
-            מ
-          </div>
-          <div>
-            <h1 className="text-[18px] font-bold text-[#1e293b] leading-tight">
-              מעטפת
-            </h1>
-            <p className="text-[10px] text-[#94a3b8] font-medium">בסיעתא דשמיא</p>
-          </div>
-        </div>
-      </div>
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed top-4 right-4 z-50 md:hidden w-10 h-10 rounded-xl bg-white border border-[#e8ecf4] flex items-center justify-center shadow-md"
+      >
+        <Menu size={20} className="text-[#1e293b]" />
+      </button>
 
-      {/* Organization Info */}
-      <div className="px-4 py-3">
-        <div className="bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3">
-          <div className="text-[10px] text-[#94a3b8] mb-0.5">הארגון שלי</div>
-          <div className="text-[13px] font-semibold text-[#1e293b]">עמותת אור לציון</div>
-          <div className="text-[10px] text-[#94a3b8] mt-0.5">מס׳ עמותה: 580123456</div>
-        </div>
-      </div>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 overflow-y-auto py-1">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/portal" && pathname.startsWith(item.href));
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl mb-1 text-[14px] transition-all ${
-                isActive
-                  ? "bg-[#eff6ff] text-[#1e40af] border-r-[3px] border-[#2563eb] font-semibold"
-                  : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f8f9fc] font-medium"
-              }`}
+      <aside
+        className={`w-60 h-screen fixed right-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-in-out
+          ${mobileOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0`}
+        style={{
+          background: "#ffffff",
+          borderLeft: "1px solid #e8ecf4",
+          boxShadow: "-4px 0 24px rgba(0,0,0,0.03)",
+        }}
+      >
+        {/* Logo / Brand */}
+        <div className="px-6 pt-7 pb-5 border-b border-[#e8ecf4]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-[15px] font-bold"
+                style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
+              >
+                מ
+              </div>
+              <div>
+                <h1 className="text-[18px] font-bold text-[#1e293b] leading-tight">
+                  מעטפת
+                </h1>
+                <p className="text-[10px] text-[#94a3b8] font-medium">בסיעתא דשמיא</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="md:hidden p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]"
             >
-              <item.icon
-                size={18}
-                strokeWidth={isActive ? 2.2 : 1.7}
-                className={isActive ? "text-[#2563eb]" : ""}
-              />
-              <span className="flex-1">{item.label}</span>
-              {isActive && (
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2563eb]" />
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User Footer */}
-      <div className="p-4 border-t border-[#e8ecf4]">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
-          >
-            יל
+              <X size={18} />
+            </button>
           </div>
-          <div className="flex-1">
-            <div className="text-[13px] font-semibold text-[#1e293b]">יוסי לוי</div>
-            <div className="text-[10px] text-[#94a3b8]">מנהל עמותה</div>
-          </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="p-2 rounded-lg hover:bg-[#fef2f2] text-[#94a3b8] hover:text-[#ef4444] transition-colors"
-          >
-            <LogOut size={16} />
-          </button>
         </div>
-      </div>
-    </aside>
+
+        {/* Organization Info */}
+        <div className="px-4 py-3">
+          <div className="bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3">
+            <div className="text-[10px] text-[#94a3b8] mb-0.5">הארגון שלי</div>
+            <div className="text-[13px] font-semibold text-[#1e293b]">עמותת אור לציון</div>
+            <div className="text-[10px] text-[#94a3b8] mt-0.5">מס׳ עמותה: 580123456</div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 overflow-y-auto py-1">
+          {navItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/portal" && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl mb-1 text-[14px] transition-all ${
+                  isActive
+                    ? "bg-[#eff6ff] text-[#1e40af] border-r-[3px] border-[#2563eb] font-semibold"
+                    : "text-[#64748b] hover:text-[#1e293b] hover:bg-[#f8f9fc] font-medium"
+                }`}
+              >
+                <item.icon
+                  size={18}
+                  strokeWidth={isActive ? 2.2 : 1.7}
+                  className={isActive ? "text-[#2563eb]" : ""}
+                />
+                <span className="flex-1">{item.label}</span>
+                {isActive && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#2563eb]" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Footer */}
+        <div className="p-4 border-t border-[#e8ecf4]">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+              style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
+            >
+              יל
+            </div>
+            <div className="flex-1">
+              <div className="text-[13px] font-semibold text-[#1e293b]">יוסי לוי</div>
+              <div className="text-[10px] text-[#94a3b8]">מנהל עמותה</div>
+            </div>
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="p-2 rounded-lg hover:bg-[#fef2f2] text-[#94a3b8] hover:text-[#ef4444] transition-colors"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

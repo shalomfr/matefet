@@ -60,7 +60,7 @@ export default function PortalHomePage() {
     : "נדרש טיפול דחוף";
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="הפורטל שלי" subtitle="שלום יוסי · עמותת אור לציון" />
 
       {/* ─── NOTIFICATION BAR ─── */}
@@ -81,7 +81,7 @@ export default function PortalHomePage() {
       )}
 
       {/* ─── STAT CARDS ─── */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="anim-fade-scale delay-1"><StatCard icon={Shield} label="ציון ניהול תקין" value={String(score)} color="#2563eb" /></div>
         <div className="anim-fade-scale delay-2"><StatCard icon={AlertTriangle} label="משימות פתוחות" value={String(urgentTasks.length)} color="#d97706" /></div>
         <div className="anim-fade-scale delay-3"><StatCard icon={Calendar} label="ישיבה הבאה" value="9 ימים" color="#2563eb" /></div>
@@ -112,7 +112,7 @@ export default function PortalHomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
           {progressBars.map((bar, i) => (
             <div key={bar.label} className={`anim-fade-up delay-${i + 3}`}>
               <div className="flex items-center justify-between mb-1.5">
@@ -139,7 +139,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── APPROVALS + URGENT TASKS ─── */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Approvals */}
         <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
@@ -201,7 +201,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── TWO-COLUMN: CALENDAR + DOCS ─── */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Calendar */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center justify-between mb-4">
@@ -268,7 +268,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── QUICK ACTIONS + COMPLETED ─── */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Quick Actions */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">

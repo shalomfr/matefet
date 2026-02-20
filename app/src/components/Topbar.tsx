@@ -13,19 +13,19 @@ export default function Topbar({ title, subtitle }: { title: string; subtitle?: 
   const { dayOfWeek, formatted } = getHebrewDate();
 
   return (
-    <header className="flex items-start justify-between mb-8">
-      <div>
-        <h2 className="text-[28px] font-bold text-[#1e293b] leading-tight">{title}</h2>
-        {subtitle && <p className="text-[13px] text-[#64748b] mt-1">{subtitle}</p>}
+    <header className="flex items-start justify-between mb-6 md:mb-8 gap-4">
+      <div className="min-w-0">
+        <h2 className="text-[22px] md:text-[28px] font-bold text-[#1e293b] leading-tight truncate">{title}</h2>
+        {subtitle && <p className="text-[12px] md:text-[13px] text-[#64748b] mt-1 truncate">{subtitle}</p>}
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="text-left text-[12px] text-[#64748b] leading-relaxed ml-3">
+      <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+        <div className="hidden lg:block text-left text-[12px] text-[#64748b] leading-relaxed ml-3">
           <div className="text-[13px] text-[#1e293b]">יום {dayOfWeek}</div>
           <div>{formatted}</div>
         </div>
 
-        <div className="bg-white border border-[#e8ecf4] rounded-xl flex items-center gap-2 px-3 py-2 w-48 shadow-sm">
+        <div className="hidden md:flex bg-white border border-[#e8ecf4] rounded-xl items-center gap-2 px-3 py-2 w-48 shadow-sm">
           <Search size={14} className="text-[#64748b]" />
           <input
             type="text"
@@ -41,7 +41,7 @@ export default function Topbar({ title, subtitle }: { title: string; subtitle?: 
           </span>
         </button>
 
-        <div className="w-9 h-9 rounded-xl bg-white border border-[#e8ecf4] flex items-center justify-center shadow-sm overflow-hidden">
+        <div className="hidden sm:flex w-9 h-9 rounded-xl bg-white border border-[#e8ecf4] items-center justify-center shadow-sm overflow-hidden">
           <User size={16} className="text-[#64748b]" />
         </div>
       </div>

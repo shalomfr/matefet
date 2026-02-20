@@ -5,10 +5,10 @@ import { BarChart3, Building2, Zap, TrendingUp } from "lucide-react";
 
 export default function AdminReportsPage() {
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="דוחות פנימיים" subtitle="סטטיסטיקות ושימוש" />
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={Building2} label="ארגונים פעילים" value="12" color="#2563eb" />
         <StatCard icon={Zap} label="הרצות החודש" value="1,247" change="+18%" trend="up" color="#2ecc8f" />
         <StatCard icon={TrendingUp} label="שימוש ממוצע" value="94%" color="#60a5fa" />

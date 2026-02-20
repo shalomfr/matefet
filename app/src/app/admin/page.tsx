@@ -50,10 +50,10 @@ export default function AdminDashboardPage() {
   const openTasks = teamTasks.filter((t) => t.status === "open").length;
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="דשבורד פנימי" subtitle="מעטפת ניהולית · עדכון אחרון: היום 14:30" />
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="anim-fade-scale delay-1"><StatCard icon={Building2} label="ארגונים פעילים" value={String(orgHealth.length)} color="#2563eb" /></div>
         <div className="anim-fade-scale delay-2"><StatCard icon={Link2} label="אינטגרציות מחוברות" value="8/10" color="#16a34a" /></div>
         <div className="anim-fade-scale delay-3"><StatCard icon={Zap} label="אוטומציות פעילות" value="10" change="+3" trend="up" color="#2563eb" /></div>
@@ -104,7 +104,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Alerts */}
         <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Timeline */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">

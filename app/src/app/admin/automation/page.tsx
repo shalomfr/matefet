@@ -24,10 +24,10 @@ export default function AdminAutomationPage() {
   const totalRuns = workflows.reduce((sum, w) => sum + w.runs, 0);
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="אוטומציות" subtitle="ניהול workflows ותזמונים" />
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={Zap} label="אוטומציות פעילות" value={String(activeCount)} color="#2563eb" />
         <StatCard icon={Play} label="סה״כ הרצות" value={String(totalRuns)} change="+142" trend="up" color="#2ecc8f" />
         <StatCard icon={CheckCircle2} label="אחוז הצלחה" value="99.2%" color="#60a5fa" />

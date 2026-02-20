@@ -12,7 +12,7 @@ export default function PortalContactPage() {
   };
 
   return (
-    <div className="px-8 pb-8">
+    <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="פנה למלווה" subtitle="יש שאלה או צריך עזרה? נשמח לעזור" />
 
       <div className="max-w-[600px]">
