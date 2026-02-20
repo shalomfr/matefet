@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Topbar from "@/components/Topbar";
-import { Users, UserPlus, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Users, UserPlus, Clock, CheckCircle, XCircle, Pause, Play, Trash2 } from "lucide-react";
 import { useToast } from "@/components/Toast";
 
 interface UserRow {
@@ -70,10 +70,43 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function suspendUser(id: string, currentStatus: string | null) {
+    const action = currentStatus === "SUSPENDED" ? "הפעלה" : "השהיה";
+    if (!confirm(`האם ${action} משתמש זה?`)) return;
+    try {
+      const res = await fetch(`/api/users/${id}/suspend`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        showSuccess(currentStatus === "SUSPENDED" ? "המשתמש הופעל" : "המשתמש הושהה");
+        fetchUsers();
+      } else {
+        showError(data.error ?? "שגיאה");
+      }
+    } catch {
+      showError("שגיאה");
+    }
+  }
+
+  async function deleteUser(id: string, name: string) {
+    if (!confirm(`האם למחוק את ${name}? פעולה זו בלתי הפיכה.`)) return;
+    try {
+      const res = await fetch(`/api/users/${id}/delete`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        showSuccess("המשתמש נמחק");
+        fetchUsers();
+      } else {
+        showError(data.error ?? "שגיאה");
+      }
+    } catch {
+      showError("שגיאה");
+    }
+  }
+
   const roleLabel = (r: string) => (r === "ADMIN" ? "Admin" : "מנהל עמותה");
   const statusLabel = (s: string | null) => {
     if (!s) return "–";
-    const m: Record<string, string> = { PENDING: "ממתין", APPROVED: "אושר", REJECTED: "נדחה" };
+    const m: Record<string, string> = { PENDING: "ממתין", APPROVED: "אושר", REJECTED: "נדחה", SUSPENDED: "מושהה" };
     return m[s] ?? s;
   };
 
@@ -141,11 +174,9 @@ export default function AdminUsersPage() {
                 <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
                   סטטוס
                 </th>
-                {tab === "pending" && (
-                  <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
-                    פעולות
-                  </th>
-                )}
+                <th className="text-right p-4 text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+                  פעולות
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -176,30 +207,58 @@ export default function AdminUsersPage() {
                           ? "badge-warning"
                           : user.status === "APPROVED"
                             ? "badge-success"
-                            : "badge-danger"
+                            : user.status === "SUSPENDED"
+                              ? "badge-purple"
+                              : "badge-danger"
                       }`}
                     >
                       {statusLabel(user.status)}
                     </span>
                   </td>
-                  {tab === "pending" && (
-                    <td className="p-4 flex gap-2 justify-end">
-                      <button
-                        onClick={() => approve(user.id)}
-                        className="p-2 rounded-lg bg-[#2ecc8f]/15 text-[#2ecc8f] hover:bg-[#2ecc8f]/25 transition-colors"
-                        title="אישור"
-                      >
-                        <CheckCircle size={18} />
-                      </button>
-                      <button
-                        onClick={() => reject(user.id)}
-                        className="p-2 rounded-lg bg-[#e8445a]/15 text-[#e8445a] hover:bg-[#e8445a]/25 transition-colors"
-                        title="דחייה"
-                      >
-                        <XCircle size={18} />
-                      </button>
-                    </td>
-                  )}
+                  <td className="p-4">
+                    <div className="flex gap-1.5 justify-end">
+                      {user.status === "PENDING" && (
+                        <>
+                          <button
+                            onClick={() => approve(user.id)}
+                            className="p-2 rounded-lg bg-[#2ecc8f]/15 text-[#2ecc8f] hover:bg-[#2ecc8f]/25 transition-colors"
+                            title="אישור"
+                          >
+                            <CheckCircle size={16} />
+                          </button>
+                          <button
+                            onClick={() => reject(user.id)}
+                            className="p-2 rounded-lg bg-[#e8445a]/15 text-[#e8445a] hover:bg-[#e8445a]/25 transition-colors"
+                            title="דחייה"
+                          >
+                            <XCircle size={16} />
+                          </button>
+                        </>
+                      )}
+                      {user.role !== "ADMIN" && user.status !== "PENDING" && (
+                        <>
+                          <button
+                            onClick={() => suspendUser(user.id, user.status)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              user.status === "SUSPENDED"
+                                ? "bg-[#2ecc8f]/15 text-[#2ecc8f] hover:bg-[#2ecc8f]/25"
+                                : "bg-[#d97706]/15 text-[#d97706] hover:bg-[#d97706]/25"
+                            }`}
+                            title={user.status === "SUSPENDED" ? "הפעל מחדש" : "השהה"}
+                          >
+                            {user.status === "SUSPENDED" ? <Play size={16} /> : <Pause size={16} />}
+                          </button>
+                          <button
+                            onClick={() => deleteUser(user.id, user.name)}
+                            className="p-2 rounded-lg bg-[#e8445a]/15 text-[#e8445a] hover:bg-[#e8445a]/25 transition-colors"
+                            title="מחק"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
