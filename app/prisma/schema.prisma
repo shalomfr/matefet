@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==================== ENUMS ====================
+
 enum UserRole {
   ADMIN
   MANAGER
@@ -18,25 +20,741 @@ enum ManagerStatus {
   REJECTED
 }
 
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum RecurringInterval {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum RecurringDonationStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ComplianceStatus {
+  OK
+  WARNING
+  EXPIRED
+  MISSING
+}
+
+enum ComplianceItemType {
+  CERTIFICATE
+  REPORT
+  DOCUMENT
+  APPROVAL
+  REGISTRATION
+}
+
+enum WorkflowTriggerType {
+  EVENT
+  SCHEDULE
+  MANUAL
+}
+
+enum WorkflowStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+enum ActionType {
+  SEND_EMAIL
+  CREATE_DOCUMENT
+  UPDATE_RECORD
+  SEND_NOTIFICATION
+  WEBHOOK
+}
+
+enum DocumentCategory {
+  FOUNDING
+  FINANCIAL
+  COMPLIANCE
+  BOARD
+  GENERAL
+}
+
+enum VolunteerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// ==================== CORE ====================
+
 model User {
   id              String          @id @default(cuid())
   email           String          @unique
-  passwordHash     String          @map("password_hash")
+  passwordHash    String          @map("password_hash")
   name            String
   role            UserRole
   organizationId  String?         @map("organization_id")
-  status         ManagerStatus?   // רק ל-Managers
+  status          ManagerStatus?
   createdAt       DateTime        @default(now()) @map("created_at")
-  organization   Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  organization    Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  notifications   Notification[]
+  auditLogs       AuditLog[]
 
   @@map("users")
 }
 
 model Organization {
-  id      String   @id @default(cuid())
-  name    String
-  number  String?  // מספר עמותה
-  users   User[]
+  id        String   @id @default(cuid())
+  name      String
+  number    String?
+  address   String?
+  phone     String?
+  email     String?
+  website   String?
+  logoUrl   String?  @map("logo_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users               User[]
+  donors              Donor[]
+  donations           Donation[]
+  recurringDonations  RecurringDonation[]
+  campaigns           Campaign[]
+  invoices            Invoice[]
+  receipts            Receipt[]
+  bankTransfers       BankTransfer[]
+  budgets             Budget[]
+  financialTransactions FinancialTransaction[]
+  documentSequences   DocumentSequence[]
+  boardMembers        BoardMember[]
+  boardMeetings       BoardMeeting[]
+  boardResolutions    BoardResolution[]
+  complianceItems     ComplianceItem[]
+  complianceCertificates ComplianceCertificate[]
+  annualReports       AnnualReport[]
+  organizationDocuments OrganizationDocument[]
+  volunteers          Volunteer[]
+  volunteerShifts     VolunteerShift[]
+  workflows           Workflow[]
+  workflowExecutions  WorkflowExecution[]
+  scheduledTasks      ScheduledTask[]
+  notifications       Notification[]
+  auditLogs           AuditLog[]
+  integrationConfigs  IntegrationConfig[]
+  fileUploads         FileUpload[]
 
   @@map("organizations")
+}
+
+// ==================== FINANCIAL ====================
+
+model Donor {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  firstName       String   @map("first_name")
+  lastName        String   @map("last_name")
+  email           String?
+  phone           String?
+  address         String?
+  city            String?
+  idNumber        String?  @map("id_number")
+  notes           String?
+  totalDonated    Float    @default(0) @map("total_donated")
+  donationCount   Int      @default(0) @map("donation_count")
+  lastDonationAt  DateTime? @map("last_donation_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  donations       Donation[]
+  recurringDonations RecurringDonation[]
+
+  @@map("donors")
+}
+
+model Donation {
+  id              String         @id @default(cuid())
+  organizationId  String         @map("organization_id")
+  donorId         String?        @map("donor_id")
+  amount          Float
+  currency        String         @default("ILS")
+  status          DonationStatus @default(PENDING)
+  method          String?
+  reference       String?
+  campaignId      String?        @map("campaign_id")
+  receiptId       String?        @map("receipt_id")
+  notes           String?
+  donatedAt       DateTime       @default(now()) @map("donated_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  donor           Donor?         @relation(fields: [donorId], references: [id], onDelete: SetNull)
+  campaign        Campaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  receipt         Receipt?       @relation(fields: [receiptId], references: [id])
+
+  @@map("donations")
+}
+
+model RecurringDonation {
+  id              String                  @id @default(cuid())
+  organizationId  String                  @map("organization_id")
+  donorId         String                  @map("donor_id")
+  amount          Float
+  currency        String                  @default("ILS")
+  interval        RecurringInterval       @default(MONTHLY)
+  status          RecurringDonationStatus @default(ACTIVE)
+  nextChargeAt    DateTime?               @map("next_charge_at")
+  startedAt       DateTime                @default(now()) @map("started_at")
+  cancelledAt     DateTime?               @map("cancelled_at")
+  createdAt       DateTime                @default(now()) @map("created_at")
+  updatedAt       DateTime                @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  donor           Donor        @relation(fields: [donorId], references: [id], onDelete: Cascade)
+
+  @@map("recurring_donations")
+}
+
+model Campaign {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  name            String
+  description     String?
+  goalAmount      Float?   @map("goal_amount")
+  raisedAmount    Float    @default(0) @map("raised_amount")
+  isActive        Boolean  @default(true) @map("is_active")
+  startDate       DateTime? @map("start_date")
+  endDate         DateTime? @map("end_date")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  donations       Donation[]
+
+  @@map("campaigns")
+}
+
+model Invoice {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  invoiceNumber   Int      @map("invoice_number")
+  recipientName   String   @map("recipient_name")
+  recipientId     String?  @map("recipient_id")
+  amount          Float
+  vatAmount       Float    @default(0) @map("vat_amount")
+  totalAmount     Float    @map("total_amount")
+  description     String?
+  status          String   @default("draft")
+  issuedAt        DateTime? @map("issued_at")
+  dueAt           DateTime? @map("due_at")
+  paidAt          DateTime? @map("paid_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, invoiceNumber])
+  @@map("invoices")
+}
+
+model Receipt {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  receiptNumber   Int      @map("receipt_number")
+  recipientName   String   @map("recipient_name")
+  recipientId     String?  @map("recipient_id")
+  amount          Float
+  description     String?
+  isTaxDeductible Boolean  @default(false) @map("is_tax_deductible")
+  section46       Boolean  @default(false) @map("section_46")
+  issuedAt        DateTime @default(now()) @map("issued_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  donations       Donation[]
+
+  @@unique([organizationId, receiptNumber])
+  @@map("receipts")
+}
+
+model BankTransfer {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  fromAccount     String?  @map("from_account")
+  toAccount       String?  @map("to_account")
+  amount          Float
+  reference       String?
+  description     String?
+  transferDate    DateTime @map("transfer_date")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("bank_transfers")
+}
+
+model Budget {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  year            Int
+  name            String
+  totalBudget     Float        @map("total_budget")
+  totalSpent      Float        @default(0) @map("total_spent")
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lines           BudgetLine[]
+
+  @@unique([organizationId, year])
+  @@map("budgets")
+}
+
+model BudgetLine {
+  id              String   @id @default(cuid())
+  budgetId        String   @map("budget_id")
+  category        String
+  planned         Float
+  actual          Float    @default(0)
+  notes           String?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  budget          Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@map("budget_lines")
+}
+
+model FinancialTransaction {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  type            String
+  amount          Float
+  description     String?
+  category        String?
+  reference       String?
+  transactionDate DateTime     @map("transaction_date")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("financial_transactions")
+}
+
+model DocumentSequence {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  type            String
+  lastNumber      Int          @default(0) @map("last_number")
+  prefix          String?
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, type])
+  @@map("document_sequences")
+}
+
+// ==================== BOARD ====================
+
+model BoardMember {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  name            String
+  role            String
+  email           String?
+  phone           String?
+  idNumber        String?      @map("id_number")
+  startDate       DateTime?    @map("start_date")
+  endDate         DateTime?    @map("end_date")
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("board_members")
+}
+
+model BoardMeeting {
+  id              String        @id @default(cuid())
+  organizationId  String        @map("organization_id")
+  title           String
+  date            DateTime
+  location        String?
+  status          MeetingStatus @default(SCHEDULED)
+  summary         String?
+  attendeesCount  Int?          @map("attendees_count")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  protocol        MeetingProtocol?
+  resolutions     BoardResolution[]
+
+  @@map("board_meetings")
+}
+
+model MeetingProtocol {
+  id              String       @id @default(cuid())
+  meetingId       String       @unique @map("meeting_id")
+  content         String
+  approvedAt      DateTime?    @map("approved_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  meeting         BoardMeeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@map("meeting_protocols")
+}
+
+model BoardResolution {
+  id              String        @id @default(cuid())
+  organizationId  String        @map("organization_id")
+  meetingId       String?       @map("meeting_id")
+  title           String
+  description     String?
+  status          String        @default("pending")
+  votesFor        Int           @default(0) @map("votes_for")
+  votesAgainst    Int           @default(0) @map("votes_against")
+  votesAbstain    Int           @default(0) @map("votes_abstain")
+  decidedAt       DateTime?     @map("decided_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  meeting         BoardMeeting? @relation(fields: [meetingId], references: [id], onDelete: SetNull)
+
+  @@map("board_resolutions")
+}
+
+// ==================== COMPLIANCE ====================
+
+model ComplianceItem {
+  id              String           @id @default(cuid())
+  organizationId  String           @map("organization_id")
+  name            String
+  type            ComplianceItemType
+  status          ComplianceStatus @default(MISSING)
+  description     String?
+  dueDate         DateTime?        @map("due_date")
+  completedAt     DateTime?        @map("completed_at")
+  documentUrl     String?          @map("document_url")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("compliance_items")
+}
+
+model ComplianceCertificate {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  name            String
+  issuedBy        String?      @map("issued_by")
+  issuedAt        DateTime?    @map("issued_at")
+  expiresAt       DateTime?    @map("expires_at")
+  documentUrl     String?      @map("document_url")
+  status          ComplianceStatus @default(OK)
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("compliance_certificates")
+}
+
+model AnnualReport {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  year            Int
+  status          String       @default("draft")
+  submittedAt     DateTime?    @map("submitted_at")
+  documentUrl     String?      @map("document_url")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, year])
+  @@map("annual_reports")
+}
+
+model OrganizationDocument {
+  id              String           @id @default(cuid())
+  organizationId  String           @map("organization_id")
+  name            String
+  category        DocumentCategory @default(GENERAL)
+  description     String?
+  fileUrl         String?          @map("file_url")
+  fileSize        Int?             @map("file_size")
+  mimeType        String?          @map("mime_type")
+  uploadedAt      DateTime         @default(now()) @map("uploaded_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("organization_documents")
+}
+
+// ==================== VOLUNTEERS ====================
+
+model Volunteer {
+  id              String          @id @default(cuid())
+  organizationId  String          @map("organization_id")
+  name            String
+  email           String?
+  phone           String?
+  idNumber        String?         @map("id_number")
+  role            String?
+  status          VolunteerStatus @default(ACTIVE)
+  totalHours      Float           @default(0) @map("total_hours")
+  startDate       DateTime?       @map("start_date")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  hours           VolunteerHours[]
+
+  @@map("volunteers")
+}
+
+model VolunteerShift {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  name            String
+  date            DateTime
+  startTime       String       @map("start_time")
+  endTime         String       @map("end_time")
+  maxVolunteers   Int?         @map("max_volunteers")
+  description     String?
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("volunteer_shifts")
+}
+
+model VolunteerHours {
+  id              String     @id @default(cuid())
+  volunteerId     String     @map("volunteer_id")
+  date            DateTime
+  hours           Float
+  description     String?
+  approved        Boolean    @default(false)
+  approvedAt      DateTime?  @map("approved_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  volunteer       Volunteer  @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+
+  @@map("volunteer_hours")
+}
+
+// ==================== AUTOMATION ====================
+
+model Workflow {
+  id              String              @id @default(cuid())
+  organizationId  String              @map("organization_id")
+  name            String
+  description     String?
+  triggerType     WorkflowTriggerType @map("trigger_type")
+  triggerConfig   Json?               @map("trigger_config")
+  status          WorkflowStatus      @default(DRAFT)
+  isTemplate      Boolean             @default(false) @map("is_template")
+  templateId      String?             @map("template_id")
+  runCount        Int                 @default(0) @map("run_count")
+  lastRunAt       DateTime?           @map("last_run_at")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  steps           WorkflowStep[]
+  executions      WorkflowExecution[]
+
+  @@map("workflows")
+}
+
+model WorkflowStep {
+  id              String     @id @default(cuid())
+  workflowId      String     @map("workflow_id")
+  order           Int
+  actionType      ActionType @map("action_type")
+  actionConfig    Json?      @map("action_config")
+  conditionConfig Json?      @map("condition_config")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  workflow        Workflow   @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  executionLogs   ExecutionStepLog[]
+
+  @@map("workflow_steps")
+}
+
+model WorkflowExecution {
+  id              String          @id @default(cuid())
+  organizationId  String          @map("organization_id")
+  workflowId      String          @map("workflow_id")
+  status          ExecutionStatus @default(PENDING)
+  triggerData     Json?           @map("trigger_data")
+  result          Json?
+  error           String?
+  startedAt       DateTime        @default(now()) @map("started_at")
+  completedAt     DateTime?       @map("completed_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workflow        Workflow         @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  stepLogs        ExecutionStepLog[]
+
+  @@map("workflow_executions")
+}
+
+model ExecutionStepLog {
+  id              String            @id @default(cuid())
+  executionId     String            @map("execution_id")
+  stepId          String            @map("step_id")
+  status          ExecutionStatus   @default(PENDING)
+  input           Json?
+  output          Json?
+  error           String?
+  startedAt       DateTime          @default(now()) @map("started_at")
+  completedAt     DateTime?         @map("completed_at")
+
+  execution       WorkflowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  step            WorkflowStep      @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@map("execution_step_logs")
+}
+
+model ScheduledTask {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  name            String
+  cronExpression  String       @map("cron_expression")
+  workflowId      String?      @map("workflow_id")
+  isActive        Boolean      @default(true) @map("is_active")
+  lastRunAt       DateTime?    @map("last_run_at")
+  nextRunAt       DateTime?    @map("next_run_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("scheduled_tasks")
+}
+
+// ==================== SYSTEM ====================
+
+model Notification {
+  id              String           @id @default(cuid())
+  organizationId  String           @map("organization_id")
+  userId          String?          @map("user_id")
+  type            NotificationType @default(INFO)
+  title           String
+  message         String
+  isRead          Boolean          @default(false) @map("is_read")
+  link            String?
+  createdAt       DateTime         @default(now()) @map("created_at")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id              String       @id @default(cuid())
+  organizationId  String?      @map("organization_id")
+  userId          String?      @map("user_id")
+  action          String
+  entity          String
+  entityId        String?      @map("entity_id")
+  details         Json?
+  ipAddress       String?      @map("ip_address")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+model IntegrationConfig {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  provider        String
+  isActive        Boolean      @default(false) @map("is_active")
+  config          Json?
+  lastSyncAt      DateTime?    @map("last_sync_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  logs            IntegrationLog[]
+
+  @@unique([organizationId, provider])
+  @@map("integration_configs")
+}
+
+model IntegrationLog {
+  id              String            @id @default(cuid())
+  integrationId   String            @map("integration_id")
+  action          String
+  status          String
+  request         Json?
+  response        Json?
+  error           String?
+  createdAt       DateTime          @default(now()) @map("created_at")
+
+  integration     IntegrationConfig @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@map("integration_logs")
+}
+
+model FileUpload {
+  id              String       @id @default(cuid())
+  organizationId  String       @map("organization_id")
+  fileName        String       @map("file_name")
+  originalName    String       @map("original_name")
+  mimeType        String       @map("mime_type")
+  fileSize        Int          @map("file_size")
+  filePath        String       @map("file_path")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("file_uploads")
 }

@@ -73,11 +73,14 @@ export default function AdminIntegrationsPage() {
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#64748b]">
-                      {integration.status === "connected"
-                        ? `סנכרון אחרון: ${integration.lastSync}`
-                        : "לא מחובר"}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-[#64748b]">
+                        {integration.status === "connected"
+                          ? `סנכרון אחרון: ${integration.lastSync}`
+                          : "לא מחובר"}
+                      </span>
+                      <span className="text-[11px] font-medium text-[#d97706] mt-1">חיבור בקרוב</span>
+                    </div>
                     <div className="flex gap-1">
                       {integration.status === "connected" ? (
                         <>

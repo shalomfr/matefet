@@ -1,14 +1,42 @@
 "use client";
+import { useState } from "react";
 import Topbar from "@/components/Topbar";
 import { MessageCircle, Send } from "lucide-react";
 import { useToast } from "@/components/Toast";
 
 export default function PortalContactPage() {
   const { showSuccess } = useToast();
+  const [submitting, setSubmitting] = useState(false);
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    showSuccess("ההודעה נשלחה! המלווה יחזור אליך בהקדם.");
+    if (!subject.trim() && !message.trim()) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: subject.trim() || "פנייה חדשה",
+          message: message.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showSuccess("ההודעה נשלחה! המלווה יחזור אליך בהקדם.");
+        setSubject("");
+        setMessage("");
+      } else {
+        showSuccess("שגיאה בשליחה, נסה שוב.");
+      }
+    } catch {
+      showSuccess("שגיאה בשליחה, נסה שוב.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -31,6 +59,8 @@ export default function PortalContactPage() {
               <label className="block text-[13px] font-medium text-[#1e293b] mb-2">נושא</label>
               <input
                 type="text"
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
                 placeholder="במה אפשר לעזור?"
                 className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all"
               />
@@ -39,12 +69,27 @@ export default function PortalContactPage() {
               <label className="block text-[13px] font-medium text-[#1e293b] mb-2">הודעה</label>
               <textarea
                 rows={4}
+                value={message}
+                onChange={e => setMessage(e.target.value)}
                 placeholder="תאר את השאלה או הבקשה..."
                 className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] resize-none transition-all"
               />
             </div>
-            <button type="submit" className="btn-primary flex items-center gap-2">
-              <Send size={16} /> שלח
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {submitting ? (
+                <>
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                  שולח...
+                </>
+              ) : (
+                <>
+                  <Send size={16} /> שלח
+                </>
+              )}
             </button>
           </form>
         </div>
