@@ -6,6 +6,35 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
+  // ==================== CLEANUP (idempotent) ====================
+  const existingOrg = await prisma.organization.findUnique({ where: { id: "org-or-letzion" } });
+  if (existingOrg) {
+    console.log("Cleaning existing seed data...");
+    await prisma.executionStepLog.deleteMany({ where: { execution: { organizationId: existingOrg.id } } });
+    await prisma.workflowExecution.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.workflowStep.deleteMany({ where: { workflow: { organizationId: existingOrg.id } } });
+    await prisma.workflow.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.auditLog.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.notification.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.volunteerHours.deleteMany({ where: { volunteer: { organizationId: existingOrg.id } } });
+    await prisma.volunteer.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.organizationDocument.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.complianceCertificate.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.complianceItem.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.boardResolution.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.meetingProtocol.deleteMany({ where: { meeting: { organizationId: existingOrg.id } } });
+    await prisma.boardMeeting.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.boardMember.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.budgetLine.deleteMany({ where: { budget: { organizationId: existingOrg.id } } });
+    await prisma.budget.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.documentSequence.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.receipt.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.donation.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.campaign.deleteMany({ where: { organizationId: existingOrg.id } });
+    await prisma.donor.deleteMany({ where: { organizationId: existingOrg.id } });
+    console.log("Cleanup done.");
+  }
+
   // ==================== ADMIN USER ====================
   const adminEmail = process.env.ADMIN_EMAIL ?? "admin@matefet.co.il";
   const adminPassword = process.env.ADMIN_PASSWORD ?? "Admin123!";
