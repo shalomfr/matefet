@@ -59,6 +59,33 @@ export const GET = withErrorHandler(async () => {
     return daysUntil > 0 && daysUntil <= 30;
   });
 
+  const categoryLabels: Record<string, string> = {
+    FOUNDING_DOCS: "מסמכי יסוד",
+    ANNUAL_OBLIGATIONS: "חובות שנתיות לרשם",
+    TAX_APPROVALS: "אישורים מרשות המסים",
+    FINANCIAL_MGMT: "ניהול כספי שוטף",
+    DISTRIBUTION_DOCS: "תיעוד חלוקת כספים",
+    GOVERNANCE: "ממשל ופרוטוקולים",
+    EMPLOYEES_VOLUNTEERS: "עובדים ומתנדבים",
+    INSURANCE: "ביטוח",
+    GEMACH: "גמ\"ח כספים",
+  };
+
+  const categoryMap: Record<string, { ok: number; total: number }> = {};
+  for (const item of complianceItems) {
+    const cat = (item as { category?: string }).category ?? "FOUNDING_DOCS";
+    if (!categoryMap[cat]) categoryMap[cat] = { ok: 0, total: 0 };
+    categoryMap[cat].total++;
+    if (item.status === "OK") categoryMap[cat].ok++;
+  }
+  const categoryScores = Object.entries(categoryMap).map(([category, { ok, total }]) => ({
+    category,
+    label: categoryLabels[category] ?? category,
+    ok,
+    total,
+    score: total > 0 ? Math.round((ok / total) * 100) : 0,
+  })).sort((a, b) => a.score - b.score);
+
   return apiResponse({
     compliance: {
       score: complianceScore,
@@ -69,6 +96,7 @@ export const GET = withErrorHandler(async () => {
       missing: complianceItems.filter((i) => i.status === "MISSING").length,
       expiringSoon: expiringItems.length,
       items: complianceItems,
+      categoryScores,
     },
     financial: {
       totalDonationsThisYear: donationsThisYear._sum.amount ?? 0,

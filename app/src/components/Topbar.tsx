@@ -34,7 +34,7 @@ export default function Topbar({ title, subtitle }: { title: string; subtitle?: 
           />
         </div>
 
-        <button className="w-9 h-9 rounded-xl bg-white border border-[#e8ecf4] flex items-center justify-center relative hover:border-[#2563eb]/40 transition-colors shadow-sm">
+        <button data-tour="notifications-bell" className="w-9 h-9 rounded-xl bg-white border border-[#e8ecf4] flex items-center justify-center relative hover:border-[#2563eb]/40 transition-colors shadow-sm">
           <Bell size={16} className="text-[#64748b]" />
           <span className="absolute -top-1 -left-1 w-4 h-4 bg-[#ef4444] rounded-full text-[9px] text-white flex items-center justify-center font-bold">
             2

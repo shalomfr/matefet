@@ -218,3 +218,45 @@
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
 }
+
+/* ─── ONBOARDING TOUR ─── */
+
+@keyframes tourFadeIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes tourSlideTooltip {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tourDrawCheck {
+  from { stroke-dashoffset: 60; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes tourBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.tour-fade-in {
+  animation: tourFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tour-slide-tooltip {
+  animation: tourSlideTooltip 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tour-completion-circle {
+  animation: tourBounce 1s ease-in-out 0.3s both;
+}
+
+.tour-check {
+  animation: tourBounce 0.5s ease-in-out 0.6s both;
+}
+
+.tour-confetti {
+  animation: tourBounce 0.6s ease-in-out both;
+}

@@ -60,6 +60,19 @@ enum ComplianceItemType {
   DOCUMENT
   APPROVAL
   REGISTRATION
+  POLICY
+}
+
+enum ComplianceCategory {
+  FOUNDING_DOCS
+  ANNUAL_OBLIGATIONS
+  TAX_APPROVALS
+  FINANCIAL_MGMT
+  DISTRIBUTION_DOCS
+  GOVERNANCE
+  EMPLOYEES_VOLUNTEERS
+  INSURANCE
+  GEMACH
 }
 
 enum WorkflowTriggerType {
@@ -462,19 +475,23 @@ model BoardResolution {
 // ==================== COMPLIANCE ====================
 
 model ComplianceItem {
-  id              String           @id @default(cuid())
-  organizationId  String           @map("organization_id")
+  id              String              @id @default(cuid())
+  organizationId  String              @map("organization_id")
   name            String
   type            ComplianceItemType
-  status          ComplianceStatus @default(MISSING)
+  category        ComplianceCategory  @default(FOUNDING_DOCS)
+  status          ComplianceStatus    @default(MISSING)
   description     String?
-  dueDate         DateTime?        @map("due_date")
-  completedAt     DateTime?        @map("completed_at")
-  documentUrl     String?          @map("document_url")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  isRequired      Boolean             @default(true) @map("is_required")
+  frequency       String?
+  legalBasis      String?             @map("legal_basis")
+  dueDate         DateTime?           @map("due_date")
+  completedAt     DateTime?           @map("completed_at")
+  documentUrl     String?             @map("document_url")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
 
-  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("compliance_items")
 }

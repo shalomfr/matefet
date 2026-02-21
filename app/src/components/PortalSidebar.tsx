@@ -3,7 +3,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut, Menu, X } from "lucide-react";
+import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut, Menu, X, Compass } from "lucide-react";
+import { useTour } from "@/components/tour/TourContext";
 
 const navItems = [
   { href: "/portal", icon: Home, label: "המצב שלי" },
@@ -18,6 +19,7 @@ const navItems = [
 export default function PortalSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { startTour } = useTour();
 
   return (
     <>
@@ -38,6 +40,7 @@ export default function PortalSidebar() {
       )}
 
       <aside
+        data-tour="portal-sidebar"
         className={`w-60 h-screen fixed right-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-in-out
           ${mobileOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0`}
         style={{
@@ -111,6 +114,17 @@ export default function PortalSidebar() {
             );
           })}
         </nav>
+
+        {/* Tour button */}
+        <div className="px-3 pb-2">
+          <button
+            onClick={() => { setMobileOpen(false); startTour(); }}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] font-medium text-[#64748b] hover:text-[#2563eb] hover:bg-[#eff6ff] transition-all"
+          >
+            <Compass size={16} />
+            <span>סיור מודרך</span>
+          </button>
+        </div>
 
         {/* User Footer */}
         <div className="p-4 border-t border-[#e8ecf4]">

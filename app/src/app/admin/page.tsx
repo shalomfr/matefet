@@ -85,7 +85,7 @@ export default function AdminDashboardPage() {
     <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="דשבורד פנימי" subtitle="מעטפת ניהולית" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div data-tour="admin-stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="anim-fade-scale delay-1"><StatCard icon={Building2} label="ארגונים פעילים" value={String(overview?.organizations ?? 0)} color="#2563eb" /></div>
         <div className="anim-fade-scale delay-2"><StatCard icon={Users} label="משתמשים" value={String(overview?.users ?? 0)} color="#16a34a" /></div>
         <div className="anim-fade-scale delay-3"><StatCard icon={Zap} label="אוטומציות פעילות" value={String(overview?.activeWorkflows ?? 0)} color="#2563eb" /></div>
@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Org Overview */}
-      <div className="anim-fade-up delay-2 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+      <div data-tour="admin-orgs" className="anim-fade-up delay-2 bg-white rounded-2xl p-5 mb-6 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center"><TrendingUp size={16} className="text-[#2563eb]" /></div>
@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+      <div data-tour="admin-quicklinks" className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Stats Summary */}
         <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">

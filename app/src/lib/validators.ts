@@ -32,12 +32,18 @@ export const updateDonationSchema = z.object({
 });
 
 // ==================== COMPLIANCE ====================
+const complianceCategoryEnum = z.enum(["FOUNDING_DOCS", "ANNUAL_OBLIGATIONS", "TAX_APPROVALS", "FINANCIAL_MGMT", "DISTRIBUTION_DOCS", "GOVERNANCE", "EMPLOYEES_VOLUNTEERS", "INSURANCE", "GEMACH"]);
+
 export const createComplianceItemSchema = z.object({
   name: z.string().min(1, "שם נדרש"),
-  type: z.enum(["CERTIFICATE", "REPORT", "DOCUMENT", "APPROVAL", "REGISTRATION"]),
+  type: z.enum(["CERTIFICATE", "REPORT", "DOCUMENT", "APPROVAL", "REGISTRATION", "POLICY"]),
+  category: complianceCategoryEnum.optional(),
   description: z.string().optional(),
   dueDate: z.string().datetime().optional(),
   status: z.enum(["OK", "WARNING", "EXPIRED", "MISSING"]).optional(),
+  isRequired: z.boolean().optional(),
+  frequency: z.string().optional(),
+  legalBasis: z.string().optional(),
 });
 
 export const updateComplianceItemSchema = z.object({
@@ -47,6 +53,10 @@ export const updateComplianceItemSchema = z.object({
   dueDate: z.string().datetime().optional().nullable(),
   completedAt: z.string().datetime().optional().nullable(),
   documentUrl: z.string().optional().nullable(),
+  category: complianceCategoryEnum.optional(),
+  isRequired: z.boolean().optional(),
+  frequency: z.string().optional(),
+  legalBasis: z.string().optional(),
 });
 
 // ==================== DOCUMENTS ====================

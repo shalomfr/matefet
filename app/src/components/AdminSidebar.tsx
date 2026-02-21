@@ -14,7 +14,9 @@ import {
   LogOut,
   Menu,
   X,
+  Compass,
 } from "lucide-react";
+import { useTour } from "@/components/tour/TourContext";
 
 const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "דשבורד" },
@@ -29,6 +31,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const [orgOpen, setOrgOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { startTour } = useTour();
 
   return (
     <>
@@ -49,6 +52,7 @@ export default function AdminSidebar() {
       )}
 
       <aside
+        data-tour="admin-sidebar"
         className={`w-60 h-screen fixed right-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-in-out
           ${mobileOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0`}
         style={{
@@ -131,6 +135,17 @@ export default function AdminSidebar() {
             );
           })}
         </nav>
+
+        {/* Tour button */}
+        <div className="px-3 pb-2">
+          <button
+            onClick={() => { setMobileOpen(false); startTour(); }}
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-[13px] font-medium text-[#64748b] hover:text-[#2563eb] hover:bg-[#eff6ff] transition-all"
+          >
+            <Compass size={15} />
+            <span>סיור מודרך</span>
+          </button>
+        </div>
 
         {/* User Footer */}
         <div className="p-4 border-t border-[#e8ecf4]">

@@ -316,58 +316,104 @@ async function main() {
     },
   });
 
-  // ==================== COMPLIANCE ITEMS ====================
+  // ==================== COMPLIANCE ITEMS (74 items, 9 categories) ====================
+  const ci = (name: string, type: string, category: string, status: string, opts: Record<string, unknown> = {}) =>
+    prisma.complianceItem.create({ data: { organizationId: org.id, name, type, category, status, ...opts } as never });
+
   await Promise.all([
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "אישור ניהול תקין", type: "CERTIFICATE",
-        status: "OK", dueDate: new Date("2026-12-31"), completedAt: new Date("2026-01-10"),
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "דוח שנתי לרשם העמותות", type: "REPORT",
-        status: "WARNING", dueDate: new Date("2026-03-31"), description: "יש להגיש עד סוף מרץ",
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "דוח כספי מבוקר", type: "REPORT",
-        status: "OK", dueDate: new Date("2026-06-30"), completedAt: new Date("2026-02-01"),
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "רישום ברשם העמותות", type: "REGISTRATION",
-        status: "OK", completedAt: new Date("2020-03-15"),
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "פרוטוקול מינוי נושאי משרה", type: "DOCUMENT",
-        status: "OK", completedAt: new Date("2025-11-01"),
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "אישור מס הכנסה סעיף 46", type: "APPROVAL",
-        status: "OK", dueDate: new Date("2026-12-31"), completedAt: new Date("2026-01-05"),
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "ביטוח אחריות מקצועית", type: "CERTIFICATE",
-        status: "WARNING", dueDate: new Date("2026-04-15"), description: "פוליסה מתחדשת באפריל",
-      },
-    }),
-    prisma.complianceItem.create({
-      data: {
-        organizationId: org.id, name: "רישום מע\"מ", type: "REGISTRATION",
-        status: "OK", completedAt: new Date("2020-03-15"),
-      },
-    }),
+    // 1. מסמכי יסוד (FOUNDING_DOCS) — 8 items
+    ci("תקנון העמותה", "DOCUMENT", "FOUNDING_DOCS", "OK", { completedAt: new Date("2020-03-15"), frequency: "one_time", description: "תקנון מעודכן ומאושר" }),
+    ci("אישור רישום ברשם העמותות", "REGISTRATION", "FOUNDING_DOCS", "OK", { completedAt: new Date("2020-03-15"), frequency: "one_time" }),
+    ci("תעודת רישום עמותה", "CERTIFICATE", "FOUNDING_DOCS", "OK", { completedAt: new Date("2020-03-15"), frequency: "one_time" }),
+    ci("פרוטוקול ישיבת ייסוד", "DOCUMENT", "FOUNDING_DOCS", "OK", { completedAt: new Date("2020-03-15"), frequency: "one_time" }),
+    ci("פרוטוקול מינוי נושאי משרה", "DOCUMENT", "FOUNDING_DOCS", "OK", { completedAt: new Date("2025-11-01"), frequency: "annual" }),
+    ci("רשימת חברי ועד מעודכנת", "DOCUMENT", "FOUNDING_DOCS", "WARNING", { dueDate: new Date("2026-03-31"), frequency: "annual", description: "נדרש עדכון רשימת חברי ועד" }),
+    ci("כתב מינוי מנכ\"ל / מנהל", "DOCUMENT", "FOUNDING_DOCS", "OK", { completedAt: new Date("2025-06-01"), frequency: "one_time" }),
+    ci("רשימת חברי עמותה", "DOCUMENT", "FOUNDING_DOCS", "OK", { completedAt: new Date("2026-01-01"), frequency: "annual" }),
+
+    // 2. חובות שנתיות לרשם (ANNUAL_OBLIGATIONS) — 7 items
+    ci("דוח שנתי לרשם העמותות", "REPORT", "ANNUAL_OBLIGATIONS", "WARNING", { dueDate: new Date("2026-06-30"), frequency: "annual", description: "יש להגיש עד 30 יוני", legalBasis: "חוק העמותות, סעיף 36" }),
+    ci("דוח כספי מבוקר", "REPORT", "ANNUAL_OBLIGATIONS", "OK", { completedAt: new Date("2026-02-01"), dueDate: new Date("2026-06-30"), frequency: "annual", legalBasis: "חוק העמותות, סעיף 37" }),
+    ci("דו\"ח מילולי על פעילות", "REPORT", "ANNUAL_OBLIGATIONS", "MISSING", { dueDate: new Date("2026-06-30"), frequency: "annual", description: "טרם הוגש דוח מילולי לרשם" }),
+    ci("פרוטוקול אסיפה כללית שנתית", "DOCUMENT", "ANNUAL_OBLIGATIONS", "OK", { completedAt: new Date("2025-11-15"), frequency: "annual" }),
+    ci("עדכון פרטי ממונים ברשם", "REGISTRATION", "ANNUAL_OBLIGATIONS", "OK", { completedAt: new Date("2026-01-10"), frequency: "annual" }),
+    ci("הגשת בקשה לאישור ניהול תקין", "APPROVAL", "ANNUAL_OBLIGATIONS", "OK", { completedAt: new Date("2026-01-10"), dueDate: new Date("2026-12-31"), frequency: "annual", legalBasis: "תקנות העמותות" }),
+    ci("תשלום אגרה שנתית לרשם", "DOCUMENT", "ANNUAL_OBLIGATIONS", "OK", { completedAt: new Date("2026-01-05"), frequency: "annual" }),
+
+    // 3. אישורים מרשות המסים (TAX_APPROVALS) — 7 items
+    ci("אישור ניהול ספרים", "CERTIFICATE", "TAX_APPROVALS", "OK", { completedAt: new Date("2026-01-10"), dueDate: new Date("2026-12-31"), frequency: "annual", legalBasis: "פקודת מס הכנסה" }),
+    ci("אישור סעיף 46 (פטור ממס לתורמים)", "APPROVAL", "TAX_APPROVALS", "OK", { completedAt: new Date("2026-01-05"), dueDate: new Date("2026-12-31"), frequency: "annual", legalBasis: "סעיף 46 לפקודת מס הכנסה" }),
+    ci("רישום מע\"מ / פטור ממע\"מ", "REGISTRATION", "TAX_APPROVALS", "OK", { completedAt: new Date("2020-03-15"), frequency: "one_time" }),
+    ci("הגשת דוח מע\"מ שנתי", "REPORT", "TAX_APPROVALS", "OK", { completedAt: new Date("2026-02-01"), dueDate: new Date("2026-04-30"), frequency: "annual" }),
+    ci("אישור פטור ממס הכנסה לעמותה", "CERTIFICATE", "TAX_APPROVALS", "OK", { completedAt: new Date("2026-01-10"), dueDate: new Date("2026-12-31"), frequency: "annual", legalBasis: "סעיף 9(2) לפקודת מס הכנסה" }),
+    ci("הגשת דוח שנתי לרשות המסים", "REPORT", "TAX_APPROVALS", "WARNING", { dueDate: new Date("2026-05-31"), frequency: "annual", description: "יש להגיש עד 31 מאי" }),
+    ci("אישור ניהול תקין מרשות המסים", "CERTIFICATE", "TAX_APPROVALS", "OK", { completedAt: new Date("2026-01-10"), dueDate: new Date("2026-12-31"), frequency: "annual" }),
+
+    // 4. ניהול כספי שוטף (FINANCIAL_MGMT) — 11 items
+    ci("פתיחת חשבון בנק על שם העמותה", "REGISTRATION", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2020-04-01"), frequency: "one_time" }),
+    ci("הגדרת מורשי חתימה", "DOCUMENT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2025-11-01"), frequency: "annual" }),
+    ci("ספר קבלות ממוספר", "DOCUMENT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-01-01"), frequency: "annual" }),
+    ci("ניהול יומן קופה", "DOCUMENT", "FINANCIAL_MGMT", "WARNING", { dueDate: new Date("2026-03-31"), frequency: "monthly", description: "נדרש עדכון שוטף" }),
+    ci("מעקב תקציב שנתי", "REPORT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-01-15"), frequency: "annual" }),
+    ci("פרוטוקול אישור תקציב שנתי", "DOCUMENT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-01-15"), frequency: "annual" }),
+    ci("נהלי הוצאות וקבלות", "POLICY", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2025-09-01"), frequency: "one_time" }),
+    ci("דיווח על הכנסות ותרומות", "REPORT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-02-01"), frequency: "quarterly" }),
+    ci("ניהול חשבוניות ותשלומים", "DOCUMENT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-02-01"), frequency: "monthly" }),
+    ci("ביקורת פנימית כספית", "REPORT", "FINANCIAL_MGMT", "MISSING", { dueDate: new Date("2026-04-30"), frequency: "annual", description: "טרם בוצעה ביקורת פנימית לשנת 2025" }),
+    ci("דוח תזרים מזומנים", "REPORT", "FINANCIAL_MGMT", "OK", { completedAt: new Date("2026-02-01"), frequency: "quarterly" }),
+
+    // 5. תיעוד חלוקת כספים/שירותים (DISTRIBUTION_DOCS) — 10 items
+    ci("רשימת מוטבים מעודכנת", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2026-01-20"), frequency: "annual" }),
+    ci("קריטריונים לחלוקה תמיכות", "POLICY", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2025-08-01"), frequency: "one_time" }),
+    ci("פרוטוקול ועדת חלוקה", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2026-02-10"), frequency: "quarterly" }),
+    ci("טפסי בקשה להגשה", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2025-09-01"), frequency: "one_time" }),
+    ci("הסכמות מוטבים ואישורי קבלה", "DOCUMENT", "DISTRIBUTION_DOCS", "WARNING", { dueDate: new Date("2026-03-31"), frequency: "annual", description: "נדרש עדכון הסכמות" }),
+    ci("תיעוד תשלומים בפועל", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2026-02-15"), frequency: "monthly" }),
+    ci("נוהל מניעת ניגוד עניינים בחלוקה", "POLICY", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2025-07-01"), frequency: "one_time" }),
+    ci("דיווח על חלוקה לרשויות", "REPORT", "DISTRIBUTION_DOCS", "MISSING", { dueDate: new Date("2026-04-30"), frequency: "annual", description: "נדרש דיווח לרשם על פעילות חלוקה" }),
+    ci("בדיקות זכאות מוטבים", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2026-01-15"), frequency: "annual" }),
+    ci("מסמכי סיום / סגירת תיק מוטב", "DOCUMENT", "DISTRIBUTION_DOCS", "OK", { completedAt: new Date("2026-02-01"), frequency: "annual" }),
+
+    // 6. ממשל ופרוטוקולים (GOVERNANCE) — 7 items
+    ci("ישיבות ועד מנהל תקופתיות", "DOCUMENT", "GOVERNANCE", "OK", { completedAt: new Date("2026-02-15"), frequency: "quarterly", description: "לפחות 4 ישיבות בשנה" }),
+    ci("פרוטוקולי ישיבות ועד", "DOCUMENT", "GOVERNANCE", "OK", { completedAt: new Date("2026-02-15"), frequency: "quarterly" }),
+    ci("אישור תקציב שנתי ע\"י ועד", "DOCUMENT", "GOVERNANCE", "OK", { completedAt: new Date("2026-01-15"), frequency: "annual" }),
+    ci("נוהל ניגוד עניינים", "POLICY", "GOVERNANCE", "OK", { completedAt: new Date("2025-07-01"), frequency: "one_time", legalBasis: "חוק העמותות, סעיף 27א" }),
+    ci("הצהרות חברי ועד על ניגוד עניינים", "DOCUMENT", "GOVERNANCE", "WARNING", { dueDate: new Date("2026-04-01"), frequency: "annual", description: "נדרשות הצהרות מחודשות לשנת 2026" }),
+    ci("מדיניות שכר והטבות", "POLICY", "GOVERNANCE", "OK", { completedAt: new Date("2025-06-01"), frequency: "one_time" }),
+    ci("ביקורת חיצונית (רואה חשבון)", "CERTIFICATE", "GOVERNANCE", "OK", { completedAt: new Date("2026-02-01"), frequency: "annual" }),
+
+    // 7. עובדים ומתנדבים (EMPLOYEES_VOLUNTEERS) — 8 items
+    ci("חוזי עבודה חתומים", "DOCUMENT", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2025-12-01"), frequency: "one_time" }),
+    ci("תלושי שכר חודשיים", "DOCUMENT", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2026-02-01"), frequency: "monthly" }),
+    ci("הפרשות לפנסיה / ביטוח מנהלים", "CERTIFICATE", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2026-02-01"), frequency: "monthly" }),
+    ci("ביטוח לאומי ומס הכנסה ניכויים", "DOCUMENT", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2026-02-01"), frequency: "monthly" }),
+    ci("חוזי התנדבות / הסכמי מתנדבים", "DOCUMENT", "EMPLOYEES_VOLUNTEERS", "WARNING", { dueDate: new Date("2026-03-31"), frequency: "annual", description: "נדרש חידוש חוזי מתנדבים" }),
+    ci("ביטוח תאונות אישיות לעובדים", "CERTIFICATE", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2026-01-01"), dueDate: new Date("2026-12-31"), frequency: "annual" }),
+    ci("הדרכת עובדים / מתנדבים", "DOCUMENT", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2025-12-15"), frequency: "annual" }),
+    ci("נוהל קבלה ופיטורים", "POLICY", "EMPLOYEES_VOLUNTEERS", "OK", { completedAt: new Date("2025-06-01"), frequency: "one_time" }),
+
+    // 8. ביטוח (INSURANCE) — 6 items
+    ci("ביטוח צד ג' כללי", "CERTIFICATE", "INSURANCE", "OK", { completedAt: new Date("2026-01-01"), dueDate: new Date("2026-12-31"), frequency: "annual" }),
+    ci("ביטוח אחריות מנהלים ונושאי משרה", "CERTIFICATE", "INSURANCE", "WARNING", { dueDate: new Date("2026-04-15"), frequency: "annual", description: "פוליסה מתחדשת באפריל" }),
+    ci("ביטוח רכוש ותכולה", "CERTIFICATE", "INSURANCE", "OK", { completedAt: new Date("2026-01-01"), dueDate: new Date("2026-12-31"), frequency: "annual" }),
+    ci("ביטוח תאונות אישיות למתנדבים", "CERTIFICATE", "INSURANCE", "OK", { completedAt: new Date("2026-01-01"), dueDate: new Date("2026-12-31"), frequency: "annual" }),
+    ci("חידוש שנתי ביטוחים", "DOCUMENT", "INSURANCE", "OK", { completedAt: new Date("2026-01-10"), frequency: "annual", description: "תיאום עם סוכן הביטוח" }),
+    ci("ביטוח סייבר / אחריות מקצועית", "CERTIFICATE", "INSURANCE", "MISSING", { dueDate: new Date("2026-06-30"), frequency: "annual", description: "מומלץ בהתאם לגודל הארגון" }),
+
+    // 9. גמ\"ח כספים (GEMACH) — 10 items
+    ci("רישיון / אישור הפעלת גמ\"ח", "CERTIFICATE", "GEMACH", "OK", { completedAt: new Date("2020-06-01"), frequency: "one_time", legalBasis: "חוק הלוואות חוץ-בנקאיות" }),
+    ci("היתר עסקה מרבנות / בד\"ץ", "DOCUMENT", "GEMACH", "OK", { completedAt: new Date("2020-08-01"), frequency: "one_time", description: "היתר עסקה להלוואות ריבית" }),
+    ci("חוזי הלוואה חתומים", "DOCUMENT", "GEMACH", "OK", { completedAt: new Date("2026-02-01"), frequency: "one_time" }),
+    ci("לוח סילוקין ותיעוד פירעונות", "DOCUMENT", "GEMACH", "OK", { completedAt: new Date("2026-02-15"), frequency: "monthly" }),
+    ci("רשימת לווים עדכנית", "DOCUMENT", "GEMACH", "OK", { completedAt: new Date("2026-02-15"), frequency: "monthly" }),
+    ci("נוהל מתן הלוואות", "POLICY", "GEMACH", "OK", { completedAt: new Date("2021-01-01"), frequency: "one_time" }),
+    ci("ביטוח הלוואות / ערבויות", "CERTIFICATE", "GEMACH", "WARNING", { dueDate: new Date("2026-05-01"), frequency: "annual", description: "נדרש חידוש ביטוח הלוואות" }),
+    ci("דיווח שנתי על פעילות הגמ\"ח", "REPORT", "GEMACH", "MISSING", { dueDate: new Date("2026-06-30"), frequency: "annual", description: "נדרש דיווח שנתי לרשויות" }),
+    ci("ועדת הלוואות ופרוטוקולים", "DOCUMENT", "GEMACH", "OK", { completedAt: new Date("2026-01-20"), frequency: "quarterly" }),
+    ci("נוהל גביית חובות", "POLICY", "GEMACH", "OK", { completedAt: new Date("2021-01-01"), frequency: "one_time" }),
   ]);
-  console.log("Created 8 compliance items");
+  console.log("Created 74 compliance items (9 categories)");
 
   // ==================== COMPLIANCE CERTIFICATES ====================
   await prisma.complianceCertificate.create({

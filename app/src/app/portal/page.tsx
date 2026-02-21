@@ -54,6 +54,14 @@ type NotificationItem = {
   createdAt: string;
 };
 
+type CategoryScore = {
+  category: string;
+  label: string;
+  ok: number;
+  total: number;
+  score: number;
+};
+
 type PortalData = {
   compliance: {
     score: number;
@@ -64,6 +72,7 @@ type PortalData = {
     missing: number;
     expiringSoon: number;
     items: ComplianceItem[];
+    categoryScores?: CategoryScore[];
   };
   financial: {
     totalDonationsThisYear: number;
@@ -170,15 +179,24 @@ export default function PortalHomePage() {
   const notifications = data?.notifications ?? [];
   const firstUnread = notifications.find(n => !n.isRead);
 
-  // Progress bars from budgets
-  const progressBars = (data?.financial?.budgets ?? []).slice(0, 4).map(b => ({
+  // Progress bars — show worst-scoring compliance categories (top 4 needing attention)
+  const categoryScores = data?.compliance?.categoryScores ?? [];
+  const categoryProgressBars = categoryScores
+    .filter(cs => cs.total > 0)
+    .slice(0, 4)
+    .map(cs => ({
+      label: cs.label,
+      pct: cs.score,
+      color: cs.score === 100 ? "#059669" : cs.score >= 60 ? "#d97706" : "#ef4444",
+    }));
+
+  const budgetProgressBars = (data?.financial?.budgets ?? []).slice(0, 4).map(b => ({
     label: b.name,
     pct: b.percentage,
     color: b.percentage >= 90 ? "#059669" : b.percentage >= 70 ? "#2563eb" : "#d97706",
   }));
 
-  // If no budgets, show compliance-related progress
-  const fallbackProgressBars = progressBars.length > 0 ? progressBars : [
+  const fallbackProgressBars = categoryProgressBars.length > 0 ? categoryProgressBars : budgetProgressBars.length > 0 ? budgetProgressBars : [
     { label: "ציון ציות", pct: score, color: score >= 80 ? "#059669" : score >= 60 ? "#2563eb" : "#d97706" },
   ];
 
@@ -204,7 +222,7 @@ export default function PortalHomePage() {
       )}
 
       {/* ─── STAT CARDS ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div data-tour="portal-stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="anim-fade-scale delay-1"><StatCard icon={Shield} label="ציון ניהול תקין" value={String(score)} color="#2563eb" /></div>
         <div className="anim-fade-scale delay-2"><StatCard icon={AlertTriangle} label="משימות פתוחות" value={String(urgentTasks.length)} color="#d97706" /></div>
         <div className="anim-fade-scale delay-3"><StatCard icon={Calendar} label="ישיבה הבאה" value={nextMeetingDays} color="#2563eb" /></div>
@@ -212,7 +230,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── STATUS CARD WITH PROGRESS BARS ─── */}
-      <div className="anim-fade-up delay-2 bg-white rounded-2xl p-6 mb-6 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+      <div data-tour="portal-status" className="anim-fade-up delay-2 bg-white rounded-2xl p-6 mb-6 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-start justify-between gap-6 mb-5">
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -262,7 +280,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── APPROVALS + URGENT TASKS ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+      <div data-tour="portal-urgent" className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Approvals (from notifications) */}
         <div className="anim-fade-up delay-3 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
@@ -331,7 +349,7 @@ export default function PortalHomePage() {
       </div>
 
       {/* ─── TWO-COLUMN: CALENDAR + DOCS ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+      <div data-tour="portal-calendar" className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Calendar */}
         <div className="anim-fade-up delay-5 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center justify-between mb-4">
