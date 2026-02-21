@@ -108,10 +108,12 @@ export default function AdminDashboardPage() {
         ) : (
           <div className="space-y-2">
             {organizations.map((org, i) => {
-              const totalActivity = org.users + org.workflows + org.donations;
-              const score = Math.min(100, Math.round((totalActivity / Math.max(totalActivity, 1)) * 100));
               return (
-                <div key={org.id} className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all`}>
+                <Link
+                  key={org.id}
+                  href="/admin/organizations"
+                  className={`anim-fade-right delay-${i + 1} flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all block`}
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-9 rounded-full bg-[#16a34a]" />
                     <div>
@@ -122,7 +124,7 @@ export default function AdminDashboardPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-[12px] text-[#64748b]">{org.number}</span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -165,8 +167,8 @@ export default function AdminDashboardPage() {
               {recentExecutions.slice(0, 5).map((exec) => (
                 <div key={exec.id} className="flex items-center justify-between p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all">
                   <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${exec.status === "COMPLETED" ? "bg-[#f0fdf4]" : exec.status === "FAILED" ? "bg-[#fef2f2]" : "bg-[#fffbeb]"}`}>
-                      {exec.status === "COMPLETED" ? <CheckCircle2 size={14} className="text-[#16a34a]" /> : exec.status === "FAILED" ? <AlertTriangle size={14} className="text-[#ef4444]" /> : <Clock size={14} className="text-[#d97706]" />}
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${exec.status === "SUCCESS" ? "bg-[#f0fdf4]" : exec.status === "FAILED" ? "bg-[#fef2f2]" : "bg-[#fffbeb]"}`}>
+                      {exec.status === "SUCCESS" ? <CheckCircle2 size={14} className="text-[#16a34a]" /> : exec.status === "FAILED" ? <AlertTriangle size={14} className="text-[#ef4444]" /> : <Clock size={14} className="text-[#d97706]" />}
                     </div>
                     <div>
                       <div className="text-[13px] font-medium text-[#1e293b]">{exec.workflow?.name ?? "—"}</div>
@@ -174,8 +176,8 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`badge ${exec.status === "COMPLETED" ? "badge-success" : exec.status === "FAILED" ? "badge-danger" : "badge-warning"}`}>
-                      {exec.status === "COMPLETED" ? "הושלם" : exec.status === "FAILED" ? "נכשל" : exec.status === "RUNNING" ? "רץ" : "ממתין"}
+                    <span className={`badge ${exec.status === "SUCCESS" ? "badge-success" : exec.status === "FAILED" ? "badge-danger" : "badge-warning"}`}>
+                      {exec.status === "SUCCESS" ? "הושלם" : exec.status === "FAILED" ? "נכשל" : exec.status === "RUNNING" ? "רץ" : "ממתין"}
                     </span>
                     <span className="text-[11px] text-[#64748b]">{new Date(exec.startedAt).toLocaleDateString("he-IL")}</span>
                   </div>
@@ -212,7 +214,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Integration Status placeholder */}
+        {/* סטטוס כללי */}
         <div className="anim-fade-up delay-6 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">

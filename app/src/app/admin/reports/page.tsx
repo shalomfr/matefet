@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
 import StatCard from "@/components/StatCard";
-import { BarChart3, Building2, Zap, TrendingUp } from "lucide-react";
+import { useToast } from "@/components/Toast";
+import { BarChart3, Building2, Zap, TrendingUp, Download } from "lucide-react";
 
 interface Overview {
   organizations: number;
@@ -30,6 +31,7 @@ interface AdminStats {
 }
 
 export default function AdminReportsPage() {
+  const { showSuccess } = useToast();
   const [data, setData] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,6 +44,36 @@ export default function AdminReportsPage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  function exportCSV() {
+    if (!data || !data.organizations || data.organizations.length === 0) return;
+
+    const orgs = data.organizations;
+    const BOM = "\uFEFF";
+    const headers = ["שם ארגון", "מספר רישום", "משתמשים", "אוטומציות", "תרומות", "תאריך הצטרפות"];
+    const rows = orgs.map((org) => [
+      org.name,
+      org.number ?? "",
+      String(org.users),
+      String(org.workflows),
+      String(org.donations),
+      org.createdAt ? new Date(org.createdAt).toLocaleDateString("he-IL") : "",
+    ]);
+
+    const csvContent = BOM + [headers, ...rows].map((row) => row.map((cell) => `"${cell}"`).join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `organizations-report-${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showSuccess("הקובץ הורד בהצלחה");
+  }
 
   if (loading) {
     return (
@@ -86,7 +118,17 @@ export default function AdminReportsPage() {
       </div>
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-6" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
-        <h3 className="text-base font-bold text-[#1e293b] mb-4">שימוש לפי ארגון</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-base font-bold text-[#1e293b]">שימוש לפי ארגון</h3>
+          <button
+            onClick={exportCSV}
+            disabled={organizations.length === 0}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2563eb] bg-[#eff6ff] rounded-xl hover:bg-[#dbeafe] transition-colors disabled:opacity-50"
+          >
+            <Download size={16} />
+            ייצוא CSV
+          </button>
+        </div>
         {organizations.length === 0 ? (
           <div className="text-center text-[#64748b] py-8">אין נתונים</div>
         ) : (

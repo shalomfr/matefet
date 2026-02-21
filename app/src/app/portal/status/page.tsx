@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
-import { CheckCircle2, AlertTriangle, AlertCircle, Shield, ChevronDown, Search, Filter } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, Shield, ChevronDown, Search, Filter, RefreshCw } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 type ComplianceItem = {
   id: string;
@@ -43,13 +44,15 @@ const FREQ_LABELS: Record<string, string> = {
 type FilterMode = "all" | "attention" | "ok";
 
 export default function PortalStatusPage() {
+  const { showSuccess, showError } = useToast();
   const [items, setItems] = useState<ComplianceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
   const [search, setSearch] = useState("");
+  const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
+  const fetchData = () => {
     fetch("/api/compliance")
       .then(r => r.json())
       .then(res => {
@@ -64,15 +67,52 @@ export default function PortalStatusPage() {
             );
             initialOpen[cat as string] = hasIssue;
           });
-          setOpenCategories(initialOpen);
+          setOpenCategories(prev => {
+            // Preserve user-opened categories on refresh
+            const merged = { ...initialOpen };
+            for (const key of Object.keys(prev)) {
+              if (prev[key]) merged[key] = true;
+            }
+            return merged;
+          });
         }
       })
       .catch(console.error)
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   const toggleCategory = (cat: string) => {
     setOpenCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const handleMarkAsHandled = async (item: ComplianceItem) => {
+    setUpdatingIds(prev => new Set(prev).add(item.id));
+    try {
+      const res = await fetch(`/api/compliance/${item.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "OK", completedAt: new Date().toISOString() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showSuccess(`"${item.name}" סומן כמטופל`);
+        fetchData();
+      } else {
+        showError("שגיאה בעדכון הסטטוס");
+      }
+    } catch {
+      showError("שגיאה בעדכון הסטטוס");
+    } finally {
+      setUpdatingIds(prev => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
+    }
   };
 
   const filteredItems = items.filter(item => {
@@ -110,6 +150,34 @@ export default function PortalStatusPage() {
     };
     const s = map[status] ?? { label: status, cls: "text-[#64748b] bg-[#f8f9fc] border-[#e8ecf4]" };
     return <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg border ${s.cls}`}>{s.label}</span>;
+  };
+
+  const getActionButton = (item: ComplianceItem) => {
+    if (item.status === "OK") return null; // OK items already show checkmark icon
+    const isUpdating = updatingIds.has(item.id);
+    if (item.status === "EXPIRED") {
+      return (
+        <button
+          onClick={() => handleMarkAsHandled(item)}
+          disabled={isUpdating}
+          className="text-[11px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] px-3 py-1.5 rounded-lg bg-[#eff6ff] border border-[#bfdbfe] hover:bg-[#dbeafe] transition-all disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
+        >
+          {isUpdating ? <RefreshCw size={12} className="animate-spin" /> : null}
+          חדש
+        </button>
+      );
+    }
+    // MISSING and WARNING
+    return (
+      <button
+        onClick={() => handleMarkAsHandled(item)}
+        disabled={isUpdating}
+        className="text-[11px] font-semibold text-[#16a34a] hover:text-[#15803d] px-3 py-1.5 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] hover:bg-[#dcfce7] transition-all disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
+      >
+        {isUpdating ? <RefreshCw size={12} className="animate-spin" /> : null}
+        סמן כמטופל
+      </button>
+    );
   };
 
   const getCategoryScore = (cat: string) => {
@@ -269,8 +337,9 @@ export default function PortalStatusPage() {
                             <div className="text-[11px] text-[#64748b] mt-0.5">{item.description}</div>
                           )}
                         </div>
-                        <div className="flex-shrink-0">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           {getStatusBadge(item.status)}
+                          {getActionButton(item)}
                         </div>
                       </div>
                     ))}

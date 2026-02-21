@@ -47,3 +47,15 @@ export const PUT = withErrorHandler(async (req: Request, { params }: { params: P
 
   return apiResponse(meeting);
 });
+
+export const DELETE = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+  const user = await requireManager();
+  const { id } = await params;
+
+  const deleted = await prisma.boardMeeting.deleteMany({
+    where: { id, organizationId: user.organizationId! },
+  });
+
+  if (deleted.count === 0) return apiError("ישיבה לא נמצאה", 404);
+  return apiResponse({ deleted: true });
+});

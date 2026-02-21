@@ -32,14 +32,7 @@ export function TourProvider({ tourId, steps, children }: TourProviderProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const storageKey = `tour-${tourId}-completed`;
 
-  useEffect(() => {
-    // Auto-start on first visit (after 1.5s delay for data load)
-    const completed = typeof window !== "undefined" && localStorage.getItem(storageKey);
-    if (!completed) {
-      const timer = setTimeout(() => setIsActive(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [storageKey]);
+  // No auto-start — tour only starts when user clicks "סיור מודרך"
 
   const startTour = useCallback(() => {
     setCurrentStep(0);

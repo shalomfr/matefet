@@ -5,12 +5,13 @@ export const GET = withErrorHandler(async (req: Request, { params }: { params: P
   const user = await requireManager();
   const { id } = await params;
 
-  const doc = await prisma.organizationDocument.findFirst({
+  const budget = await prisma.budget.findFirst({
     where: { id, organizationId: user.organizationId! },
+    include: { lines: true },
   });
 
-  if (!doc) return apiError("מסמך לא נמצא", 404);
-  return apiResponse(doc);
+  if (!budget) return apiError("תקציב לא נמצא", 404);
+  return apiResponse(budget);
 });
 
 export const PUT = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -18,31 +19,33 @@ export const PUT = withErrorHandler(async (req: Request, { params }: { params: P
   const { id } = await params;
   const body = await req.json();
 
-  const existing = await prisma.organizationDocument.findFirst({
+  const existing = await prisma.budget.findFirst({
     where: { id, organizationId: user.organizationId! },
   });
-  if (!existing) return apiError("מסמך לא נמצא", 404);
+  if (!existing) return apiError("תקציב לא נמצא", 404);
 
-  const doc = await prisma.organizationDocument.update({
+  const budget = await prisma.budget.update({
     where: { id },
     data: {
       ...(body.name !== undefined ? { name: body.name } : {}),
-      ...(body.category !== undefined ? { category: body.category } : {}),
-      ...(body.description !== undefined ? { description: body.description } : {}),
+      ...(body.year !== undefined ? { year: body.year } : {}),
+      ...(body.totalBudget !== undefined ? { totalBudget: body.totalBudget } : {}),
+      ...(body.totalSpent !== undefined ? { totalSpent: body.totalSpent } : {}),
+      ...(body.isActive !== undefined ? { isActive: body.isActive } : {}),
     },
   });
 
-  return apiResponse(doc);
+  return apiResponse(budget);
 });
 
 export const DELETE = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const user = await requireManager();
   const { id } = await params;
 
-  const deleted = await prisma.organizationDocument.deleteMany({
+  const deleted = await prisma.budget.deleteMany({
     where: { id, organizationId: user.organizationId! },
   });
 
-  if (deleted.count === 0) return apiError("מסמך לא נמצא", 404);
+  if (deleted.count === 0) return apiError("תקציב לא נמצא", 404);
   return apiResponse({ deleted: true });
 });

@@ -21,46 +21,54 @@ function getTargetRect(target: string): TooltipRect | null {
 function calcTooltipStyle(targetRect: TooltipRect, position: string): React.CSSProperties {
   const GAP = 12;
   const tooltipW = 300;
+  const tooltipH = 200; // estimated tooltip height
   const scrollY = window.scrollY;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  let top: number;
+  let left: number;
 
   switch (position) {
     case "bottom":
     case "bottom-right":
-      return {
-        top: targetRect.top + targetRect.height + GAP + scrollY,
-        left: Math.min(targetRect.left, window.innerWidth - tooltipW - 16),
-      };
+      top = targetRect.top + targetRect.height + GAP + scrollY;
+      left = Math.min(targetRect.left, vw - tooltipW - 16);
+      break;
     case "bottom-left":
-      return {
-        top: targetRect.top + targetRect.height + GAP + scrollY,
-        left: Math.max(16, targetRect.left + targetRect.width - tooltipW),
-      };
+      top = targetRect.top + targetRect.height + GAP + scrollY;
+      left = Math.max(16, targetRect.left + targetRect.width - tooltipW);
+      break;
     case "top":
     case "top-right":
-      return {
-        top: targetRect.top - GAP + scrollY,
-        left: Math.min(targetRect.left, window.innerWidth - tooltipW - 16),
-        transform: "translateY(-100%)",
-      };
+      top = targetRect.top - GAP - tooltipH + scrollY;
+      left = Math.min(targetRect.left, vw - tooltipW - 16);
+      break;
     case "top-left":
-      return {
-        top: targetRect.top - GAP + scrollY,
-        left: Math.max(16, targetRect.left + targetRect.width - tooltipW),
-        transform: "translateY(-100%)",
-      };
+      top = targetRect.top - GAP - tooltipH + scrollY;
+      left = Math.max(16, targetRect.left + targetRect.width - tooltipW);
+      break;
     case "left":
-      return {
-        top: targetRect.top + scrollY,
-        left: targetRect.left - tooltipW - GAP,
-      };
+      top = targetRect.top + scrollY;
+      left = targetRect.left - tooltipW - GAP;
+      break;
     case "right":
-      return {
-        top: targetRect.top + scrollY,
-        left: targetRect.left + targetRect.width + GAP,
-      };
+      top = targetRect.top + scrollY;
+      left = targetRect.left + targetRect.width + GAP;
+      break;
     default:
-      return { top: targetRect.top + targetRect.height + GAP + scrollY, left: targetRect.left };
+      top = targetRect.top + targetRect.height + GAP + scrollY;
+      left = targetRect.left;
   }
+
+  // Clamp to viewport
+  left = Math.max(16, Math.min(left, vw - tooltipW - 16));
+  const minTop = scrollY + 16;
+  const maxTop = scrollY + vh - tooltipH - 16;
+  if (top < minTop) top = minTop;
+  if (top > maxTop) top = maxTop;
+
+  return { top, left };
 }
 
 export default function OnboardingTour() {

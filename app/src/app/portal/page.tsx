@@ -2,6 +2,7 @@
 import Topbar from "@/components/Topbar";
 import StatCard from "@/components/StatCard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   CheckCircle2, AlertTriangle, AlertCircle, FileCheck,
   Calendar, FileText, BarChart2, MessageCircle,
@@ -93,6 +94,7 @@ type Status = "green" | "orange" | "red";
 
 export default function PortalHomePage() {
   const { showSuccess } = useToast();
+  const router = useRouter();
   const [notifVisible, setNotifVisible] = useState(true);
   const [data, setData] = useState<PortalData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -104,6 +106,20 @@ export default function PortalHomePage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  /* dismiss notification and mark as read */
+  const handleDismissNotification = async (notifId: string) => {
+    setNotifVisible(false);
+    try {
+      await fetch("/api/notifications", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [notifId] }),
+      });
+    } catch {
+      // silently ignore
+    }
+  };
 
   if (loading) {
     return (
@@ -200,6 +216,14 @@ export default function PortalHomePage() {
     { label: "ציון ציות", pct: score, color: score >= 80 ? "#059669" : score >= 60 ? "#2563eb" : "#d97706" },
   ];
 
+  /* Quick actions config — real navigation links */
+  const quickActions = [
+    { icon: FileText, label: "צור פרוטוקול", bg: "#eff6ff", color: "#2563eb", href: "/portal/board" },
+    { icon: BarChart2, label: "הפק דוח", bg: "#f0fdf4", color: "#16a34a", href: "/portal/reports" },
+    { icon: FileCheck, label: "העלה מסמך", bg: "#eff6ff", color: "#2563eb", href: "/portal/documents" },
+    { icon: AlertCircle, label: "דווח על בעיה", bg: "#fef2f2", color: "#ef4444", href: "/portal/contact" },
+  ];
+
   return (
     <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="הפורטל שלי" subtitle="שלום · לוח הבקרה שלך" />
@@ -215,7 +239,7 @@ export default function PortalHomePage() {
               {firstUnread.title} – {firstUnread.message}
             </span>
           </div>
-          <button onClick={() => setNotifVisible(false)} className="p-1.5 rounded-lg hover:bg-[#fef2f2] text-[#64748b] hover:text-[#ef4444] transition-colors">
+          <button onClick={() => handleDismissNotification(firstUnread.id)} className="p-1.5 rounded-lg hover:bg-[#fef2f2] text-[#64748b] hover:text-[#ef4444] transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -336,7 +360,7 @@ export default function PortalHomePage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => showSuccess("כל הכבוד, התחלת לטפל בזה!")}
+                    onClick={() => router.push("/portal/status")}
                     className="text-[11px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] px-3 py-1.5 rounded-lg hover:bg-[#eff6ff] transition-all"
                   >
                     טפל →
@@ -413,7 +437,7 @@ export default function PortalHomePage() {
             </div>
             <div className="anim-fade-right delay-3 flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f8f9fc] transition-all border border-transparent hover:border-[#e8ecf4]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#f0fdf4] flex items-center justify-center text-[10px] font-bold text-[#16a34a]">
+                <div className="w-10 h-10 rounded-xl bg-[#f0fdf4] flex items-center justify-center text-[14px]">
                   👥
                 </div>
                 <div>
@@ -425,7 +449,7 @@ export default function PortalHomePage() {
             </div>
             <div className="anim-fade-right delay-4 flex items-center justify-between p-3.5 rounded-xl hover:bg-[#f8f9fc] transition-all border border-transparent hover:border-[#e8ecf4]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#eff6ff] flex items-center justify-center text-[10px] font-bold text-[#2563eb]">
+                <div className="w-10 h-10 rounded-xl bg-[#eff6ff] flex items-center justify-center text-[14px]">
                   📄
                 </div>
                 <div>
@@ -450,22 +474,17 @@ export default function PortalHomePage() {
             פעולות מהירות
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: FileText, label: "צור פרוטוקול", bg: "#eff6ff", color: "#2563eb" },
-              { icon: BarChart2, label: "הפק דוח", bg: "#f0fdf4", color: "#16a34a" },
-              { icon: FileCheck, label: "העלה מסמך", bg: "#eff6ff", color: "#2563eb" },
-              { icon: AlertCircle, label: "דווח על בעיה", bg: "#fef2f2", color: "#ef4444" },
-            ].map((qa, i) => (
-              <button
+            {quickActions.map((qa, i) => (
+              <Link
                 key={qa.label}
-                onClick={() => showSuccess(`${qa.label} – בקרוב!`)}
+                href={qa.href}
                 className={`anim-fade-scale delay-${i + 2} flex items-center gap-3 p-3.5 rounded-xl bg-[#f8f9fc] border border-[#e8ecf4]/50 hover:border-[#2563eb]/20 transition-all text-right`}
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: qa.bg }}>
                   <qa.icon size={14} style={{ color: qa.color }} />
                 </div>
                 <span className="text-[13px] font-medium text-[#1e293b]">{qa.label}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </div>
@@ -514,14 +533,18 @@ export default function PortalHomePage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <a
-            href="https://wa.me/972501234567"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[12px] font-semibold text-[#16a34a] hover:text-[#15803d] px-4 py-2 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] hover:bg-[#dcfce7] transition-all"
-          >
-            WhatsApp
-          </a>
+          <div className="relative group">
+            <a
+              href="#"
+              onClick={e => e.preventDefault()}
+              className="text-[12px] font-semibold text-[#16a34a] hover:text-[#15803d] px-4 py-2 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] hover:bg-[#dcfce7] transition-all"
+            >
+              WhatsApp
+            </a>
+            <div className="absolute bottom-full mb-2 right-0 bg-[#1e293b] text-white text-[11px] px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              מספר הטלפון יוגדר בהגדרות
+            </div>
+          </div>
           <Link
             href="/portal/contact"
             className="text-[12px] font-semibold text-[#2563eb] hover:text-[#1d4ed8] px-4 py-2 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] hover:bg-[#dbeafe] transition-all"

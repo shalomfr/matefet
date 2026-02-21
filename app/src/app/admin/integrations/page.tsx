@@ -1,6 +1,7 @@
 "use client";
 import Topbar from "@/components/Topbar";
-import { Link2, CheckCircle2, XCircle, Settings, ExternalLink, RefreshCw } from "lucide-react";
+import { useToast } from "@/components/Toast";
+import { Link2, CheckCircle2, XCircle, Settings, ExternalLink, RefreshCw, Info } from "lucide-react";
 
 const integrations = [
   { name: "חשבונית ירוקה", description: "הפקת חשבוניות וקבלות אוטומטית", icon: "🧾", status: "connected", lastSync: "לפני 5 דקות", category: "חשבונאות" },
@@ -18,11 +19,18 @@ const integrations = [
 const categories = [...new Set(integrations.map((i) => i.category))];
 
 export default function AdminIntegrationsPage() {
+  const { showSuccess } = useToast();
   const connectedCount = integrations.filter((i) => i.status === "connected").length;
 
   return (
     <div className="px-4 md:px-8 pb-6 md:pb-8">
       <Topbar title="אינטגרציות" subtitle="ניהול חיבורי שירותים חיצוניים" />
+
+      {/* Preview Banner */}
+      <div className="bg-[#fffbeb] rounded-2xl border border-[#fde68a] p-4 mb-6 flex items-center gap-3" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+        <Info size={20} className="text-[#d97706] flex-shrink-0" />
+        <span className="text-sm font-medium text-[#92400e]">אינטגרציות יהיו זמינות בגרסה הבאה – זו תצוגה מקדימה</span>
+      </div>
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <div className="flex items-center gap-4">
@@ -79,20 +87,30 @@ export default function AdminIntegrationsPage() {
                           ? `סנכרון אחרון: ${integration.lastSync}`
                           : "לא מחובר"}
                       </span>
-                      <span className="text-[11px] font-medium text-[#d97706] mt-1">חיבור בקרוב</span>
                     </div>
                     <div className="flex gap-1">
                       {integration.status === "connected" ? (
                         <>
-                          <button className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]" title="סנכרן">
+                          <button
+                            onClick={() => showSuccess("סונכרן בהצלחה")}
+                            className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]"
+                            title="סנכרן"
+                          >
                             <RefreshCw size={14} />
                           </button>
-                          <button className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]" title="הגדרות">
+                          <button
+                            onClick={() => showSuccess("הגדרות - בגרסה הבאה")}
+                            className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]"
+                            title="הגדרות"
+                          >
                             <Settings size={14} />
                           </button>
                         </>
                       ) : (
-                        <button className="btn-primary !py-1 !px-3 !text-xs flex items-center gap-1">
+                        <button
+                          onClick={() => showSuccess("חיבור אינטגרציה - בגרסה הבאה")}
+                          className="btn-primary !py-1 !px-3 !text-xs flex items-center gap-1"
+                        >
                           <ExternalLink size={12} /> חבר
                         </button>
                       )}

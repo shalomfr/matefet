@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Building2,
@@ -18,6 +18,11 @@ import {
 } from "lucide-react";
 import { useTour } from "@/components/tour/TourContext";
 
+interface OrgOption {
+  id: string;
+  name: string;
+}
+
 const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "דשבורד" },
   { href: "/admin/organizations", icon: Building2, label: "ארגונים" },
@@ -32,6 +37,53 @@ export default function AdminSidebar() {
   const [orgOpen, setOrgOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { startTour } = useTour();
+  const { data: session } = useSession();
+
+  // Organization selector state
+  const [organizations, setOrganizations] = useState<OrgOption[]>([]);
+  const [selectedOrg, setSelectedOrg] = useState<string | null>(null); // null = "כל הארגונים"
+  const orgRef = useRef<HTMLDivElement>(null);
+
+  // Fetch organizations list
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      try {
+        const res = await fetch("/api/stats/admin");
+        if (res.ok) {
+          const json = await res.json();
+          const orgs = (json.data?.organizations ?? []).map((o: { id: string; name: string }) => ({
+            id: o.id,
+            name: o.name,
+          }));
+          setOrganizations(orgs);
+        }
+      } catch {
+        // silently fail
+      }
+    };
+
+    if (session) {
+      fetchOrgs();
+    }
+  }, [session]);
+
+  // Click-outside for org dropdown
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (orgRef.current && !orgRef.current.contains(e.target as Node)) {
+        setOrgOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const selectedOrgName = selectedOrg
+    ? organizations.find((o) => o.id === selectedOrg)?.name ?? "כל הארגונים"
+    : "כל הארגונים";
+
+  const userName = session?.user?.name ?? "עובד מערכת";
+  const userInitials = userName.slice(0, 1);
 
   return (
     <>
@@ -89,20 +141,58 @@ export default function AdminSidebar() {
         </div>
 
         {/* Organization Selector */}
-        <div className="px-4 py-3">
+        <div className="px-4 py-3 relative" ref={orgRef}>
           <button
             onClick={() => setOrgOpen(!orgOpen)}
             className="w-full bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:bg-[#eff6ff] hover:border-[#bfdbfe] transition-all"
           >
             <div className="flex-1 text-right">
               <div className="text-[10px] text-[#94a3b8] mb-0.5">צפייה בארגון</div>
-              <div className="text-[13px] font-semibold text-[#1e293b]">כל הארגונים</div>
+              <div className="text-[13px] font-semibold text-[#1e293b] truncate">{selectedOrgName}</div>
             </div>
             <ChevronDown
               size={14}
               className={`text-[#94a3b8] transition-transform ${orgOpen ? "rotate-180" : ""}`}
             />
           </button>
+
+          {/* Org dropdown */}
+          {orgOpen && (
+            <div className="absolute left-4 right-4 top-full mt-1 bg-white rounded-xl border border-[#e8ecf4] shadow-lg z-50 overflow-hidden">
+              <div className="max-h-60 overflow-y-auto">
+                <button
+                  onClick={() => {
+                    setSelectedOrg(null);
+                    setOrgOpen(false);
+                  }}
+                  className={`w-full text-right px-4 py-2.5 text-[13px] hover:bg-[#f8f9fc] transition-colors ${
+                    selectedOrg === null ? "bg-[#eff6ff] text-[#1e40af] font-semibold" : "text-[#1e293b]"
+                  }`}
+                >
+                  כל הארגונים
+                </button>
+                {organizations.map((org) => (
+                  <button
+                    key={org.id}
+                    onClick={() => {
+                      setSelectedOrg(org.id);
+                      setOrgOpen(false);
+                    }}
+                    className={`w-full text-right px-4 py-2.5 text-[13px] hover:bg-[#f8f9fc] transition-colors border-t border-[#f1f5f9] ${
+                      selectedOrg === org.id ? "bg-[#eff6ff] text-[#1e40af] font-semibold" : "text-[#1e293b]"
+                    }`}
+                  >
+                    {org.name}
+                  </button>
+                ))}
+                {organizations.length === 0 && (
+                  <div className="px-4 py-3 text-[12px] text-[#94a3b8] text-center">
+                    טוען ארגונים...
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
@@ -154,10 +244,10 @@ export default function AdminSidebar() {
               className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
               style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
             >
-              ע
+              {userInitials}
             </div>
             <div className="flex-1">
-              <div className="text-[12px] font-semibold text-[#1e293b]">עובד מערכת</div>
+              <div className="text-[12px] font-semibold text-[#1e293b]">{userName}</div>
               <div className="text-[10px] text-[#94a3b8]">Admin</div>
             </div>
             <button

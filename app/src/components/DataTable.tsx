@@ -1,4 +1,5 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import { MoreHorizontal } from "lucide-react";
 
 interface Column {
@@ -7,14 +8,79 @@ interface Column {
   render?: (value: unknown, row: Record<string, unknown>) => React.ReactNode;
 }
 
+interface RowAction {
+  label: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  danger?: boolean;
+}
+
 interface DataTableProps {
   columns: Column[];
   data: Record<string, unknown>[];
   title?: string;
   action?: React.ReactNode;
+  rowActions?: (row: Record<string, unknown>) => RowAction[];
 }
 
-export default function DataTable({ columns, data, title, action }: DataTableProps) {
+function ActionMenu({
+  row,
+  rowActions,
+}: {
+  row: Record<string, unknown>;
+  rowActions: (row: Record<string, unknown>) => RowAction[];
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const actions = rowActions(row);
+  if (actions.length === 0) return null;
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="p-1 rounded-lg hover:bg-[#f8f9fc] text-[--color-muted]"
+      >
+        <MoreHorizontal size={16} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1 w-44 bg-white rounded-xl border border-[#e8ecf4] shadow-lg z-50 overflow-hidden py-1">
+          {actions.map((action, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                action.onClick();
+                setOpen(false);
+              }}
+              className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] transition-colors text-right ${
+                action.danger
+                  ? "text-[#ef4444] hover:bg-[#fef2f2]"
+                  : "text-[#1e293b] hover:bg-[#f8f9fc]"
+              }`}
+            >
+              {action.icon && <span className="flex-shrink-0">{action.icon}</span>}
+              <span>{action.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function DataTable({ columns, data, title, action, rowActions }: DataTableProps) {
   return (
     <div className="card-dark overflow-hidden">
       {title && (
@@ -35,7 +101,7 @@ export default function DataTable({ columns, data, title, action }: DataTablePro
                   {col.label}
                 </th>
               ))}
-              <th className="w-10 border-b border-[--color-border]"></th>
+              {rowActions && <th className="w-10 border-b border-[--color-border]"></th>}
             </tr>
           </thead>
           <tbody>
@@ -49,11 +115,11 @@ export default function DataTable({ columns, data, title, action }: DataTablePro
                     {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? "")}
                   </td>
                 ))}
-                <td className="p-3 border-b border-[#e8ecf4]">
-                  <button className="p-1 rounded-lg hover:bg-[#f8f9fc] text-[--color-muted]">
-                    <MoreHorizontal size={16} />
-                  </button>
-                </td>
+                {rowActions && (
+                  <td className="p-3 border-b border-[#e8ecf4]">
+                    <ActionMenu row={row} rowActions={rowActions} />
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

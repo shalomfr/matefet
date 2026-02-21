@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
-import { Users, Calendar, Download, Clock, UserCheck, Crown, User, CheckCircle2 } from "lucide-react";
+import { Users, Calendar, Download, Clock, UserCheck, Crown, User, CheckCircle2, Plus, X } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 type BoardMember = {
   id: string;
@@ -21,7 +22,7 @@ type BoardMeeting = {
   status: string;
   summary?: string;
   attendeesCount?: number;
-  resolutions: { id: string; title: string; status: string }[];
+  resolutions: { id: string; title: string; status: string; votesFor?: number; votesAgainst?: number; votesAbstain?: number }[];
   protocol?: { id: string; approvedAt?: string } | null;
 };
 
@@ -57,10 +58,28 @@ function getInitials(name: string) {
 }
 
 export default function PortalBoardPage() {
+  const { showSuccess, showError } = useToast();
   const [data, setData] = useState<BoardData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  // Modal states
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+  const [showMemberModal, setShowMemberModal] = useState(false);
+
+  // Meeting form
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingLocation, setMeetingLocation] = useState("");
+  const [meetingSubmitting, setMeetingSubmitting] = useState(false);
+
+  // Member form
+  const [memberName, setMemberName] = useState("");
+  const [memberRole, setMemberRole] = useState("");
+  const [memberEmail, setMemberEmail] = useState("");
+  const [memberPhone, setMemberPhone] = useState("");
+  const [memberSubmitting, setMemberSubmitting] = useState(false);
+
+  const fetchData = () => {
     Promise.all([
       fetch("/api/board/meetings").then(r => r.json()),
       fetch("/api/board/members").then(r => r.json()),
@@ -75,7 +94,98 @@ export default function PortalBoardPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  const handleCreateMeeting = async () => {
+    if (!meetingTitle.trim()) {
+      showError("יש להזין כותרת לישיבה");
+      return;
+    }
+    if (!meetingDate) {
+      showError("יש לבחור תאריך");
+      return;
+    }
+    setMeetingSubmitting(true);
+    try {
+      const res = await fetch("/api/board/meetings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: meetingTitle.trim(),
+          date: new Date(meetingDate).toISOString(),
+          location: meetingLocation.trim() || undefined,
+          status: "SCHEDULED",
+        }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        showSuccess("הישיבה נקבעה בהצלחה");
+        setShowMeetingModal(false);
+        setMeetingTitle("");
+        setMeetingDate("");
+        setMeetingLocation("");
+        fetchData();
+      } else {
+        showError("שגיאה בקביעת הישיבה");
+      }
+    } catch {
+      showError("שגיאה בקביעת הישיבה");
+    } finally {
+      setMeetingSubmitting(false);
+    }
+  };
+
+  const handleCreateMember = async () => {
+    if (!memberName.trim()) {
+      showError("יש להזין שם");
+      return;
+    }
+    if (!memberRole.trim()) {
+      showError("יש להזין תפקיד");
+      return;
+    }
+    setMemberSubmitting(true);
+    try {
+      const res = await fetch("/api/board/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: memberName.trim(),
+          role: memberRole.trim(),
+          email: memberEmail.trim() || undefined,
+          phone: memberPhone.trim() || undefined,
+        }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        showSuccess("חבר הועד נוסף בהצלחה");
+        setShowMemberModal(false);
+        setMemberName("");
+        setMemberRole("");
+        setMemberEmail("");
+        setMemberPhone("");
+        fetchData();
+      } else {
+        showError("שגיאה בהוספת חבר ועד");
+      }
+    } catch {
+      showError("שגיאה בהוספת חבר ועד");
+    } finally {
+      setMemberSubmitting(false);
+    }
+  };
+
+  const handleDownloadProtocol = (meeting: BoardMeeting) => {
+    if (meeting.protocol) {
+      showSuccess("פרוטוקול ישיבה — הורדה תהיה זמינה בקרוב");
+    } else {
+      showError("אין פרוטוקול לישיבה זו");
+    }
+  };
 
   if (loading) {
     return (
@@ -91,6 +201,12 @@ export default function PortalBoardPage() {
   const members = (data?.members ?? []).filter(m => m.isActive);
   const meetings = data?.meetings ?? [];
   const resolutions = data?.resolutions ?? [];
+
+  // Build a map of resolution votes by id for quick lookup
+  const resolutionVotesMap: Record<string, { votesFor: number; votesAgainst: number; votesAbstain: number }> = {};
+  for (const r of resolutions) {
+    resolutionVotesMap[r.id] = { votesFor: r.votesFor, votesAgainst: r.votesAgainst, votesAbstain: r.votesAbstain };
+  }
 
   // Find next upcoming meeting
   const now = Date.now();
@@ -129,12 +245,21 @@ export default function PortalBoardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         {/* Board Members */}
         <div className="anim-fade-up delay-1 bg-white rounded-2xl p-5 border border-[#e8ecf4] hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
-          <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
-              <Users size={16} className="text-[#2563eb]" />
-            </div>
-            חברי ועד ({members.length})
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+                <Users size={16} className="text-[#2563eb]" />
+              </div>
+              חברי ועד ({members.length})
+            </h3>
+            <button
+              onClick={() => setShowMemberModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#eff6ff] text-[#2563eb] text-[11px] font-semibold hover:bg-[#dbeafe] transition-colors"
+            >
+              <Plus size={12} />
+              הוסף חבר ועד
+            </button>
+          </div>
           <div className="space-y-2">
             {members.length === 0 ? (
               <div className="text-center py-6 text-[13px] text-[#64748b]">אין חברי ועד</div>
@@ -167,12 +292,21 @@ export default function PortalBoardPage() {
         {/* Next Meeting + Stats */}
         <div>
           <div className="anim-fade-up delay-2 bg-white rounded-2xl p-5 border border-[#e8ecf4] mb-6 hover-lift" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
-            <h3 className="text-[15px] font-bold text-[#1e293b] mb-4 flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
-                <Calendar size={16} className="text-[#2563eb]" />
-              </div>
-              הישיבה הבאה
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[15px] font-bold text-[#1e293b] flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#eff6ff] flex items-center justify-center">
+                  <Calendar size={16} className="text-[#2563eb]" />
+                </div>
+                הישיבה הבאה
+              </h3>
+              <button
+                onClick={() => setShowMeetingModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#eff6ff] text-[#2563eb] text-[11px] font-semibold hover:bg-[#dbeafe] transition-colors"
+              >
+                <Plus size={12} />
+                קבע ישיבה
+              </button>
+            </div>
             {nextMeeting ? (
               <>
                 <div className="bg-[#f8f9fc] rounded-xl p-4 mb-4 border border-[#e8ecf4]/50">
@@ -194,14 +328,33 @@ export default function PortalBoardPage() {
                   <>
                     <div className="text-[13px] font-semibold text-[#1e293b] mb-2 mt-3">סדר יום:</div>
                     <ol className="space-y-2">
-                      {nextMeeting.resolutions.map((res, i) => (
-                        <li key={res.id} className={`anim-fade-right delay-${i + 1} flex items-center gap-2 text-[13px] text-[#64748b]`}>
-                          <div className="w-5 h-5 rounded-md bg-[#eff6ff] flex items-center justify-center text-[10px] font-bold text-[#2563eb]">
-                            {i + 1}
-                          </div>
-                          {res.title}
-                        </li>
-                      ))}
+                      {nextMeeting.resolutions.map((res, i) => {
+                        const votes = resolutionVotesMap[res.id] ?? { votesFor: res.votesFor ?? 0, votesAgainst: res.votesAgainst ?? 0, votesAbstain: res.votesAbstain ?? 0 };
+                        const hasVotes = votes.votesFor > 0 || votes.votesAgainst > 0 || votes.votesAbstain > 0;
+                        return (
+                          <li key={res.id} className={`anim-fade-right delay-${i + 1} flex items-start gap-2 text-[13px] text-[#64748b]`}>
+                            <div className="w-5 h-5 rounded-md bg-[#eff6ff] flex items-center justify-center text-[10px] font-bold text-[#2563eb] flex-shrink-0 mt-0.5">
+                              {i + 1}
+                            </div>
+                            <div>
+                              <div>{res.title}</div>
+                              {hasVotes && (
+                                <div className="flex gap-2 mt-1">
+                                  <span className="text-[10px] font-semibold text-[#16a34a] bg-[#f0fdf4] px-2 py-0.5 rounded-md border border-[#bbf7d0]">
+                                    בעד: {votes.votesFor}
+                                  </span>
+                                  <span className="text-[10px] font-semibold text-[#ef4444] bg-[#fef2f2] px-2 py-0.5 rounded-md border border-[#fecaca]">
+                                    נגד: {votes.votesAgainst}
+                                  </span>
+                                  <span className="text-[10px] font-semibold text-[#64748b] bg-[#f1f5f9] px-2 py-0.5 rounded-md border border-[#e2e8f0]">
+                                    נמנע: {votes.votesAbstain}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ol>
                   </>
                 )}
@@ -256,7 +409,10 @@ export default function PortalBoardPage() {
                       מאושר
                     </span>
                   )}
-                  <button className="p-2 rounded-lg hover:bg-[#eff6ff] text-[#2563eb] transition-all">
+                  <button
+                    onClick={() => handleDownloadProtocol(meeting)}
+                    className="p-2 rounded-lg hover:bg-[#eff6ff] text-[#2563eb] transition-all"
+                  >
                     <Download size={14} />
                   </button>
                 </div>
@@ -265,6 +421,141 @@ export default function PortalBoardPage() {
           )}
         </div>
       </div>
+
+      {/* ─── SCHEDULE MEETING MODAL ─── */}
+      {showMeetingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4 border border-[#e8ecf4]" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.12)" }}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-[16px] font-bold text-[#1e293b]">קביעת ישיבה חדשה</h3>
+              <button onClick={() => setShowMeetingModal(false)} className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b] hover:text-[#1e293b] transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">כותרת</label>
+                <input
+                  type="text"
+                  value={meetingTitle}
+                  onChange={e => setMeetingTitle(e.target.value)}
+                  placeholder="לדוגמה: ישיבת ועד מנהל"
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">תאריך ושעה</label>
+                <input
+                  type="datetime-local"
+                  value={meetingDate}
+                  onChange={e => setMeetingDate(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">מיקום</label>
+                <input
+                  type="text"
+                  value={meetingLocation}
+                  onChange={e => setMeetingLocation(e.target.value)}
+                  placeholder="לדוגמה: משרד העמותה"
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <button
+                onClick={handleCreateMeeting}
+                disabled={meetingSubmitting}
+                className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {meetingSubmitting ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                    שומר...
+                  </>
+                ) : (
+                  <>
+                    <Calendar size={16} />
+                    קבע ישיבה
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD MEMBER MODAL ─── */}
+      {showMemberModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4 border border-[#e8ecf4]" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.12)" }}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-[16px] font-bold text-[#1e293b]">הוספת חבר ועד</h3>
+              <button onClick={() => setShowMemberModal(false)} className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b] hover:text-[#1e293b] transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">שם</label>
+                <input
+                  type="text"
+                  value={memberName}
+                  onChange={e => setMemberName(e.target.value)}
+                  placeholder="שם מלא"
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">תפקיד</label>
+                <input
+                  type="text"
+                  value={memberRole}
+                  onChange={e => setMemberRole(e.target.value)}
+                  placeholder='לדוגמה: יו"ר, גזבר, חבר ועד'
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">אימייל</label>
+                <input
+                  type="email"
+                  value={memberEmail}
+                  onChange={e => setMemberEmail(e.target.value)}
+                  placeholder="אופציונלי"
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-medium text-[#1e293b] mb-2">טלפון</label>
+                <input
+                  type="tel"
+                  value={memberPhone}
+                  onChange={e => setMemberPhone(e.target.value)}
+                  placeholder="אופציונלי"
+                  className="w-full px-4 py-3 rounded-xl border border-[#e8ecf4] bg-white text-[#1e293b] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb] transition-all text-[13px]"
+                />
+              </div>
+              <button
+                onClick={handleCreateMember}
+                disabled={memberSubmitting}
+                className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {memberSubmitting ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                    שומר...
+                  </>
+                ) : (
+                  <>
+                    <Users size={16} />
+                    הוסף חבר ועד
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

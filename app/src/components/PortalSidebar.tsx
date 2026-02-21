@@ -1,10 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Home, CheckCircle, Calendar, FileText, BarChart2, MessageCircle, Users, LogOut, Menu, X, Compass } from "lucide-react";
 import { useTour } from "@/components/tour/TourContext";
+
+const roleLabels: Record<string, string> = {
+  ADMIN: "מנהל מערכת",
+  MANAGER: "מנהל עמותה",
+  USER: "משתמש",
+};
 
 const navItems = [
   { href: "/portal", icon: Home, label: "המצב שלי" },
@@ -20,6 +26,42 @@ export default function PortalSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { startTour } = useTour();
+  const { data: session } = useSession();
+
+  // Org info from portal stats
+  const [orgName, setOrgName] = useState<string | null>(null);
+  const [orgNumber, setOrgNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrgInfo = async () => {
+      try {
+        const res = await fetch("/api/stats/portal");
+        if (res.ok) {
+          const json = await res.json();
+          // The portal stats response includes compliance.items which have organizationId
+          // but we need to get the org name from the organization itself.
+          // Since the stats API doesn't return org name directly, we'll try to get it
+          // from a dedicated endpoint or just leave a fallback.
+          // For now let's check if there's org info in the response.
+          if (json.data?.organization) {
+            setOrgName(json.data.organization.name);
+            setOrgNumber(json.data.organization.number);
+          }
+        }
+      } catch {
+        // silently fail
+      }
+    };
+
+    if (session) {
+      fetchOrgInfo();
+    }
+  }, [session]);
+
+  const userName = session?.user?.name ?? "משתמש";
+  const userRole = (session?.user as { role?: string } | undefined)?.role ?? "MANAGER";
+  const roleLabel = roleLabels[userRole] ?? userRole;
+  const userInitials = userName.slice(0, 2);
 
   return (
     <>
@@ -77,11 +119,17 @@ export default function PortalSidebar() {
 
         {/* Organization Info */}
         <div className="px-4 py-3">
-          <div className="bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3">
-            <div className="text-[10px] text-[#94a3b8] mb-0.5">הארגון שלי</div>
-            <div className="text-[13px] font-semibold text-[#1e293b]">עמותת אור לציון</div>
-            <div className="text-[10px] text-[#94a3b8] mt-0.5">מס׳ עמותה: 580123456</div>
-          </div>
+          <Link href="/portal" className="block">
+            <div className="bg-[#f8f9fc] border border-[#e8ecf4] rounded-xl p-3 hover:bg-[#eff6ff] hover:border-[#bfdbfe] transition-all">
+              <div className="text-[10px] text-[#94a3b8] mb-0.5">הארגון שלי</div>
+              <div className="text-[13px] font-semibold text-[#1e293b]">
+                {orgName ?? "הארגון שלי"}
+              </div>
+              {orgNumber && (
+                <div className="text-[10px] text-[#94a3b8] mt-0.5">מס׳ עמותה: {orgNumber}</div>
+              )}
+            </div>
+          </Link>
         </div>
 
         {/* Navigation */}
@@ -133,11 +181,11 @@ export default function PortalSidebar() {
               className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
               style={{ background: "linear-gradient(135deg, #2563eb, #1e40af)" }}
             >
-              יל
+              {userInitials}
             </div>
             <div className="flex-1">
-              <div className="text-[13px] font-semibold text-[#1e293b]">יוסי לוי</div>
-              <div className="text-[10px] text-[#94a3b8]">מנהל עמותה</div>
+              <div className="text-[13px] font-semibold text-[#1e293b]">{userName}</div>
+              <div className="text-[10px] text-[#94a3b8]">{roleLabel}</div>
             </div>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}

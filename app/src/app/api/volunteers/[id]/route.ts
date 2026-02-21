@@ -32,3 +32,15 @@ export const PUT = withErrorHandler(async (req: Request, { params }: { params: P
   if (result.count === 0) return apiError("מתנדב לא נמצא", 404);
   return apiResponse({ updated: true });
 });
+
+export const DELETE = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+  const user = await requireManager();
+  const { id } = await params;
+
+  const deleted = await prisma.volunteer.deleteMany({
+    where: { id, organizationId: user.organizationId! },
+  });
+
+  if (deleted.count === 0) return apiError("מתנדב לא נמצא", 404);
+  return apiResponse({ deleted: true });
+});

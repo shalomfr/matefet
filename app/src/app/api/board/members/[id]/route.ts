@@ -5,12 +5,12 @@ export const GET = withErrorHandler(async (req: Request, { params }: { params: P
   const user = await requireManager();
   const { id } = await params;
 
-  const doc = await prisma.organizationDocument.findFirst({
+  const member = await prisma.boardMember.findFirst({
     where: { id, organizationId: user.organizationId! },
   });
 
-  if (!doc) return apiError("מסמך לא נמצא", 404);
-  return apiResponse(doc);
+  if (!member) return apiError("חבר ועד לא נמצא", 404);
+  return apiResponse(member);
 });
 
 export const PUT = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -18,31 +18,33 @@ export const PUT = withErrorHandler(async (req: Request, { params }: { params: P
   const { id } = await params;
   const body = await req.json();
 
-  const existing = await prisma.organizationDocument.findFirst({
+  const existing = await prisma.boardMember.findFirst({
     where: { id, organizationId: user.organizationId! },
   });
-  if (!existing) return apiError("מסמך לא נמצא", 404);
+  if (!existing) return apiError("חבר ועד לא נמצא", 404);
 
-  const doc = await prisma.organizationDocument.update({
+  const member = await prisma.boardMember.update({
     where: { id },
     data: {
       ...(body.name !== undefined ? { name: body.name } : {}),
-      ...(body.category !== undefined ? { category: body.category } : {}),
-      ...(body.description !== undefined ? { description: body.description } : {}),
+      ...(body.role !== undefined ? { role: body.role } : {}),
+      ...(body.email !== undefined ? { email: body.email } : {}),
+      ...(body.phone !== undefined ? { phone: body.phone } : {}),
+      ...(body.isActive !== undefined ? { isActive: body.isActive } : {}),
     },
   });
 
-  return apiResponse(doc);
+  return apiResponse(member);
 });
 
 export const DELETE = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const user = await requireManager();
   const { id } = await params;
 
-  const deleted = await prisma.organizationDocument.deleteMany({
+  const deleted = await prisma.boardMember.deleteMany({
     where: { id, organizationId: user.organizationId! },
   });
 
-  if (deleted.count === 0) return apiError("מסמך לא נמצא", 404);
+  if (deleted.count === 0) return apiError("חבר ועד לא נמצא", 404);
   return apiResponse({ deleted: true });
 });

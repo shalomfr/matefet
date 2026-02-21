@@ -45,3 +45,15 @@ export const PUT = withErrorHandler(async (req: Request, { params }: { params: P
 
   return apiResponse(item);
 });
+
+export const DELETE = withErrorHandler(async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
+  const user = await requireManager();
+  const { id } = await params;
+
+  const deleted = await prisma.complianceItem.deleteMany({
+    where: { id, organizationId: user.organizationId! },
+  });
+
+  if (deleted.count === 0) return apiError("פריט לא נמצא", 404);
+  return apiResponse({ deleted: true });
+});
