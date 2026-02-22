@@ -1,15 +1,19 @@
 import { prisma } from "@/lib/prisma";
-import { requireManager, apiResponse, withErrorHandler } from "@/lib/api-helpers";
+import { requireAuth, apiResponse, apiError, withErrorHandler } from "@/lib/api-helpers";
 import { getFinandaService } from "@/lib/finanda";
 
-export const GET = withErrorHandler(async () => {
-  const user = await requireManager();
-  const orgId = user.organizationId!;
+export const GET = withErrorHandler(async (req: Request) => {
+  const user = await requireAuth();
   const finanda = getFinandaService();
 
-  const connections = await prisma.finandaConnection.findMany({
-    where: { organizationId: orgId },
-  });
+  // Admin can view any org's connections via query param
+  const orgId = user.role === "ADMIN"
+    ? new URL(req.url).searchParams.get("organizationId") ?? undefined
+    : user.organizationId;
+
+  const connections = orgId
+    ? await prisma.finandaConnection.findMany({ where: { organizationId: orgId } })
+    : [];
 
   return apiResponse({
     isConfigured: finanda.isConfigured,
@@ -19,8 +23,9 @@ export const GET = withErrorHandler(async () => {
 });
 
 export const POST = withErrorHandler(async (req: Request) => {
-  const user = await requireManager();
-  const orgId = user.organizationId!;
+  const user = await requireAuth();
+  if (!user.organizationId) return apiError("לא שויך לארגון", 400);
+  const orgId = user.organizationId;
   const body = await req.json();
   const { bankCode, bankName } = body;
   const finanda = getFinandaService();
