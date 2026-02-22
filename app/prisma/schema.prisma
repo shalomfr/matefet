@@ -123,6 +123,44 @@ enum VolunteerStatus {
   INACTIVE
 }
 
+enum ExpenseStatus {
+  PENDING
+  APPROVED
+  PAID
+  REJECTED
+  CANCELLED
+}
+
+enum ExpenseCategory {
+  SALARIES
+  RENT
+  ACTIVITIES
+  MARKETING
+  ADMINISTRATION
+  TRANSPORTATION
+  SUPPLIES
+  PROFESSIONAL_SERVICES
+  INSURANCE
+  MAINTENANCE
+  OTHER
+}
+
+enum BankConnectionStatus {
+  PENDING_CONSENT
+  ACTIVE
+  EXPIRED
+  REVOKED
+  ERROR
+}
+
+enum TransferStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
 // ==================== CORE ====================
 
 model User {
@@ -182,6 +220,9 @@ model Organization {
   auditLogs           AuditLog[]
   integrationConfigs  IntegrationConfig[]
   fileUploads         FileUpload[]
+  bankAccounts        BankAccount[]
+  expenses            Expense[]
+  finandaConnections  FinandaConnection[]
 
   @@map("organizations")
 }
@@ -319,21 +360,124 @@ model Receipt {
   @@map("receipts")
 }
 
-model BankTransfer {
-  id              String   @id @default(cuid())
-  organizationId  String   @map("organization_id")
-  fromAccount     String?  @map("from_account")
-  toAccount       String?  @map("to_account")
-  amount          Float
-  reference       String?
-  description     String?
-  transferDate    DateTime @map("transfer_date")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+model BankAccount {
+  id                String       @id @default(cuid())
+  organizationId    String       @map("organization_id")
+  bankName          String       @map("bank_name")
+  bankCode          Int          @map("bank_code")
+  branchNumber      String       @map("branch_number")
+  accountNumber     String       @map("account_number")
+  iban              String?
+  balance           Float        @default(0)
+  availableBalance  Float        @default(0) @map("available_balance")
+  currency          String       @default("ILS")
+  isPrimary         Boolean      @default(false) @map("is_primary")
+  isActive          Boolean      @default(true) @map("is_active")
+  lastSyncAt        DateTime?    @map("last_sync_at")
+  finandaAccountId  String?      @map("finanda_account_id")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
 
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transactions      BankTransaction[]
+  transfersFrom     BankTransfer[]     @relation("TransferFrom")
+  transfersTo       BankTransfer[]     @relation("TransferTo")
+  expenses          Expense[]
+
+  @@unique([organizationId, bankCode, branchNumber, accountNumber])
+  @@map("bank_accounts")
+}
+
+model BankTransaction {
+  id                  String       @id @default(cuid())
+  bankAccountId       String       @map("bank_account_id")
+  amount              Float
+  direction           String       // CREDIT or DEBIT
+  description         String?
+  counterpartyName    String?      @map("counterparty_name")
+  reference           String?
+  category            String?
+  valueDate           DateTime     @map("value_date")
+  bookingDate         DateTime     @map("booking_date")
+  balance             Float?
+  state               String       @default("booked") // booked or pending
+  finandaTransactionId String?     @map("finanda_transaction_id")
+  createdAt           DateTime     @default(now()) @map("created_at")
+
+  bankAccount         BankAccount  @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([bankAccountId, finandaTransactionId])
+  @@map("bank_transactions")
+}
+
+model BankTransfer {
+  id                  String         @id @default(cuid())
+  organizationId      String         @map("organization_id")
+  fromAccountId       String?        @map("from_account_id")
+  toAccountId         String?        @map("to_account_id")
+  toExternalAccount   String?        @map("to_external_account")
+  toExternalBankCode  String?        @map("to_external_bank_code")
+  toExternalName      String?        @map("to_external_name")
+  amount              Float
+  reference           String?
+  description         String?
+  status              TransferStatus @default(PENDING)
+  finandaPaymentId    String?        @map("finanda_payment_id")
+  transferDate        DateTime       @map("transfer_date")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  organization        Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  fromAccount         BankAccount?   @relation("TransferFrom", fields: [fromAccountId], references: [id], onDelete: SetNull)
+  toAccount           BankAccount?   @relation("TransferTo", fields: [toAccountId], references: [id], onDelete: SetNull)
 
   @@map("bank_transfers")
+}
+
+model Expense {
+  id              String          @id @default(cuid())
+  organizationId  String          @map("organization_id")
+  amount          Float
+  description     String
+  category        ExpenseCategory @default(OTHER)
+  vendor          String?
+  status          ExpenseStatus   @default(PENDING)
+  receiptUrl      String?         @map("receipt_url")
+  invoiceNumber   String?         @map("invoice_number")
+  expenseDate     DateTime        @map("expense_date")
+  paidAt          DateTime?       @map("paid_at")
+  bankAccountId   String?         @map("bank_account_id")
+  budgetLineId    String?         @map("budget_line_id")
+  approvedBy      String?         @map("approved_by")
+  approvedAt      DateTime?       @map("approved_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  bankAccount     BankAccount?    @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  budgetLine      BudgetLine?     @relation(fields: [budgetLineId], references: [id], onDelete: SetNull)
+
+  @@map("expenses")
+}
+
+model FinandaConnection {
+  id                String               @id @default(cuid())
+  organizationId    String               @map("organization_id")
+  bankCode          Int                  @map("bank_code")
+  bankName          String               @map("bank_name")
+  status            BankConnectionStatus @default(PENDING_CONSENT)
+  profileId         String?              @map("profile_id")
+  consentId         String?              @map("consent_id")
+  consentExpiresAt  DateTime?            @map("consent_expires_at")
+  lastSyncAt        DateTime?            @map("last_sync_at")
+  lastError         String?              @map("last_error")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, bankCode])
+  @@map("finanda_connections")
 }
 
 model Budget {
@@ -365,6 +509,7 @@ model BudgetLine {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   budget          Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  expenses        Expense[]
 
   @@map("budget_lines")
 }

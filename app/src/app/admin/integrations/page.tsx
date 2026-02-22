@@ -1,7 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
 import { useToast } from "@/components/Toast";
-import { Link2, CheckCircle2, XCircle, Settings, ExternalLink, RefreshCw, Info } from "lucide-react";
+import { Link2, CheckCircle2, XCircle, Settings, ExternalLink, RefreshCw, Info, Landmark } from "lucide-react";
 
 const integrations = [
   { name: "חשבונית ירוקה", description: "הפקת חשבוניות וקבלות אוטומטית", icon: "🧾", status: "connected", lastSync: "לפני 5 דקות", category: "חשבונאות" },
@@ -13,14 +14,53 @@ const integrations = [
   { name: "רשם העמותות", description: "הגשת דוחות ובדיקת סטטוס אוטומטית", icon: "🏛️", status: "connected", lastSync: "לפני יום", category: "רגולציה" },
   { name: "מס הכנסה", description: "דיווחים ואישורי מס", icon: "🏦", status: "connected", lastSync: "לפני שבוע", category: "רגולציה" },
   { name: "SMS (019)", description: "שליחת הודעות SMS לתורמים", icon: "📲", status: "connected", lastSync: "לפני 2 שעות", category: "תקשורת" },
-  { name: "בנק הפועלים", description: "ייבוא תנועות בנק אוטומטי", icon: "🏦", status: "disconnected", lastSync: "—", category: "בנקאות" },
 ];
+
+type BankConnection = {
+  bankCode: number;
+  bankName: string;
+  status: string;
+};
+
+type ConnectionInfo = {
+  isConfigured: boolean;
+  supportedBanks: { bankCode: number; name: string; nameEn: string; icon: string; type: string }[];
+  connections: BankConnection[];
+};
 
 const categories = [...new Set(integrations.map((i) => i.category))];
 
 export default function AdminIntegrationsPage() {
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
+  const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo | null>(null);
   const connectedCount = integrations.filter((i) => i.status === "connected").length;
+
+  useEffect(() => {
+    const fetchConnection = async () => {
+      try {
+        const res = await fetch("/api/banking/connect");
+        if (res.ok) {
+          const json = await res.json();
+          setConnectionInfo(json.data);
+        }
+      } catch {
+        // silently fail
+      }
+    };
+    fetchConnection();
+  }, []);
+
+  const bankConnections = connectionInfo?.connections ?? [];
+  const supportedBanks = connectionInfo?.supportedBanks ?? [];
+  const finandaConfigured = connectionInfo?.isConfigured ?? false;
+
+  const totalIntegrations = integrations.length + supportedBanks.filter((b) => b.type === "bank").length;
+  const totalConnected = connectedCount + bankConnections.filter((c) => c.status === "ACTIVE").length;
+
+  const getBankStatus = (bankCode: number) => {
+    const conn = bankConnections.find((c) => c.bankCode === bankCode);
+    return conn?.status ?? null;
+  };
 
   return (
     <div className="px-4 md:px-8 pb-6 md:pb-8">
@@ -29,7 +69,7 @@ export default function AdminIntegrationsPage() {
       {/* Preview Banner */}
       <div className="bg-[#fffbeb] rounded-2xl border border-[#fde68a] p-4 mb-6 flex items-center gap-3" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
         <Info size={20} className="text-[#d97706] flex-shrink-0" />
-        <span className="text-sm font-medium text-[#92400e]">אינטגרציות יהיו זמינות בגרסה הבאה – זו תצוגה מקדימה</span>
+        <span className="text-sm font-medium text-[#92400e]">חלק מהאינטגרציות בתצוגה מקדימה — בנקאות (Finanda) זמינה להגדרה</span>
       </div>
 
       <div className="bg-white rounded-2xl border border-[#e8ecf4] p-5 mb-6 flex items-center justify-between" style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
@@ -39,7 +79,7 @@ export default function AdminIntegrationsPage() {
           </div>
           <div>
             <div className="text-lg font-bold text-[#1e293b]">
-              {connectedCount} מתוך {integrations.length} מחוברים
+              {totalConnected} מתוך {totalIntegrations} מחוברים
             </div>
             <div className="text-sm text-[#64748b]">חבר שירותים נוספים לאוטומציה מלאה</div>
           </div>
@@ -47,11 +87,105 @@ export default function AdminIntegrationsPage() {
         <div className="h-3 flex-1 max-w-xs mx-8 bg-[#f8f9fc] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-[#2563eb]"
-            style={{ width: `${(connectedCount / integrations.length) * 100}%` }}
+            style={{ width: `${totalIntegrations > 0 ? (totalConnected / totalIntegrations) * 100 : 0}%` }}
           />
         </div>
       </div>
 
+      {/* Finanda Banking Section */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <Landmark size={16} className="text-[#2563eb]" />
+          <h3 className="text-sm font-bold text-[#64748b]">בנקאות (Finanda Open Banking)</h3>
+          {!finandaConfigured && (
+            <span className="text-[10px] bg-[#fef3c7] text-[#92400e] px-2 py-0.5 rounded-full font-medium">לא מוגדר</span>
+          )}
+        </div>
+
+        {!finandaConfigured && (
+          <div className="bg-[#f8f9fc] rounded-xl border border-[#e8ecf4] p-4 mb-4">
+            <p className="text-xs text-[#64748b] mb-2">
+              לחיבור אוטומטי לבנקים, הגדר את משתני הסביבה: <code className="bg-white px-1 rounded text-[#2563eb]">FINANDA_API_KEY</code>, <code className="bg-white px-1 rounded text-[#2563eb]">FINANDA_CUSTOMER_ID</code>, <code className="bg-white px-1 rounded text-[#2563eb]">FINANDA_SECRET_KEY</code>
+            </p>
+            <button
+              onClick={() => showSuccess("הגדר את משתני Finanda ב-Render Dashboard")}
+              className="text-xs text-[#2563eb] font-medium hover:underline"
+            >
+              מדריך הגדרה →
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {supportedBanks.filter((b) => b.type === "bank").map((bank) => {
+            const status = getBankStatus(bank.bankCode);
+            const isConnected = status === "ACTIVE";
+
+            return (
+              <div
+                key={bank.bankCode}
+                className={`bg-white rounded-2xl border border-[#e8ecf4] p-5 ${isConnected ? "border-r-4 border-r-[#2ecc8f]" : ""}`}
+                style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="text-3xl">{bank.icon}</div>
+                    <div>
+                      <div className="text-sm font-bold text-[#1e293b]">{bank.name}</div>
+                      <div className="text-xs text-[#64748b]">קוד בנק: {bank.bankCode} | {bank.nameEn}</div>
+                    </div>
+                  </div>
+                  {isConnected ? (
+                    <CheckCircle2 size={20} className="text-[#2ecc8f] flex-shrink-0" />
+                  ) : (
+                    <XCircle size={20} className="text-[#64748b] flex-shrink-0" />
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-[#64748b]">
+                    {isConnected ? "מחובר" : status === "PENDING_CONSENT" ? "ממתין להסכמה" : "לא מחובר"}
+                  </span>
+                  <div className="flex gap-1">
+                    {isConnected ? (
+                      <>
+                        <button
+                          onClick={() => showSuccess("סונכרן בהצלחה")}
+                          className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]"
+                          title="סנכרן"
+                        >
+                          <RefreshCw size={14} />
+                        </button>
+                        <button
+                          onClick={() => showSuccess("הגדרות חיבור בנקאי")}
+                          className="p-1.5 rounded-lg hover:bg-[#f8f9fc] text-[#64748b]"
+                          title="הגדרות"
+                        >
+                          <Settings size={14} />
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (!finandaConfigured) {
+                            showError("יש להגדיר Finanda תחילה");
+                          } else {
+                            showSuccess("מתחיל תהליך הסכמה בנקאית...");
+                          }
+                        }}
+                        className="btn-primary !py-1 !px-3 !text-xs flex items-center gap-1"
+                      >
+                        <ExternalLink size={12} /> חבר
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Other Integrations */}
       {categories.map((cat) => (
         <div key={cat} className="mb-6">
           <h3 className="text-sm font-bold text-[#64748b] mb-3 mr-1">{cat}</h3>

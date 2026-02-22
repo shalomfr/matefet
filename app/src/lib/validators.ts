@@ -152,3 +152,49 @@ export const markNotificationReadSchema = z.object({
   ids: z.array(z.string()).optional(),
   all: z.boolean().optional(),
 });
+
+// ==================== BANK ACCOUNTS ====================
+export const createBankAccountSchema = z.object({
+  bankName: z.string().min(1, "שם בנק נדרש"),
+  bankCode: z.number().int(),
+  branchNumber: z.string().min(1, "מספר סניף נדרש"),
+  accountNumber: z.string().min(1, "מספר חשבון נדרש"),
+  iban: z.string().optional(),
+  balance: z.number().default(0),
+  availableBalance: z.number().default(0),
+  isPrimary: z.boolean().default(false),
+});
+
+export const updateBankAccountSchema = createBankAccountSchema.partial().extend({
+  isActive: z.boolean().optional(),
+});
+
+// ==================== EXPENSES ====================
+export const createExpenseSchema = z.object({
+  amount: z.number().positive("סכום חייב להיות חיובי"),
+  description: z.string().min(1, "תיאור נדרש"),
+  category: z.enum(["SALARIES", "RENT", "ACTIVITIES", "MARKETING", "ADMINISTRATION", "TRANSPORTATION", "SUPPLIES", "PROFESSIONAL_SERVICES", "INSURANCE", "MAINTENANCE", "OTHER"]).default("OTHER"),
+  vendor: z.string().optional(),
+  expenseDate: z.string().datetime(),
+  receiptUrl: z.string().optional(),
+  invoiceNumber: z.string().optional(),
+  bankAccountId: z.string().optional(),
+  budgetLineId: z.string().optional(),
+});
+
+export const updateExpenseSchema = createExpenseSchema.partial().extend({
+  status: z.enum(["PENDING", "APPROVED", "PAID", "REJECTED", "CANCELLED"]).optional(),
+});
+
+// ==================== BANK TRANSFERS ====================
+export const createBankTransferSchema = z.object({
+  fromAccountId: z.string().min(1, "חשבון מקור נדרש"),
+  toAccountId: z.string().optional(),
+  toExternalAccount: z.string().optional(),
+  toExternalBankCode: z.string().optional(),
+  toExternalName: z.string().optional(),
+  amount: z.number().positive("סכום חייב להיות חיובי"),
+  description: z.string().optional(),
+  reference: z.string().optional(),
+  transferDate: z.string().datetime(),
+});

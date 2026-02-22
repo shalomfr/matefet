@@ -19,6 +19,9 @@ export const GET = withErrorHandler(async () => {
     budgets,
     documents,
     boardMembers,
+    bankAccounts,
+    expensesTotal,
+    finandaConnections,
   ] = await Promise.all([
     prisma.complianceItem.findMany({ where: { organizationId: orgId } }),
     prisma.donation.aggregate({
@@ -45,6 +48,17 @@ export const GET = withErrorHandler(async () => {
     prisma.organizationDocument.count({ where: { organizationId: orgId } }),
     prisma.boardMember.findMany({
       where: { organizationId: orgId, isActive: true },
+    }),
+    prisma.bankAccount.findMany({
+      where: { organizationId: orgId, isActive: true },
+    }),
+    prisma.expense.aggregate({
+      where: { organizationId: orgId, status: "PAID" },
+      _sum: { amount: true },
+      _count: true,
+    }),
+    prisma.finandaConnection.findMany({
+      where: { organizationId: orgId },
     }),
   ]);
 
@@ -119,5 +133,13 @@ export const GET = withErrorHandler(async () => {
     volunteers: { activeCount: activeVolunteers },
     documents: { count: documents },
     notifications: recentNotifications,
+    banking: {
+      totalBalance: bankAccounts.reduce((sum, a) => sum + a.balance, 0),
+      accounts: bankAccounts.length,
+      totalExpenses: expensesTotal._sum.amount ?? 0,
+      expenseCount: expensesTotal._count,
+      connections: finandaConnections.length,
+      isConnected: finandaConnections.some((c) => c.status === "ACTIVE"),
+    },
   });
 });
