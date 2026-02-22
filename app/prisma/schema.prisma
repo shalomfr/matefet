@@ -161,6 +161,26 @@ enum TransferStatus {
   CANCELLED
 }
 
+enum AdminEventType {
+  EVENT
+  MEETING
+  TEAM_MEETING
+  BOARD_MEETING
+  DEADLINE
+  REMINDER
+  AUDIT
+  TRAINING
+  FUNDRAISING
+  VOLUNTEER_EVENT
+}
+
+enum AdminEventStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 // ==================== CORE ====================
 
 model User {
@@ -223,6 +243,7 @@ model Organization {
   bankAccounts        BankAccount[]
   expenses            Expense[]
   finandaConnections  FinandaConnection[]
+  adminEvents         AdminEvent[]
 
   @@map("organizations")
 }
@@ -920,4 +941,28 @@ model FileUpload {
   organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("file_uploads")
+}
+
+// ==================== ADMIN EVENTS ====================
+
+model AdminEvent {
+  id              String           @id @default(cuid())
+  organizationId  String           @map("organization_id")
+  title           String
+  description     String?
+  type            AdminEventType   @default(EVENT)
+  status          AdminEventStatus @default(SCHEDULED)
+  date            DateTime
+  endDate         DateTime?        @map("end_date")
+  time            String?
+  endTime         String?          @map("end_time")
+  location        String?
+  notes           String?
+  createdBy       String?          @map("created_by")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("admin_events")
 }

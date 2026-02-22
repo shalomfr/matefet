@@ -10,6 +10,7 @@ import {
   Zap,
   Users,
   BarChart3,
+  CalendarDays,
   ChevronDown,
   LogOut,
   Menu,
@@ -25,6 +26,7 @@ interface OrgOption {
 
 const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "דשבורד" },
+  { href: "/admin/calendar", icon: CalendarDays, label: "לוח שנה" },
   { href: "/admin/organizations", icon: Building2, label: "ארגונים" },
   { href: "/admin/integrations", icon: Link2, label: "אינטגרציות" },
   { href: "/admin/automation", icon: Zap, label: "אוטומציות" },

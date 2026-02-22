@@ -10,6 +10,7 @@ async function main() {
   const existingOrg = await prisma.organization.findUnique({ where: { id: "org-or-letzion" } });
   if (existingOrg) {
     console.log("Cleaning existing seed data...");
+    await prisma.adminEvent.deleteMany({ where: { organizationId: existingOrg.id } });
     await prisma.expense.deleteMany({ where: { organizationId: existingOrg.id } });
     await prisma.bankTransaction.deleteMany({ where: { bankAccount: { organizationId: existingOrg.id } } });
     await prisma.bankTransfer.deleteMany({ where: { organizationId: existingOrg.id } });
@@ -708,6 +709,65 @@ async function main() {
     },
   });
   console.log("Created 2 bank transfers");
+
+  // ==================== ADMIN EVENTS ====================
+  await Promise.all([
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "פגישה עם רואה חשבון", description: "סקירת דוחות רבעון 1",
+        type: "MEETING", date: new Date("2026-03-05T10:00:00"), time: "10:00", endTime: "11:30",
+        location: "משרדי רו\"ח כהן ושות'", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "ישיבת צוות שבועית", description: "סקירת משימות ועדכונים",
+        type: "TEAM_MEETING", date: new Date("2026-03-02T09:00:00"), time: "09:00", endTime: "10:00",
+        location: "משרדי העמותה", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "הדרכת מתנדבים חדשים", description: "הדרכה ראשונית למתנדבים שהצטרפו",
+        type: "TRAINING", date: new Date("2026-03-10T14:00:00"), time: "14:00", endTime: "16:00",
+        location: "אולם הכנסים", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "אירוע גיוס כספים שנתי", description: "ארוחת ערב לגיוס תרומות",
+        type: "FUNDRAISING", date: new Date("2026-03-25T19:00:00"), time: "19:00", endTime: "22:00",
+        location: "מלון דוד המלך, ירושלים", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "דדליין הגשת דוח שנתי", description: "מועד אחרון להגשת דוח שנתי לרשם",
+        type: "DEADLINE", date: new Date("2026-06-30T23:59:00"), status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "ביקורת פנימית רבעונית", description: "ביקורת על ניהול כספי רבעון 1",
+        type: "AUDIT", date: new Date("2026-04-15T10:00:00"), time: "10:00", endTime: "13:00",
+        location: "משרדי העמותה", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "יום התנדבות קהילתי", description: "יום פעילות קהילתית עם מתנדבים",
+        type: "VOLUNTEER_EVENT", date: new Date("2026-03-20T08:00:00"), time: "08:00", endTime: "14:00",
+        location: "מרכז קהילתי אור לציון", status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+    prisma.adminEvent.create({
+      data: {
+        organizationId: org.id, title: "תזכורת: חידוש ביטוח", description: "לחדש ביטוח אחריות מנהלים",
+        type: "REMINDER", date: new Date("2026-04-01T09:00:00"), status: "SCHEDULED", createdBy: admin.id,
+      },
+    }),
+  ]);
+  console.log("Created 8 admin events");
 
   // ==================== NOTIFICATIONS ====================
   await Promise.all([

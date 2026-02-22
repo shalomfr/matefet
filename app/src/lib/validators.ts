@@ -198,3 +198,24 @@ export const createBankTransferSchema = z.object({
   reference: z.string().optional(),
   transferDate: z.string().datetime(),
 });
+
+// ==================== ADMIN EVENTS ====================
+export const createAdminEventSchema = z.object({
+  organizationId: z.string().min(1, "יש לבחור ארגון"),
+  title: z.string().min(1, "כותרת נדרשת"),
+  description: z.string().optional(),
+  type: z.enum(["EVENT", "MEETING", "TEAM_MEETING", "BOARD_MEETING", "DEADLINE", "REMINDER", "AUDIT", "TRAINING", "FUNDRAISING", "VOLUNTEER_EVENT"]),
+  date: z.string(),
+  endDate: z.string().optional(),
+  time: z.string().optional(),
+  endTime: z.string().optional(),
+  location: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const updateAdminEventSchema = createAdminEventSchema
+  .partial()
+  .omit({ organizationId: true })
+  .extend({
+    status: z.enum(["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]).optional(),
+  });
