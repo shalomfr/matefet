@@ -31,7 +31,7 @@ export default function PortalContactPage() {
       .then(r => r.json())
       .then(res => {
         if (res.success) {
-          setHistory(res.data ?? []);
+          setHistory(res.data?.notifications ?? []);
         }
       })
       .catch(console.error)
